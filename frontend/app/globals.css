@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  /* Palette CECJ */
+  --color-cecj-green:  #024339;
+  --color-cecj-gold:   #ffcb32;
+  --color-cecj-red:    #fe0107;
+  --color-cecj-light:  #f8f9fa;
+  --color-cecj-muted:  #e9ecef;
+
+  /* Typographie */
+  --font-sans:        var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
+  --font-decorative:  var(--font-brittany), cursive;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #ffffff;
+  color: #171717;
+}
