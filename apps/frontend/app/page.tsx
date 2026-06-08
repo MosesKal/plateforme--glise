@@ -46,7 +46,7 @@ export default function AccueilPage() {
           <div className="flex flex-wrap justify-center gap-4">
             <Link
               href={SITE_ROUTES.presentation}
-              className="rounded-md bg-cecj-gold px-8 py-3 font-semibold text-cecj-green transition-opacity hover:opacity-90"
+              className="rounded-md bg-white px-8 py-3 font-semibold text-cecj-green transition-opacity hover:opacity-90"
             >
               Découvrir l'église
             </Link>
@@ -116,7 +116,7 @@ export default function AccueilPage() {
       <section className="bg-cecj-light py-20 px-4">
         <div className="mx-auto grid max-w-6xl grid-cols-1 gap-10 md:grid-cols-2">
           <div className="rounded-xl bg-cecj-green p-8 text-white">
-            <span className="mb-3 inline-block rounded-full bg-cecj-gold/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cecj-gold">
+            <span className="mb-3 inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white/80">
               Notre Vision
             </span>
             <h3 className="mb-4 text-2xl font-bold">
@@ -128,7 +128,7 @@ export default function AccueilPage() {
             </p>
             <Link
               href={SITE_ROUTES.vision}
-              className="mt-6 inline-block text-sm font-semibold text-cecj-gold underline-offset-4 hover:underline"
+              className="mt-6 inline-block text-sm font-semibold text-white/80 underline-offset-4 hover:text-white hover:underline"
             >
               En savoir plus →
             </Link>
@@ -156,23 +156,23 @@ export default function AccueilPage() {
       </section>
 
       {/* CTA Rejoindre */}
-      <section className="bg-cecj-gold py-16 px-4 text-center">
-        <h2 className="mb-4 text-3xl font-bold text-cecj-green">
+      <section className="bg-cecj-green py-16 px-4 text-center">
+        <h2 className="mb-4 text-3xl font-bold text-white">
           Rejoignez la communauté
         </h2>
-        <p className="mb-8 text-cecj-green/80">
+        <p className="mb-8 text-white/70">
           Trouvez une extension près de chez vous ou contactez-nous.
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <Link
             href={SITE_ROUTES.extensions}
-            className="rounded-md bg-cecj-green px-8 py-3 font-semibold text-white transition-opacity hover:opacity-90"
+            className="rounded-md bg-white px-8 py-3 font-semibold text-cecj-green transition-opacity hover:opacity-90"
           >
             Trouver une extension
           </Link>
           <Link
             href={SITE_ROUTES.evenements}
-            className="rounded-md border border-cecj-green px-8 py-3 font-semibold text-cecj-green transition-colors hover:bg-cecj-green/10"
+            className="rounded-md border border-white/40 px-8 py-3 font-semibold text-white transition-colors hover:bg-white/10"
           >
             Voir les événements
           </Link>

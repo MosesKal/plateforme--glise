@@ -51,7 +51,7 @@ export function PublicFooter() {
           {/* Links */}
           {footerLinks.map((group) => (
             <div key={group.title}>
-              <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-cecj-gold">
+              <h3 className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/50">
                 {group.title}
               </h3>
               <ul className="space-y-2">

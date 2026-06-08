@@ -49,7 +49,7 @@ export function Navbar() {
                 className={cn(
                   "rounded px-3 py-1.5 text-sm font-medium transition-colors",
                   pathname === link.href
-                    ? "bg-white/10 text-cecj-gold"
+                    ? "bg-white/20 text-white"
                     : "text-white/80 hover:text-white hover:bg-white/10",
                 )}
               >
@@ -85,7 +85,7 @@ export function Navbar() {
                   className={cn(
                     "block rounded px-3 py-2 text-sm font-medium",
                     pathname === link.href
-                      ? "bg-white/10 text-cecj-gold"
+                      ? "bg-white/20 text-white"
                       : "text-white/80 hover:text-white",
                   )}
                 >

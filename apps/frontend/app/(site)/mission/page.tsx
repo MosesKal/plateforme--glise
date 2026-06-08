@@ -9,7 +9,7 @@ export default function MissionPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-16">
       <h1 className="mb-4 text-4xl font-bold text-cecj-green">Notre Mission</h1>
-      <div className="mb-8 h-1 w-16 rounded bg-cecj-gold" />
+      <div className="mb-8 h-1 w-16 rounded bg-cecj-green/40" />
       <p className="text-lg text-gray-600">
         Notre mission est de partager l'Évangile de Jésus-Christ, former des disciples
         mûrs dans la foi et les envoyer dans le monde pour accomplir la grande mission.
