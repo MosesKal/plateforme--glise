@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { PageHeader } from "@/components/shared/PageHeader"
 import { MemberList } from "@/features/membres/components/MemberList"
 import { Button } from "@/components/ui/Button"

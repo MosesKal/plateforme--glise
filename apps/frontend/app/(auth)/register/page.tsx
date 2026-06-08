@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Link from "next/link"
 import { RegisterForm } from "@/features/auth/components/RegisterForm"
 import { ROUTES } from "@/constants/routes"

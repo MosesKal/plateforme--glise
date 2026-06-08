@@ -3,7 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { Navbar } from "@/components/layout/Navbar"
 import { PublicFooter } from "@/components/layout/PublicFooter"
-import { SITE_ROUTES, AUTH_ROUTES } from "@/constants/routes"
+import { SITE_ROUTES } from "@/constants/routes"
 
 export const metadata: Metadata = {
   title: "C.E.C.J. — Communauté des Eglise Camps de Jésus-Christ",

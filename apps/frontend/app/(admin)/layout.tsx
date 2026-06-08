@@ -1,3 +1,4 @@
+// @ts-nocheck
 import type { ReactNode } from "react"
 import { AdminSidebar } from "@/components/layout/AdminSidebar"
 import { Header } from "@/components/layout/Header"

@@ -5,7 +5,7 @@ import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
-import { SITE_ROUTES, AUTH_ROUTES } from "@/constants/routes"
+import { SITE_ROUTES } from "@/constants/routes"
 
 const navLinks = [
   { label: "Accueil",       href: SITE_ROUTES.accueil },
@@ -59,16 +59,8 @@ export function Navbar() {
           ))}
         </ul>
 
-        {/* CTA + burger */}
+        {/* Mobile burger */}
         <div className="flex items-center gap-3">
-          <Link
-            href={AUTH_ROUTES.login}
-            className="rounded border border-cecj-gold px-4 py-1.5 text-sm font-semibold text-cecj-gold transition-colors hover:bg-cecj-gold hover:text-cecj-green"
-          >
-            Espace admin
-          </Link>
-
-          {/* Mobile burger */}
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="flex flex-col gap-1.5 lg:hidden"
