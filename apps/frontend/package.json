@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "@cecj/frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@cecj/shared": "workspace:*",
     "@hookform/resolvers": "^5.4.0",
     "axios": "^1.17.0",
     "clsx": "^2.1.1",

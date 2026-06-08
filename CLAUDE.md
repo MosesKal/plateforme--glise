@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **CECJ Platform — Communauté des Eglise Camps de Jésus-Christ**
 
-Plateforme web officielle de la C.E.C.J. Monorepo avec `backend/` (NestJS) et `frontend/` (Next.js).
+Plateforme web officielle de la C.E.C.J. Monorepo pnpm + Turborepo avec `apps/backend/` (NestJS), `apps/frontend/` (Next.js) et `packages/shared/` (types partagés).
 
 Objectifs :
 - Présentation de l'église et de ses extensions
@@ -22,7 +22,7 @@ Objectifs :
 
 ## Stack technique
 
-### Frontend — `frontend/` (port 3000)
+### Frontend — `apps/frontend/` (port 3000)
 
 | Outil | Rôle |
 |---|---|
@@ -35,7 +35,15 @@ Objectifs :
 | react-hook-form + Zod | Formulaires et validation |
 | Axios | Client HTTP (intercepteurs JWT) |
 
-### Backend — `backend/` (port 3001)
+### Shared — `packages/shared/` (package `@cecj/shared`)
+
+| Export | Contenu |
+|---|---|
+| `@cecj/shared` | Tous les types + constantes |
+| `@cecj/shared/types` | Interfaces TypeScript (User, Event, Extension, Sermon…) |
+| `@cecj/shared/constants` | Routes (SITE_ROUTES, AUTH_ROUTES, ADMIN_ROUTES, API_ROUTES) |
+
+### Backend — `apps/backend/` (port 3001)
 
 | Outil | Rôle |
 |---|---|
@@ -73,28 +81,34 @@ Inspirations : Hillsong, Elevation Church, Transformation Church, Bethel Church.
 
 ## Commandes
 
-### Frontend
+### Depuis la racine (recommandé — via Turborepo)
 
 ```bash
-cd frontend
-npm run dev       # http://localhost:3000
-npm run build
-npm run lint
+pnpm dev          # Lance frontend + backend en parallèle
+pnpm build        # Build tous les packages dans l'ordre
+pnpm lint         # Lint tous les packages
+pnpm test         # Tests tous les packages
 ```
 
-### Backend
+### Par package
 
 ```bash
-cd backend
-npm run start:dev       # http://localhost:3001 (watch mode)
-npm run build
-npm run test
-npm run test:e2e
-npm run test -- --testPathPattern=<fichier>
-npm run lint
+# Frontend
+pnpm --filter @cecj/frontend dev     # http://localhost:3000
+pnpm --filter @cecj/frontend build
+pnpm --filter @cecj/frontend lint
+
+# Backend
+pnpm --filter @cecj/backend start:dev   # http://localhost:3001 (watch mode)
+pnpm --filter @cecj/backend build
+pnpm --filter @cecj/backend test
+pnpm --filter @cecj/backend test:e2e
+
+# Shared
+pnpm --filter @cecj/shared build
 ```
 
-### Prisma (dans `backend/`)
+### Prisma (dans `apps/backend/`)
 
 ```bash
 npx prisma migrate dev --name <nom>
@@ -104,7 +118,31 @@ npx prisma studio
 
 ---
 
-## Architecture frontend (`frontend/`)
+## Structure du monorepo
+
+```
+eglise/
+  apps/
+    frontend/         → @cecj/frontend (Next.js, port 3000)
+    backend/          → @cecj/backend (NestJS, port 3001)
+  packages/
+    shared/           → @cecj/shared (types TS + constantes, zéro dépendance)
+  package.json        → workspace root (turbo dev/build/lint/test)
+  pnpm-workspace.yaml → déclaration des workspaces
+  turbo.json          → pipeline Turborepo
+  tsconfig.base.json  → config TS de base (étendue par packages/shared)
+  pnpm-lock.yaml      → lockfile unique pour tout le monorepo
+```
+
+**Importer les types partagés :**
+```ts
+import type { User, Event, Extension } from '@cecj/shared';
+import { SITE_ROUTES, API_ROUTES } from '@cecj/shared';
+```
+
+---
+
+## Architecture frontend (`apps/frontend/`)
 
 ```
 app/

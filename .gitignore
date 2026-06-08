@@ -9,6 +9,9 @@ build/
 .next/
 out/
 
+# pnpm
+pnpm-lock.yaml.bak
+
 # Environment variables
 .env
 .env.local
@@ -17,6 +20,7 @@ out/
 # Logs
 *.log
 npm-debug.log*
+pnpm-debug.log*
 
 # OS
 .DS_Store
@@ -29,3 +33,9 @@ Thumbs.db
 # Prisma
 *.db
 *.sqlite
+
+# Turbo
+.turbo/
+
+# Test coverage
+coverage/
