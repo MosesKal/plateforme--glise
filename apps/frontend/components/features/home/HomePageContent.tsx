@@ -105,17 +105,78 @@ export function HomePageContent() {
       <Navbar />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-[95vh] flex-col items-center justify-center overflow-hidden px-4 text-center">
-        {/* Background image */}
-        <Image
-          src="/background_image_1.jpg"
-          alt=""
-          fill
-          className="object-cover object-center"
-          priority
+      <section
+        className="relative flex min-h-[95vh] flex-col items-center justify-center overflow-hidden px-4 text-center"
+        style={{ backgroundImage: "url('/background_image_1.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}
+      >
+        {/* Overlay gradient */}
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(to bottom, rgba(2,67,57,0.88), rgba(2,67,57,0.80), rgba(2,67,57,0.93))" }}
         />
-        {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-cecj-green/75 via-cecj-green/60 to-cecj-green/80" />
+
+        {/* ── Couches décoratives ─────────────────────────────────────────── */}
+
+        {/* Halo central doré — lumière spirituelle */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 55% 50% at 50% 48%, rgba(255,203,50,0.12) 0%, rgba(255,255,255,0.05) 38%, transparent 68%)" }}
+        />
+
+        {/* Vignette — assombrit les coins pour focaliser le regard */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 110% 100% at 50% 50%, transparent 45%, rgba(1,30,25,0.55) 100%)" }}
+        />
+
+        {/* Anneaux concentriques */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="absolute w-[740px] h-[740px] rounded-full border" style={{ borderColor: "rgba(255,255,255,0.04)" }} />
+          <div className="absolute w-[580px] h-[580px] rounded-full border" style={{ borderColor: "rgba(255,255,255,0.06)" }} />
+          <div className="absolute w-[430px] h-[430px] rounded-full border" style={{ borderColor: "rgba(255,255,255,0.07)" }} />
+          <div className="absolute w-[290px] h-[290px] rounded-full border" style={{ borderColor: "rgba(255,203,50,0.12)" }} />
+          <div className="absolute w-[170px] h-[170px] rounded-full border" style={{ borderColor: "rgba(255,203,50,0.18)" }} />
+        </div>
+
+        {/* Rayons de lumière depuis le centre */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div
+              key={i}
+              className="absolute"
+              style={{
+                width: "1px",
+                height: "130%",
+                background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.04) 40%, rgba(255,255,255,0.04) 60%, transparent 100%)",
+                transform: `rotate(${i * 22.5}deg)`,
+                transformOrigin: "center center",
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Ornement coin haut-gauche */}
+        <div className="absolute top-7 left-7 pointer-events-none">
+          <div className="w-14 h-14 border-l-2 border-t-2 rounded-tl-xl" style={{ borderColor: "rgba(255,203,50,0.25)" }} />
+        </div>
+        {/* Ornement coin haut-droit */}
+        <div className="absolute top-7 right-7 pointer-events-none">
+          <div className="w-14 h-14 border-r-2 border-t-2 rounded-tr-xl" style={{ borderColor: "rgba(255,203,50,0.25)" }} />
+        </div>
+        {/* Ornement coin bas-gauche */}
+        <div className="absolute bottom-16 left-7 pointer-events-none">
+          <div className="w-14 h-14 border-l-2 border-b-2 rounded-bl-xl" style={{ borderColor: "rgba(255,203,50,0.15)" }} />
+        </div>
+        {/* Ornement coin bas-droit */}
+        <div className="absolute bottom-16 right-7 pointer-events-none">
+          <div className="w-14 h-14 border-r-2 border-b-2 rounded-br-xl" style={{ borderColor: "rgba(255,203,50,0.15)" }} />
+        </div>
+
+        {/* Ligne dorée horizontale bas */}
+        <div
+          className="absolute bottom-14 left-1/2 -translate-x-1/2 h-px w-40 pointer-events-none"
+          style={{ background: "linear-gradient(to right, transparent, rgba(255,203,50,0.45), transparent)" }}
+        />
 
         {/* Content */}
         <motion.div
