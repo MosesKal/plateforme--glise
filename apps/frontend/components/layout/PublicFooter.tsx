@@ -70,8 +70,22 @@ export function PublicFooter() {
           ))}
         </div>
 
-        <div className="mt-10 border-t border-white/10 pt-6 text-center text-xs text-white/40">
-          © {new Date().getFullYear()} C.E.C.J. — Tous droits réservés.
+        <div className="mt-10 border-t border-white/10 pt-6 flex flex-col items-center justify-between gap-2 text-xs text-white/40 sm:flex-row">
+          <span>© {new Date().getFullYear()} C.E.C.J. — Tous droits réservés.</span>
+          <span className="flex items-center gap-1.5">
+            Développé par
+            <Link
+              href="https://moseskalunga.com/fr"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 transition-colors hover:text-white"
+            >
+              <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/10 text-[10px] font-bold text-white">
+                MK
+              </span>
+              <span className="font-medium text-white/60 hover:text-white">Moses K.</span>
+            </Link>
+          </span>
         </div>
       </div>
     </footer>

@@ -15,6 +15,10 @@ export const metadata: Metadata = {
   },
   description:
     "Communauté des Eglise Camps de Jésus-Christ — Plateforme officielle de l'église C.E.C.J.",
+  icons: {
+    icon: "/Logo C.E.C.j.png",
+    apple: "/Logo C.E.C.j.png",
+  },
   openGraph: {
     siteName: "C.E.C.J.",
     locale: "fr_FR",

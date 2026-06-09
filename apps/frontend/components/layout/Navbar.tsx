@@ -12,7 +12,6 @@ const navLinks = [
   { label: "Présentation",  href: SITE_ROUTES.presentation },
   { label: "Vision",        href: SITE_ROUTES.vision },
   { label: "Mission",       href: SITE_ROUTES.mission },
-  { label: "Leadership",    href: SITE_ROUTES.leadership },
   { label: "Extensions",    href: SITE_ROUTES.extensions },
   { label: "Événements",    href: SITE_ROUTES.evenements },
   { label: "Contact",       href: SITE_ROUTES.contact },

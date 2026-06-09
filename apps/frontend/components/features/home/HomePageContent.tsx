@@ -1,11 +1,22 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { Navbar } from "@/components/layout/Navbar"
 import { PublicFooter } from "@/components/layout/PublicFooter"
 import { SITE_ROUTES } from "@/constants/routes"
+
+const ExtensionsMap = dynamic(
+  () => import("./ExtensionsMap").then((m) => m.ExtensionsMap),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-full w-full animate-pulse rounded-2xl bg-cecj-green/10" />
+    ),
+  }
+)
 
 // ── Variants ──────────────────────────────────────────────────────────────────
 
@@ -97,6 +108,41 @@ const galerieImages = [
   { src: "/image_10.jpg", alt: "Vie de la communauté" },
 ]
 
+const temoignages = [
+  {
+    id: 1,
+    texte:
+      "Depuis que j'ai rejoint cette communauté, ma vie a été transformée. La Parole de Dieu est enseignée avec clarté et profondeur. Je me sens vraiment chez moi.",
+    nom: "Marie-Claire K.",
+    role: "Membre depuis 3 ans",
+    initiales: "MK",
+  },
+  {
+    id: 2,
+    texte:
+      "J'ai trouvé ici une famille spirituelle sincère. Les moments de prière et d'intercession m'ont aidé à traverser des épreuves difficiles avec la force de Dieu.",
+    nom: "Jean-Paul M.",
+    role: "Membre depuis 5 ans",
+    initiales: "JM",
+  },
+  {
+    id: 3,
+    texte:
+      "Le Camp de Jésus Bel-Air m'a aidée à grandir dans ma foi. Les enseignements sont pratiques, ancrés dans la Bible et applicable au quotidien.",
+    nom: "Esther N.",
+    role: "Membre depuis 2 ans",
+    initiales: "EN",
+  },
+  {
+    id: 4,
+    texte:
+      "Dieu m'a guéri ici — pas seulement physiquement, mais intérieurement. Cette église croit vraiment en la puissance du Saint-Esprit et cela se voit.",
+    nom: "Samuel B.",
+    role: "Membre depuis 4 ans",
+    initiales: "SB",
+  },
+]
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function HomePageContent() {
@@ -105,10 +151,16 @@ export function HomePageContent() {
       <Navbar />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section
-        className="relative flex min-h-[95vh] flex-col items-center justify-center overflow-hidden px-4 text-center"
-        style={{ backgroundImage: "url('/background_image_1.jpg')", backgroundSize: "cover", backgroundPosition: "center" }}
-      >
+      <section className="relative flex min-h-[95vh] flex-col items-center justify-center overflow-hidden px-4 text-center">
+        {/* Background — Next.js Image : WebP/AVIF auto + preload LCP */}
+        <Image
+          src="/background_image_1.jpg"
+          alt=""
+          fill
+          priority
+          className="object-cover object-center"
+          sizes="100vw"
+        />
         {/* Overlay gradient */}
         <div
           className="absolute inset-0"
@@ -138,45 +190,6 @@ export function HomePageContent() {
           <div className="absolute w-[170px] h-[170px] rounded-full border" style={{ borderColor: "rgba(255,203,50,0.18)" }} />
         </div>
 
-        {/* Rayons de lumière depuis le centre */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
-          {Array.from({ length: 8 }).map((_, i) => (
-            <div
-              key={i}
-              className="absolute"
-              style={{
-                width: "1px",
-                height: "130%",
-                background: "linear-gradient(to bottom, transparent 0%, rgba(255,255,255,0.04) 40%, rgba(255,255,255,0.04) 60%, transparent 100%)",
-                transform: `rotate(${i * 22.5}deg)`,
-                transformOrigin: "center center",
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Ornement coin haut-gauche */}
-        <div className="absolute top-7 left-7 pointer-events-none">
-          <div className="w-14 h-14 border-l-2 border-t-2 rounded-tl-xl" style={{ borderColor: "rgba(255,203,50,0.25)" }} />
-        </div>
-        {/* Ornement coin haut-droit */}
-        <div className="absolute top-7 right-7 pointer-events-none">
-          <div className="w-14 h-14 border-r-2 border-t-2 rounded-tr-xl" style={{ borderColor: "rgba(255,203,50,0.25)" }} />
-        </div>
-        {/* Ornement coin bas-gauche */}
-        <div className="absolute bottom-16 left-7 pointer-events-none">
-          <div className="w-14 h-14 border-l-2 border-b-2 rounded-bl-xl" style={{ borderColor: "rgba(255,203,50,0.15)" }} />
-        </div>
-        {/* Ornement coin bas-droit */}
-        <div className="absolute bottom-16 right-7 pointer-events-none">
-          <div className="w-14 h-14 border-r-2 border-b-2 rounded-br-xl" style={{ borderColor: "rgba(255,203,50,0.15)" }} />
-        </div>
-
-        {/* Ligne dorée horizontale bas */}
-        <div
-          className="absolute bottom-14 left-1/2 -translate-x-1/2 h-px w-40 pointer-events-none"
-          style={{ background: "linear-gradient(to right, transparent, rgba(255,203,50,0.45), transparent)" }}
-        />
 
         {/* Content */}
         <motion.div
@@ -217,19 +230,19 @@ export function HomePageContent() {
           <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4 mt-2">
             <Link
               href={SITE_ROUTES.presentation}
-              className="rounded-md bg-white px-7 py-3 font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
+              className="rounded-md bg-white px-5 py-2 text-sm font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
             >
               Découvrir l'Église
             </Link>
             <Link
               href={SITE_ROUTES.extensions}
-              className="rounded-md border border-white/60 px-7 py-3 font-semibold text-white transition-all hover:bg-white/10 hover:scale-[1.02] active:scale-95"
+              className="rounded-md border border-white/60 px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:scale-[1.02] active:scale-95"
             >
               Trouver une Extension
             </Link>
             <Link
               href={SITE_ROUTES.contact}
-              className="rounded-md border border-white/30 px-7 py-3 font-semibold text-white/80 transition-all hover:bg-white/10 hover:text-white hover:scale-[1.02] active:scale-95"
+              className="rounded-md border border-white/30 px-5 py-2 text-sm font-semibold text-white/80 transition-all hover:bg-white/10 hover:text-white hover:scale-[1.02] active:scale-95"
             >
               Nous Contacter
             </Link>
@@ -484,18 +497,33 @@ export function HomePageContent() {
           <motion.h2 variants={fadeUp} className="mb-4 text-3xl font-bold text-cecj-green">
             Nos Extensions
           </motion.h2>
-          <motion.p variants={fadeUp} className="mb-8 text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+          <motion.p variants={fadeUp} className="mb-10 text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
             Découvrez les différentes extensions de la C.E.C.J. à travers le monde
             et trouvez l'assemblée la plus proche de chez vous.
           </motion.p>
-          <motion.div variants={fadeUp}>
-            <Link
-              href={SITE_ROUTES.extensions}
-              className="inline-block rounded-md bg-cecj-green px-8 py-3 font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02]"
-            >
-              Voir toutes les extensions →
-            </Link>
-          </motion.div>
+        </motion.div>
+
+        {/* Carte interactive */}
+        <motion.div
+          className="mx-auto max-w-5xl"
+          variants={fadeUp}
+          {...inView("-40px")}
+        >
+          <div className="overflow-hidden rounded-2xl border border-cecj-muted shadow-md" style={{ height: 420 }}>
+            <ExtensionsMap />
+          </div>
+          <p className="mt-3 text-center text-xs text-gray-400">
+            Carte enrichie progressivement au fil des extensions — cliquez sur un marqueur pour plus d'informations.
+          </p>
+        </motion.div>
+
+        <motion.div variants={fadeUp} {...inView()} className="mt-8 text-center">
+          <Link
+            href={SITE_ROUTES.extensions}
+            className="inline-block rounded-md bg-cecj-green px-8 py-3 font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02]"
+          >
+            Voir toutes les extensions →
+          </Link>
         </motion.div>
       </section>
 
@@ -545,7 +573,7 @@ export function HomePageContent() {
                   alt={img.alt}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
                 />
                 <div className="absolute inset-0 bg-cecj-green/0 transition-colors duration-300 group-hover:bg-cecj-green/30" />
               </motion.div>
@@ -559,6 +587,66 @@ export function HomePageContent() {
             >
               Voir la galerie →
             </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Témoignages ──────────────────────────────────────────────────── */}
+      <section className="bg-white px-4 py-20">
+        <div className="mx-auto max-w-6xl">
+          <motion.div className="mb-12 text-center" variants={stagger} {...inView()}>
+            <motion.p variants={fadeUp} className="mb-2 text-sm font-semibold uppercase tracking-widest" style={{ color: "rgba(255,203,50,0.9)" }}>
+              Ce que dit notre communauté
+            </motion.p>
+            <motion.h2 variants={fadeUp} className="text-3xl font-bold text-cecj-green">
+              Témoignages
+            </motion.h2>
+            <motion.div variants={fadeUp} className="mx-auto mt-4 h-px w-16" style={{ background: "linear-gradient(to right, transparent, #024339, transparent)" }} />
+          </motion.div>
+
+          <motion.div
+            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
+            variants={staggerSlow}
+            {...inView("-40px")}
+          >
+            {temoignages.map((t) => (
+              <motion.div
+                key={t.id}
+                variants={scaleUp}
+                className="group relative flex flex-col rounded-2xl border border-gray-100 bg-cecj-light p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"
+              >
+                {/* Guillemet décoratif */}
+                <div
+                  className="mb-3 font-serif text-6xl leading-none select-none"
+                  style={{ color: "rgba(255,203,50,0.35)", lineHeight: 1 }}
+                  aria-hidden
+                >
+                  &ldquo;
+                </div>
+
+                {/* Texte */}
+                <p className="flex-1 text-sm leading-relaxed text-gray-600 italic">
+                  {t.texte}
+                </p>
+
+                {/* Séparateur */}
+                <div className="my-5 h-px w-10" style={{ background: "rgba(255,203,50,0.4)" }} />
+
+                {/* Auteur */}
+                <div className="flex items-center gap-3">
+                  <div
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                    style={{ background: "#024339" }}
+                  >
+                    {t.initiales}
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-cecj-green">{t.nom}</p>
+                    <p className="text-xs text-gray-400">{t.role}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
           </motion.div>
         </div>
       </section>
