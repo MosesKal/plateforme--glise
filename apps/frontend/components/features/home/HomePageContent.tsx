@@ -1,12 +1,14 @@
 "use client"
 
+import { useState, useRef, useEffect } from "react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, type Variants } from "framer-motion"
+import { motion, type Variants, useInView } from "framer-motion"
 import { Navbar } from "@/components/layout/Navbar"
 import { PublicFooter } from "@/components/layout/PublicFooter"
 import { SITE_ROUTES } from "@/constants/routes"
+import { cn } from "@/lib/utils"
 
 const ExtensionsMap = dynamic(
   () => import("./ExtensionsMap").then((m) => m.ExtensionsMap),
@@ -79,14 +81,17 @@ const upcomingEvents = [
 ]
 
 const valeurs = [
-  "Christ au centre",
-  "La Parole de Dieu",
-  "Le Saint-Esprit",
-  "La Foi",
-  "L'Amour",
-  "L'Excellence",
-  "Le Service",
-  "L'Évangélisation",
+  { label: "Fidélité à la parole",          desc: "La Bible est la fondation de la doctrine de Jésus" },
+  { label: "Abondance dans l'enseignement", desc: "Nous transmettons fidèlement l'enseignement de Jésus" },
+  { label: "Prière continue",               desc: "Vie de prière personnelle et collective intense" },
+  { label: "Discipline spirituelle",        desc: "Lecture quotidienne de la Bible" },
+  { label: "Pureté doctrinale",             desc: "Doctrine de Jésus-Christ sans compromis" },
+  { label: "Communion fraternelle",         desc: "Amour, unité et service mutuel" },
+  { label: "Compassion",                    desc: "Accompagnement dans les événements sociaux" },
+  { label: "Passion pour les âmes",         desc: "Annonce de Jésus-Christ avec compassion" },
+  { label: "Multiplication",                desc: "Former et envoyer des disciples" },
+  { label: "Excellence dans le service",   desc: "Servir Dieu avec diligence" },
+  { label: "Mission globale",               desc: "L'Église appelée à impacter les nations" },
 ]
 
 const programme = [
@@ -143,6 +148,54 @@ const temoignages = [
   },
 ]
 
+// ── Sub-components ────────────────────────────────────────────────────────────
+
+function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
+  const ref = useRef<HTMLSpanElement>(null)
+  const isInView = useInView(ref, { once: true })
+  const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    if (!isInView) return
+    const duration = 1800
+    const start = Date.now()
+    const tick = () => {
+      const elapsed = Date.now() - start
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3) // easeOutCubic
+      setCurrent(Math.round(eased * to))
+      if (progress < 1) requestAnimationFrame(tick)
+    }
+    const raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [isInView, to])
+
+  return <span ref={ref}>{current}{suffix}</span>
+}
+
+function GalerieImageCard({ src, alt }: { src: string; alt: string }) {
+  const [loaded, setLoaded] = useState(false)
+  return (
+    <motion.div variants={scaleUp} className="group relative aspect-square overflow-hidden rounded-xl">
+      {!loaded && (
+        <div className="absolute inset-0 animate-pulse bg-cecj-green/10" />
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className={cn(
+          "object-cover transition-all duration-500 group-hover:scale-110",
+          loaded ? "opacity-100" : "opacity-0",
+        )}
+        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
+        onLoad={() => setLoaded(true)}
+      />
+      <div className="absolute inset-0 bg-cecj-green/0 transition-colors duration-300 group-hover:bg-cecj-green/30" />
+    </motion.div>
+  )
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function HomePageContent() {
@@ -151,7 +204,7 @@ export function HomePageContent() {
       <Navbar />
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <section className="relative flex min-h-[95vh] flex-col items-center justify-center overflow-hidden px-4 text-center">
+      <section className="relative flex min-h-[90svh] flex-col items-center justify-center overflow-hidden px-4 text-center sm:min-h-[95vh]">
         {/* Background — Next.js Image : WebP/AVIF auto + preload LCP */}
         <Image
           src="/background_image_1.jpg"
@@ -204,22 +257,21 @@ export function HomePageContent() {
               alt="Logo C.E.C.J."
               width={160}
               height={160}
-              className="h-32 w-auto object-contain drop-shadow-2xl"
+              className="h-24 w-auto object-contain drop-shadow-2xl sm:h-32"
               priority
             />
           </motion.div>
 
           <motion.h1
             variants={fadeUp}
-            className="text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl"
+            className="text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl lg:text-6xl"
           >
-            Bienvenue au Camp de Jésus Bel-Air
+            Bienvenue au Camp de Jésus Bel-Air Fizi
           </motion.h1>
 
-          <motion.p variants={fadeUp} className="max-w-2xl text-lg text-white/80 leading-relaxed">
-            Une communauté chrétienne fondée sur la saine doctrine du Seigneur Jésus-Christ,
-            engagée dans la formation des disciples, la transformation des vies
-            et la manifestation de l'amour de Dieu.
+          <motion.p variants={fadeUp} className="max-w-2xl text-base text-white/80 leading-relaxed sm:text-lg">
+            Une église ayant pour fondement la saine doctrine du Seigneur Jésus-Christ —
+            une communauté qui forme, transforme, aime et vit par la foi.
           </motion.p>
 
           <motion.p variants={fadeUp} className="text-base italic text-white/60">
@@ -227,22 +279,22 @@ export function HomePageContent() {
             <span className="ml-2 not-italic text-sm text-cecj-gold/80">— Colossiens 1:27</span>
           </motion.p>
 
-          <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4 mt-2">
+          <motion.div variants={fadeUp} className="mt-2 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
             <Link
               href={SITE_ROUTES.presentation}
-              className="rounded-md bg-white px-5 py-2 text-sm font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95"
+              className="w-full rounded-md bg-white px-5 py-3 text-center text-sm font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95 sm:w-auto"
             >
               Découvrir l'Église
             </Link>
             <Link
               href={SITE_ROUTES.extensions}
-              className="rounded-md border border-white/60 px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:scale-[1.02] active:scale-95"
+              className="w-full rounded-md border border-white/60 px-5 py-3 text-center text-sm font-semibold text-white transition-all hover:bg-white/10 hover:scale-[1.02] active:scale-95 sm:w-auto"
             >
               Trouver une Extension
             </Link>
             <Link
               href={SITE_ROUTES.contact}
-              className="rounded-md border border-white/30 px-5 py-2 text-sm font-semibold text-white/80 transition-all hover:bg-white/10 hover:text-white hover:scale-[1.02] active:scale-95"
+              className="w-full rounded-md border border-white/30 px-5 py-3 text-center text-sm font-semibold text-white/80 transition-all hover:bg-white/10 hover:text-white hover:scale-[1.02] active:scale-95 sm:w-auto"
             >
               Nous Contacter
             </Link>
@@ -261,14 +313,40 @@ export function HomePageContent() {
         </motion.div>
       </section>
 
+      {/* ── Chiffres clés ────────────────────────────────────────────────── */}
+      <section className="bg-cecj-green px-4 py-10 sm:py-12">
+        <motion.div
+          className="mx-auto grid max-w-4xl grid-cols-2 gap-8 text-center sm:grid-cols-4"
+          variants={stagger}
+          {...inView()}
+        >
+          {[
+            { to: 50,   suffix: "+", label: "Églises ouvertes",   count: true  },
+            { to: 2000, suffix: "+", label: "Fidèles",            count: true  },
+            { to: 4,    suffix: "+", label: "Départements",       count: true  },
+            { to: 2016, suffix: "",  label: "Année de fondation", count: false },
+          ].map((stat) => (
+            <motion.div key={stat.label} variants={fadeUp}>
+              <p className="text-3xl font-bold text-cecj-gold sm:text-4xl">
+                {stat.count
+                  ? <CountUp to={stat.to} suffix={stat.suffix} />
+                  : `${stat.to}${stat.suffix}`
+                }
+              </p>
+              <p className="mt-1 text-sm text-white/70">{stat.label}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
       {/* ── Notre Vision ─────────────────────────────────────────────────── */}
-      <section className="bg-white px-4 py-20">
+      <section className="bg-white px-4 py-14 sm:py-20">
         <motion.div className="mx-auto max-w-4xl text-center" variants={stagger} {...inView()}>
           <motion.h2 variants={fadeUp} className="mb-4 text-3xl font-bold text-cecj-green">
             Notre Vision
           </motion.h2>
           <motion.div variants={stagger} className="mb-8 flex flex-wrap justify-center gap-3">
-            {["Formation", "Transformation", "Foi", "Amour"].map((pilier) => (
+            {["Parole", "Prière", "Formation", "Mission"].map((pilier) => (
               <motion.span
                 key={pilier}
                 variants={scaleUp}
@@ -278,10 +356,10 @@ export function HomePageContent() {
               </motion.span>
             ))}
           </motion.div>
-          <motion.p variants={fadeUp} className="text-lg text-gray-600 leading-relaxed max-w-3xl mx-auto">
-            Nous croyons que l'Église est appelée à former des disciples matures,
-            à transformer les vies par la puissance de l'Évangile, à développer une foi
-            authentique et à manifester l'amour de Dieu dans toutes les sphères de la société.
+          <motion.p variants={fadeUp} className="text-base text-gray-600 leading-relaxed max-w-3xl mx-auto sm:text-lg">
+            Former une génération de disciples profondément enracinés dans la Parole de Dieu,
+            fervents dans la prière et engagés à vivre et annoncer fidèlement la doctrine
+            de Jésus-Christ à toutes les nations.
           </motion.p>
           <motion.div variants={fadeUp}>
             <Link
@@ -294,8 +372,69 @@ export function HomePageContent() {
         </motion.div>
       </section>
 
+      {/* ── Notre Mission ────────────────────────────────────────────────── */}
+      <section className="bg-cecj-green px-4 py-14 sm:py-20">
+        <div className="mx-auto max-w-4xl">
+          <motion.div className="mb-10 text-center" variants={stagger} {...inView()}>
+            <motion.span
+              variants={fadeUp}
+              className="mb-3 inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white/70"
+            >
+              Notre Mission
+            </motion.span>
+            <motion.h2 variants={fadeUp} className="text-3xl font-bold text-white">
+              Ce que nous faisons
+            </motion.h2>
+            <motion.div
+              variants={fadeUp}
+              className="mx-auto mt-4 h-px w-16"
+              style={{ background: "rgba(255,203,50,0.4)" }}
+            />
+          </motion.div>
+
+          <motion.ol
+            className="flex flex-col gap-5"
+            variants={staggerSlow}
+            {...inView("-40px")}
+          >
+            {[
+              "Enseigner abondamment la doctrine de Jésus",
+              "Amener chaque enfant de Dieu à une lecture quotidienne et constante de la Bible",
+              "Développer une culture de prière intense et constante",
+              "Former des disciples spirituellement matures",
+              "Envoyer les disciples évangéliser et implanter des églises",
+            ].map((item, i) => (
+              <motion.li
+                key={i}
+                variants={fadeUp}
+                className="flex items-start gap-5 rounded-xl border border-white/8 bg-white/5 px-5 py-4"
+              >
+                <span
+                  className="shrink-0 text-2xl font-bold leading-none sm:text-3xl"
+                  style={{ color: "rgba(255,203,50,0.7)" }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <p className="pt-0.5 text-sm leading-relaxed text-white/85 sm:text-base">
+                  {item}
+                </p>
+              </motion.li>
+            ))}
+          </motion.ol>
+
+          <motion.div variants={fadeUp} {...inView()} className="mt-10 text-center">
+            <Link
+              href={SITE_ROUTES.mission}
+              className="inline-block rounded-md border border-white/40 px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:scale-[1.02]"
+            >
+              En savoir plus sur notre mission →
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Qui Sommes-Nous ? ─────────────────────────────────────────────── */}
-      <section className="bg-cecj-light px-4 py-20">
+      <section className="bg-cecj-light px-4 py-14 sm:py-20">
         <motion.div
           className="mx-auto max-w-6xl grid grid-cols-1 gap-12 md:grid-cols-2 items-center"
           variants={stagger}
@@ -306,15 +445,22 @@ export function HomePageContent() {
               Qui Sommes-Nous ?
             </span>
             <h2 className="mb-6 text-3xl font-bold leading-snug text-cecj-green">
-              Le Camp de Jésus Bel-Air
+              Le Camp de Jésus Bel-Air Fizi
             </h2>
             <p className="mb-4 text-gray-600 leading-relaxed">
-              Le Camp de Jésus Bel-Air est une communauté chrétienne ayant pour fondement
-              la saine doctrine du Seigneur Jésus-Christ.
+              Fondée officiellement le{" "}
+              <strong className="text-cecj-green">13 novembre 2016</strong>, l'Église de
+              Bel-Air Fizi est née à la suite d'une conférence biblique organisée par
+              l'École des Lecteurs de la Bible — débutant comme une simple cellule de
+              prière réunissant deux familles.
             </p>
             <p className="text-gray-600 leading-relaxed">
-              Notre mission est d'annoncer l'Évangile, d'édifier les croyants, de restaurer
-              les familles et de préparer une génération de disciples engagés pour le Royaume de Dieu.
+              Sous la direction de l'
+              <strong className="text-cecj-green">Apôtre Paulin Mambwe</strong>, l'œuvre
+              a crû pour rassembler aujourd'hui plus de{" "}
+              <strong className="text-cecj-green">2 000 fidèles</strong> et contribuer à
+              l'implantation de plus de{" "}
+              <strong className="text-cecj-green">50 églises</strong> en RDC et à l'étranger.
             </p>
             <div className="mt-8 flex gap-4">
               <Link
@@ -334,15 +480,15 @@ export function HomePageContent() {
 
           <motion.div variants={stagger} className="grid grid-cols-2 gap-4">
             {[
-              { label: "Saine Doctrine",   desc: "Fondés sur la Parole de Dieu" },
-              { label: "Formation",        desc: "Des disciples matures dans la foi" },
-              { label: "Restauration",     desc: "Des familles réconciliées" },
-              { label: "Mission mondiale", desc: "Porteurs de l'Évangile partout" },
+              { label: "Fondée en 2016",       desc: "Née d'une conférence biblique à Bel-Air Fizi" },
+              { label: "2 000+ Fidèles",       desc: "Une communauté en constante croissance" },
+              { label: "50+ Églises ouvertes", desc: "Présence en RDC et à l'étranger" },
+              { label: "Saine Doctrine",       desc: "Fondés sur l'enseignement de Jésus-Christ" },
             ].map((item) => (
               <motion.div
                 key={item.label}
                 variants={scaleUp}
-                className="rounded-xl bg-white p-5 shadow-sm border border-cecj-muted"
+                className="rounded-xl bg-white p-4 shadow-sm border border-cecj-muted sm:p-5"
               >
                 <p className="font-semibold text-cecj-green text-sm">{item.label}</p>
                 <p className="mt-1 text-xs text-gray-500">{item.desc}</p>
@@ -353,7 +499,7 @@ export function HomePageContent() {
       </section>
 
       {/* ── Nos Valeurs ──────────────────────────────────────────────────── */}
-      <section className="bg-white px-4 py-20">
+      <section className="bg-white px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <motion.div className="text-center" variants={stagger} {...inView()}>
             <motion.h2 variants={fadeUp} className="mb-2 text-3xl font-bold text-cecj-green">
@@ -364,17 +510,18 @@ export function HomePageContent() {
             </motion.p>
           </motion.div>
           <motion.div
-            className="grid grid-cols-2 gap-4 sm:grid-cols-4"
+            className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
             variants={staggerSlow}
             {...inView("-40px")}
           >
             {valeurs.map((valeur) => (
               <motion.div
-                key={valeur}
+                key={valeur.label}
                 variants={scaleUp}
-                className="group flex items-center justify-center rounded-xl border border-cecj-muted bg-cecj-light px-4 py-6 text-center transition-all hover:border-cecj-green hover:shadow-sm hover:-translate-y-0.5"
+                className="group flex flex-col rounded-xl border border-cecj-muted bg-cecj-light p-4 transition-all hover:border-cecj-green hover:shadow-sm hover:-translate-y-0.5"
               >
-                <p className="text-sm font-semibold text-cecj-green leading-snug">{valeur}</p>
+                <p className="text-sm font-semibold text-cecj-green leading-snug">{valeur.label}</p>
+                <p className="mt-1 text-xs leading-relaxed text-gray-500">{valeur.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -382,7 +529,7 @@ export function HomePageContent() {
       </section>
 
       {/* ── Programme Hebdomadaire ───────────────────────────────────────── */}
-      <section className="bg-cecj-green px-4 py-20">
+      <section className="bg-cecj-green px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <motion.div className="text-center" variants={stagger} {...inView()}>
             <motion.h2 variants={fadeUp} className="mb-2 text-3xl font-bold text-white">
@@ -401,7 +548,7 @@ export function HomePageContent() {
               <motion.div
                 key={item.day}
                 variants={scaleUp}
-                className={`rounded-xl p-8 text-center flex flex-col items-center gap-4 transition-transform hover:-translate-y-1 ${
+                className={`rounded-xl p-5 text-center flex flex-col items-center gap-4 transition-transform hover:-translate-y-1 sm:p-8 ${
                   item.featured
                     ? "bg-white text-cecj-green shadow-xl"
                     : "bg-white/10 text-white border border-white/10"
@@ -427,7 +574,7 @@ export function HomePageContent() {
       </section>
 
       {/* ── Événements à venir ───────────────────────────────────────────── */}
-      <section className="bg-white px-4 py-20">
+      <section className="bg-white px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <motion.div
             className="mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"
@@ -442,7 +589,7 @@ export function HomePageContent() {
             </div>
             <Link
               href={SITE_ROUTES.evenements}
-              className="shrink-0 rounded-md border border-cecj-green px-5 py-2 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white"
+              className="shrink-0 rounded-md border border-cecj-green px-5 py-3 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white"
             >
               Voir tout l'agenda →
             </Link>
@@ -487,7 +634,7 @@ export function HomePageContent() {
       </section>
 
       {/* ── Nos Extensions ───────────────────────────────────────────────── */}
-      <section className="bg-cecj-light px-4 py-20">
+      <section className="bg-cecj-light px-4 py-14 sm:py-20">
         <motion.div className="mx-auto max-w-4xl text-center" variants={stagger} {...inView()}>
           <motion.div variants={fadeUp} className="mb-4 flex justify-center">
             <span className="rounded-full bg-cecj-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cecj-green">
@@ -497,7 +644,7 @@ export function HomePageContent() {
           <motion.h2 variants={fadeUp} className="mb-4 text-3xl font-bold text-cecj-green">
             Nos Extensions
           </motion.h2>
-          <motion.p variants={fadeUp} className="mb-10 text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
+          <motion.p variants={fadeUp} className="mb-10 text-base text-gray-600 leading-relaxed max-w-2xl mx-auto sm:text-lg">
             Découvrez les différentes extensions de la C.E.C.J. à travers le monde
             et trouvez l'assemblée la plus proche de chez vous.
           </motion.p>
@@ -509,7 +656,7 @@ export function HomePageContent() {
           variants={fadeUp}
           {...inView("-40px")}
         >
-          <div className="overflow-hidden rounded-2xl border border-cecj-muted shadow-md" style={{ height: 420 }}>
+          <div className="h-[280px] overflow-hidden rounded-2xl border border-cecj-muted shadow-md sm:h-[380px] md:h-[420px]">
             <ExtensionsMap />
           </div>
           <p className="mt-3 text-center text-xs text-gray-400">
@@ -528,9 +675,9 @@ export function HomePageContent() {
       </section>
 
       {/* ── Témoignages ──────────────────────────────────────────────────── */}
-      <section className="bg-white px-4 py-20">
+      <section className="bg-white px-4 py-14 sm:py-20">
         <motion.div className="mx-auto max-w-4xl" variants={scaleUp} {...inView()}>
-          <div className="rounded-2xl border border-cecj-muted bg-cecj-light p-10 text-center">
+          <div className="rounded-2xl border border-cecj-muted bg-cecj-light p-6 text-center sm:p-10">
             <h2 className="mb-3 text-3xl font-bold text-cecj-green">Dieu agit encore aujourd'hui.</h2>
             <p className="mb-8 text-lg text-gray-600 max-w-xl mx-auto">
               Découvrez comment des vies ont été transformées par la puissance de Jésus-Christ.
@@ -546,7 +693,7 @@ export function HomePageContent() {
       </section>
 
       {/* ── Galerie ──────────────────────────────────────────────────────── */}
-      <section className="bg-cecj-light px-4 py-20">
+      <section className="bg-cecj-light px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <motion.div className="mb-10 text-center" variants={stagger} {...inView()}>
             <motion.h2 variants={fadeUp} className="mb-2 text-3xl font-bold text-cecj-green">
@@ -562,21 +709,8 @@ export function HomePageContent() {
             variants={staggerSlow}
             {...inView("-40px")}
           >
-            {galerieImages.map((img, i) => (
-              <motion.div
-                key={img.src}
-                variants={scaleUp}
-                className="group relative aspect-square overflow-hidden rounded-xl"
-              >
-                <Image
-                  src={img.src}
-                  alt={img.alt}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-                />
-                <div className="absolute inset-0 bg-cecj-green/0 transition-colors duration-300 group-hover:bg-cecj-green/30" />
-              </motion.div>
+            {galerieImages.map((img) => (
+              <GalerieImageCard key={img.src} src={img.src} alt={img.alt} />
             ))}
           </motion.div>
 
@@ -592,7 +726,7 @@ export function HomePageContent() {
       </section>
 
       {/* ── Témoignages ──────────────────────────────────────────────────── */}
-      <section className="bg-white px-4 py-20">
+      <section className="bg-white px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl">
           <motion.div className="mb-12 text-center" variants={stagger} {...inView()}>
             <motion.p variants={fadeUp} className="mb-2 text-sm font-semibold uppercase tracking-widest" style={{ color: "rgba(255,203,50,0.9)" }}>
@@ -652,9 +786,9 @@ export function HomePageContent() {
       </section>
 
       {/* ── Contact Rapide ───────────────────────────────────────────────── */}
-      <section className="bg-cecj-green px-4 py-20 text-center">
+      <section className="bg-cecj-green px-4 py-14 text-center sm:py-20">
         <motion.div className="mx-auto max-w-2xl" variants={stagger} {...inView()}>
-          <motion.h2 variants={fadeUp} className="mb-6 text-3xl font-bold text-white leading-snug">
+          <motion.h2 variants={fadeUp} className="mb-6 text-2xl font-bold text-white leading-snug sm:text-3xl">
             Une question ?<br />
             Besoin de prière ?<br />
             Vous souhaitez nous rendre visite ?

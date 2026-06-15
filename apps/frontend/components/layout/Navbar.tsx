@@ -62,7 +62,7 @@ export function Navbar() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex flex-col gap-1.5 lg:hidden"
+            className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-1.5 lg:hidden"
             aria-label="Menu"
           >
             <span className={cn("block h-0.5 w-6 bg-white transition-transform", menuOpen && "translate-y-2 rotate-45")} />
@@ -82,7 +82,7 @@ export function Navbar() {
                   href={link.href}
                   onClick={() => setMenuOpen(false)}
                   className={cn(
-                    "block rounded px-3 py-2 text-sm font-medium",
+                    "block rounded px-3 py-3 text-sm font-medium",
                     pathname === link.href
                       ? "bg-white/20 text-white"
                       : "text-white/80 hover:text-white",
