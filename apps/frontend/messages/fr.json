@@ -92,8 +92,14 @@
     "marqueeCta": "Trouver une extension →"
   },
   "events": {
-    "title": "Événements à venir",
+    "badge": "Événements",
+    "title": "Nos Événements",
     "subtitle": "Conférences · Séminaires · Veillées · Campagnes · Retraites",
+    "upcomingBadge": "Prochain événement",
+    "pastTitle": "Nos derniers événements",
+    "finishedBadge": "Terminé",
+    "speakerLabel": "Orateur :",
+    "noUpcoming": "Aucun événement à venir pour le moment.",
     "link": "Voir tout l'agenda →"
   },
   "extensions": {

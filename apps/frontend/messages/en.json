@@ -92,8 +92,14 @@
     "marqueeCta": "Find an extension →"
   },
   "events": {
-    "title": "Upcoming Events",
+    "badge": "Events",
+    "title": "Our Events",
     "subtitle": "Conferences · Seminars · Prayer Vigils · Campaigns · Retreats",
+    "upcomingBadge": "Upcoming event",
+    "pastTitle": "Our latest events",
+    "finishedBadge": "Past",
+    "speakerLabel": "Speaker:",
+    "noUpcoming": "No upcoming events at the moment.",
     "link": "View full calendar →"
   },
   "extensions": {

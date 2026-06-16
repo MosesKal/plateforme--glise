@@ -13,6 +13,7 @@ import { fadeUp, fadeIn, stagger, staggerSlow, scaleUp, inView } from "@/lib/mot
 import { useI18n } from "@/components/providers/I18nProvider"
 import { TestimonialsMarquee } from "./TestimonialsMarquee"
 import { WeeklyProgramSection } from "./WeeklyProgramSection"
+import { EventsSection } from "./EventsSection"
 
 const ExtensionsMap = dynamic(
   () => import("./ExtensionsMap").then((m) => m.ExtensionsMap),
@@ -25,33 +26,6 @@ const ExtensionsMap = dynamic(
 )
 
 // ── Static data (placeholder — à remplacer par API) ───────────────────────────
-
-const upcomingEvents = [
-  {
-    id: 1,
-    date: "Mar. 10 Juin 2026",
-    type: "Étude Biblique",
-    title: "Étude de la Parole — Épître aux Romains",
-    location: "Camp de Jésus Bel-Air",
-    time: "19h00",
-  },
-  {
-    id: 2,
-    date: "Sam. 21 Juin 2026",
-    type: "Conférence",
-    title: "Conférence : Marcher dans la Foi",
-    location: "Camp de Jésus Bel-Air",
-    time: "15h00",
-  },
-  {
-    id: 3,
-    date: "Dim. 29 Juin 2026",
-    type: "Campagne d'évangélisation",
-    title: "Sortie d'évangélisation en ville",
-    location: "Rendez-vous au camp",
-    time: "08h30",
-  },
-]
 
 const galerieImages = [
   "/image_1.jpg", "/image_2.jpg", "/image_3.jpg", "/image_4.jpg", "/image_5.jpg",
@@ -237,6 +211,9 @@ export function HomePageContent() {
       {/* ── Programme Hebdomadaire ───────────────────────────────────────── */}
       <WeeklyProgramSection />
 
+      {/* ── Événements ───────────────────────────────────────────────────── */}
+      <EventsSection />
+
       {/* ── Notre Vision ─────────────────────────────────────────────────── */}
       <section className="bg-cecj-green px-4 py-14 sm:py-20">
         <motion.div className="mx-auto max-w-4xl text-center" variants={stagger} {...inView()}>
@@ -396,64 +373,6 @@ export function HomePageContent() {
               >
                 <p className="text-sm font-semibold text-cecj-green leading-snug">{valeur.label}</p>
                 <p className="mt-1 text-xs leading-relaxed text-cecj-ink-faint">{valeur.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Événements à venir ───────────────────────────────────────────── */}
-      <section className="bg-cecj-page px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <motion.div
-            className="mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"
-            variants={fadeUp}
-            {...inView()}
-          >
-            <div>
-              <h2 className="text-3xl font-bold text-cecj-green">{t("events.title")}</h2>
-              <p className="mt-1 text-cecj-ink-faint">{t("events.subtitle")}</p>
-            </div>
-            <Link
-              href={lp(SITE_ROUTES.evenements)}
-              className="shrink-0 rounded-md border border-cecj-green px-5 py-3 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white"
-            >
-              {t("events.link")}
-            </Link>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-1 gap-5 md:grid-cols-3"
-            variants={stagger}
-            {...inView("-40px")}
-          >
-            {upcomingEvents.map((event) => (
-              <motion.div
-                key={event.id}
-                variants={scaleUp}
-                className="group flex flex-col overflow-hidden rounded-xl border border-cecj-rule bg-cecj-tint transition-all hover:shadow-md hover:-translate-y-0.5"
-              >
-                <div className="bg-cecj-green px-5 py-3 flex items-center justify-between">
-                  <span className="text-sm font-semibold text-white">{event.date}</span>
-                  <span className="rounded-full bg-white/10 px-2.5 py-0.5 text-xs text-white/80">
-                    {event.time}
-                  </span>
-                </div>
-                <div className="flex flex-1 flex-col p-5">
-                  <span className="mb-2 text-xs font-semibold uppercase tracking-wider text-cecj-green/60">
-                    {event.type}
-                  </span>
-                  <h3 className="mb-3 text-base font-bold leading-snug text-cecj-green group-hover:underline">
-                    {event.title}
-                  </h3>
-                  <div className="mt-auto flex items-center gap-1.5 text-sm text-cecj-ink-faint">
-                    <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                    </svg>
-                    {event.location}
-                  </div>
-                </div>
               </motion.div>
             ))}
           </motion.div>
