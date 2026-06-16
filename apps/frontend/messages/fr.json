@@ -82,15 +82,14 @@
       { "label": "Mission globale",               "desc": "L'Église appelée à impacter les nations" }
     ]
   },
-  "programme": {
-    "title": "Programme Hebdomadaire",
-    "subtitle": "Rejoignez-nous chaque semaine",
-    "badge": "Culte principal",
-    "items": [
-      { "day": "Mardi",    "title": "Étude Biblique",         "featured": false },
-      { "day": "Jeudi",    "title": "Intercession et Prière",  "featured": false },
-      { "day": "Dimanche", "title": "Grand Culte d'Adoration", "featured": true  }
-    ]
+  "weeklyProgram": {
+    "title": "Ma Semaine au Camp de Jésus-Christ",
+    "daysLabel": "Jours concernés",
+    "todayBadge": "Aujourd'hui",
+    "liveOnYoutube": "En direct sur YouTube",
+    "facebookPhotosNote": "Photos disponibles après le culte sur la page Facebook",
+    "marqueeTitle": "L'ambiance de nos cultes",
+    "marqueeCta": "Trouver une extension →"
   },
   "events": {
     "title": "Événements à venir",
@@ -181,11 +180,17 @@
     "rights": "Tous droits réservés.",
     "nav_title": "Navigation",
     "community_title": "Communauté",
-    "contact_title": "Contact"
-  },
-  "theme": {
-    "light": "Passer en mode clair",
-    "dark": "Passer en mode sombre"
+    "contact_title": "Contact",
+    "callUs": "Nous appeler",
+    "addressLabel": "Notre adresse",
+    "viewMap": "Voir l'itinéraire",
+    "followUs": "Suivez-nous",
+    "ariaFacebook": "Notre page Facebook",
+    "ariaInstagram": "Notre compte Instagram",
+    "ariaTiktok": "Notre compte TikTok",
+    "ariaYoutube": "Notre chaîne YouTube",
+    "ariaWhatsapp": "Notre chaîne WhatsApp",
+    "facebookComingSoon": "Lien à venir"
   },
   "lang": {
     "fr": "Français",

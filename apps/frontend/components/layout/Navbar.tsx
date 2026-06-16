@@ -6,7 +6,6 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { SITE_ROUTES } from "@/constants/routes"
-import { ThemeToggle } from "@/components/ui/ThemeToggle"
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher"
 import { useI18n } from "@/components/providers/I18nProvider"
 
@@ -67,7 +66,6 @@ export function Navbar() {
         {/* Right controls */}
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
-          <ThemeToggle />
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-1.5 lg:hidden"

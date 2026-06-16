@@ -82,15 +82,14 @@
       { "label": "Global mission",             "desc": "The Church called to impact the nations" }
     ]
   },
-  "programme": {
-    "title": "Weekly Schedule",
-    "subtitle": "Join us every week",
-    "badge": "Main service",
-    "items": [
-      { "day": "Tuesday",  "title": "Bible Study",           "featured": false },
-      { "day": "Thursday", "title": "Intercession & Prayer",  "featured": false },
-      { "day": "Sunday",   "title": "Grand Worship Service",  "featured": true  }
-    ]
+  "weeklyProgram": {
+    "title": "My Week at Camp de Jésus-Christ",
+    "daysLabel": "Days",
+    "todayBadge": "Today",
+    "liveOnYoutube": "Live on YouTube",
+    "facebookPhotosNote": "Photos available after the service on the Facebook page",
+    "marqueeTitle": "The atmosphere of our services",
+    "marqueeCta": "Find an extension →"
   },
   "events": {
     "title": "Upcoming Events",
@@ -181,11 +180,17 @@
     "rights": "All rights reserved.",
     "nav_title": "Navigation",
     "community_title": "Community",
-    "contact_title": "Contact"
-  },
-  "theme": {
-    "light": "Switch to light mode",
-    "dark": "Switch to dark mode"
+    "contact_title": "Contact",
+    "callUs": "Call us",
+    "addressLabel": "Our address",
+    "viewMap": "Get directions",
+    "followUs": "Follow us",
+    "ariaFacebook": "Our Facebook page",
+    "ariaInstagram": "Our Instagram account",
+    "ariaTiktok": "Our TikTok account",
+    "ariaYoutube": "Our YouTube channel",
+    "ariaWhatsapp": "Our WhatsApp channel",
+    "facebookComingSoon": "Link coming soon"
   },
   "lang": {
     "fr": "Français",

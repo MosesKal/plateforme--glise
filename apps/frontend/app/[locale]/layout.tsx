@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
 import { notFound } from "next/navigation"
 import { getDictionary, hasLocale } from "@/lib/i18n"
-import { ThemeProvider } from "@/components/providers/ThemeProvider"
 import { I18nProvider } from "@/components/providers/I18nProvider"
 import "../globals.css"
 
@@ -49,11 +48,9 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${montserrat.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="h-full">
-        <ThemeProvider>
-          <I18nProvider locale={locale} dict={dict}>
-            {children}
-          </I18nProvider>
-        </ThemeProvider>
+        <I18nProvider locale={locale} dict={dict}>
+          {children}
+        </I18nProvider>
       </body>
     </html>
   )

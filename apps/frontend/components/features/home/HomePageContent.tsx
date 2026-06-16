@@ -4,13 +4,15 @@ import { useState, useRef, useEffect } from "react"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, type Variants, useInView } from "framer-motion"
+import { motion, useInView } from "framer-motion"
 import { Navbar } from "@/components/layout/Navbar"
 import { PublicFooter } from "@/components/layout/PublicFooter"
 import { SITE_ROUTES } from "@/constants/routes"
 import { cn } from "@/lib/utils"
+import { fadeUp, fadeIn, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { TestimonialsMarquee } from "./TestimonialsMarquee"
+import { WeeklyProgramSection } from "./WeeklyProgramSection"
 
 const ExtensionsMap = dynamic(
   () => import("./ExtensionsMap").then((m) => m.ExtensionsMap),
@@ -21,37 +23,6 @@ const ExtensionsMap = dynamic(
     ),
   }
 )
-
-// ── Variants ──────────────────────────────────────────────────────────────────
-
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 32 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: [0.16, 1, 0.3, 1] } },
-}
-
-const fadeIn: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.7 } },
-}
-
-const stagger: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.1 } },
-}
-
-const staggerSlow: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.08 } },
-}
-
-const scaleUp: Variants = {
-  hidden: { opacity: 0, scale: 0.92 },
-  visible: { opacity: 1, scale: 1, transition: { duration: 0.55, ease: "easeOut" } },
-}
-
-function inView(margin = "-80px") {
-  return { initial: "hidden", whileInView: "visible", viewport: { once: true, margin } }
-}
 
 // ── Static data (placeholder — à remplacer par API) ───────────────────────────
 
@@ -142,7 +113,6 @@ export function HomePageContent() {
   const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
 
   const valeurs = t("values.items") as Array<{ label: string; desc: string }>
-  const programme = t("programme.items") as Array<{ day: string; title: string; featured: boolean }>
   const temoignages = t("testimonials.items") as Array<{ texte: string; nom: string; role: string; initiales: string }>
   const piliers = t("vision.piliers") as string[]
   const missionItems = t("mission.items") as string[]
@@ -264,10 +234,13 @@ export function HomePageContent() {
         </motion.div>
       </section>
 
+      {/* ── Programme Hebdomadaire ───────────────────────────────────────── */}
+      <WeeklyProgramSection />
+
       {/* ── Notre Vision ─────────────────────────────────────────────────── */}
-      <section className="bg-cecj-page px-4 py-14 sm:py-20">
+      <section className="bg-cecj-green px-4 py-14 sm:py-20">
         <motion.div className="mx-auto max-w-4xl text-center" variants={stagger} {...inView()}>
-          <motion.h2 variants={fadeUp} className="mb-4 text-3xl font-bold text-cecj-green">
+          <motion.h2 variants={fadeUp} className="mb-4 text-3xl font-bold text-white">
             {t("vision.title")}
           </motion.h2>
           <motion.div variants={stagger} className="mb-8 flex flex-wrap justify-center gap-3">
@@ -275,19 +248,19 @@ export function HomePageContent() {
               <motion.span
                 key={pilier}
                 variants={scaleUp}
-                className="rounded-full border border-cecj-gold/50 bg-cecj-gold/8 px-5 py-1.5 text-sm font-semibold text-cecj-green"
+                className="rounded-full border border-cecj-gold/40 bg-white/10 px-5 py-1.5 text-sm font-semibold text-white"
               >
                 {pilier}
               </motion.span>
             ))}
           </motion.div>
-          <motion.p variants={fadeUp} className="text-base text-cecj-ink leading-relaxed max-w-3xl mx-auto sm:text-lg">
+          <motion.p variants={fadeUp} className="text-base text-white/80 leading-relaxed max-w-3xl mx-auto sm:text-lg">
             {t("vision.body")}
           </motion.p>
           <motion.div variants={fadeUp}>
             <Link
               href={lp(SITE_ROUTES.vision)}
-              className="mt-8 inline-block text-sm font-semibold text-cecj-green underline-offset-4 hover:underline"
+              className="mt-8 inline-block text-sm font-semibold text-white underline-offset-4 hover:underline"
             >
               {t("vision.link")}
             </Link>
@@ -296,22 +269,21 @@ export function HomePageContent() {
       </section>
 
       {/* ── Notre Mission ────────────────────────────────────────────────── */}
-      <section className="bg-cecj-green px-4 py-14 sm:py-20">
+      <section className="bg-cecj-page px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <motion.div className="mb-10 text-center" variants={stagger} {...inView()}>
             <motion.span
               variants={fadeUp}
-              className="mb-3 inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white/70"
+              className="mb-3 inline-block rounded-full bg-cecj-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cecj-green"
             >
               {t("mission.badge")}
             </motion.span>
-            <motion.h2 variants={fadeUp} className="text-3xl font-bold text-white">
+            <motion.h2 variants={fadeUp} className="text-3xl font-bold text-cecj-green">
               {t("mission.title")}
             </motion.h2>
             <motion.div
               variants={fadeUp}
-              className="mx-auto mt-4 h-px w-16"
-              style={{ background: "rgba(255,203,50,0.4)" }}
+              className="mx-auto mt-4 h-px w-16 bg-cecj-gold/50"
             />
           </motion.div>
 
@@ -320,15 +292,12 @@ export function HomePageContent() {
               <motion.li
                 key={i}
                 variants={fadeUp}
-                className="flex items-start gap-5 rounded-xl border border-white/8 bg-white/5 px-5 py-4"
+                className="flex items-start gap-5 rounded-xl border border-cecj-rule bg-cecj-tint px-5 py-4"
               >
-                <span
-                  className="shrink-0 text-2xl font-bold leading-none sm:text-3xl"
-                  style={{ color: "rgba(255,203,50,0.7)" }}
-                >
+                <span className="shrink-0 text-2xl font-bold leading-none text-cecj-green/25 sm:text-3xl">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <p className="pt-0.5 text-sm leading-relaxed text-white/85 sm:text-base">{item}</p>
+                <p className="pt-0.5 text-sm leading-relaxed text-cecj-ink sm:text-base">{item}</p>
               </motion.li>
             ))}
           </motion.ol>
@@ -336,7 +305,7 @@ export function HomePageContent() {
           <motion.div variants={fadeUp} {...inView()} className="mt-10 text-center">
             <Link
               href={lp(SITE_ROUTES.mission)}
-              className="inline-block rounded-md border border-white/40 px-8 py-3 text-sm font-semibold text-white transition-all hover:bg-white/10 hover:scale-[1.02]"
+              className="inline-block rounded-md border border-cecj-green px-8 py-3 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02]"
             >
               {t("mission.link")}
             </Link>
@@ -427,51 +396,6 @@ export function HomePageContent() {
               >
                 <p className="text-sm font-semibold text-cecj-green leading-snug">{valeur.label}</p>
                 <p className="mt-1 text-xs leading-relaxed text-cecj-ink-faint">{valeur.desc}</p>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Programme Hebdomadaire ───────────────────────────────────────── */}
-      <section className="bg-cecj-green px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <motion.div className="text-center" variants={stagger} {...inView()}>
-            <motion.h2 variants={fadeUp} className="mb-2 text-3xl font-bold text-white">
-              {t("programme.title")}
-            </motion.h2>
-            <motion.p variants={fadeUp} className="mb-12 text-white/60">
-              {t("programme.subtitle")}
-            </motion.p>
-          </motion.div>
-          <motion.div
-            className="grid grid-cols-1 gap-6 md:grid-cols-3"
-            variants={stagger}
-            {...inView("-40px")}
-          >
-            {programme.map((item) => (
-              <motion.div
-                key={item.day}
-                variants={scaleUp}
-                className={`rounded-xl p-5 text-center flex flex-col items-center gap-4 transition-transform hover:-translate-y-1 sm:p-8 ${
-                  item.featured
-                    ? "bg-white text-cecj-green shadow-xl"
-                    : "bg-white/10 text-white border border-white/10"
-                }`}
-              >
-                <div>
-                  <p className={`text-xs font-semibold uppercase tracking-widest mb-2 ${item.featured ? "text-cecj-green/60" : "text-white/50"}`}>
-                    {item.day}
-                  </p>
-                  <p className={`text-lg font-bold leading-snug ${item.featured ? "text-cecj-green" : "text-white"}`}>
-                    {item.title}
-                  </p>
-                </div>
-                {item.featured && (
-                  <span className="rounded-full border border-cecj-gold/50 bg-cecj-gold/15 px-3 py-1 text-xs font-semibold text-cecj-green">
-                    {t("programme.badge")}
-                  </span>
-                )}
               </motion.div>
             ))}
           </motion.div>

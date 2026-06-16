@@ -1,15 +1,16 @@
 @import "tailwindcss";
 
-/* Dark mode class-based (next-themes adds .dark on <html>) */
+/* Mode sombre désactivé pour l'instant (toggle retiré) — tokens conservés pour réactivation future */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   /* ── Palette de marque ────────────────────────────────────────────── */
-  --color-cecj-green:  #024339;
-  --color-cecj-gold:   #ffcb32;
-  --color-cecj-red:    #fe0107;
-  --color-cecj-light:  #f8f9fa;
-  --color-cecj-muted:  #e9ecef;
+  --color-cecj-green:   #024339;
+  --color-cecj-emerald: #00b894;
+  --color-cecj-gold:    #ffcb32;
+  --color-cecj-red:     #fe0107;
+  --color-cecj-light:   #f8f9fa;
+  --color-cecj-muted:   #e9ecef;
 
   /* ── Tokens sémantiques adaptatifs (light ↔ dark) ─────────────────── */
   --color-cecj-page:       var(--cecj-page);
