@@ -6,26 +6,32 @@ import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
 import { SITE_ROUTES } from "@/constants/routes"
-
-const navLinks = [
-  { label: "Accueil",       href: SITE_ROUTES.accueil },
-  { label: "Présentation",  href: SITE_ROUTES.presentation },
-  { label: "Vision",        href: SITE_ROUTES.vision },
-  { label: "Mission",       href: SITE_ROUTES.mission },
-  { label: "Extensions",    href: SITE_ROUTES.extensions },
-  { label: "Événements",    href: SITE_ROUTES.evenements },
-  { label: "Contact",       href: SITE_ROUTES.contact },
-]
+import { ThemeToggle } from "@/components/ui/ThemeToggle"
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher"
+import { useI18n } from "@/components/providers/I18nProvider"
 
 export function Navbar() {
   const pathname = usePathname()
   const [menuOpen, setMenuOpen] = useState(false)
+  const { locale, t } = useI18n()
+
+  const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
+
+  const navLinks = [
+    { label: t("nav.accueil"),       href: lp(SITE_ROUTES.accueil) },
+    { label: t("nav.presentation"),  href: lp(SITE_ROUTES.presentation) },
+    { label: t("nav.vision"),        href: lp(SITE_ROUTES.vision) },
+    { label: t("nav.mission"),       href: lp(SITE_ROUTES.mission) },
+    { label: t("nav.extensions"),    href: lp(SITE_ROUTES.extensions) },
+    { label: t("nav.evenements"),    href: lp(SITE_ROUTES.evenements) },
+    { label: t("nav.contact"),       href: lp(SITE_ROUTES.contact) },
+  ]
 
   return (
     <header className="sticky top-0 z-50 bg-cecj-green shadow-md">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
         {/* Logo */}
-        <Link href={SITE_ROUTES.accueil} className="flex items-center gap-3">
+        <Link href={lp("/")} className="flex items-center gap-3">
           <Image
             src="/Logo C.E.C.j-BLANC.png"
             alt="Logo C.E.C.J."
@@ -58,8 +64,10 @@ export function Navbar() {
           ))}
         </ul>
 
-        {/* Mobile burger */}
-        <div className="flex items-center gap-3">
+        {/* Right controls */}
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <ThemeToggle />
           <button
             onClick={() => setMenuOpen((v) => !v)}
             className="flex min-h-[44px] min-w-[44px] flex-col items-center justify-center gap-1.5 lg:hidden"

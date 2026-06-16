@@ -1,16 +1,51 @@
 @import "tailwindcss";
 
+/* Dark mode class-based (next-themes adds .dark on <html>) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
-  /* Palette CECJ */
+  /* ── Palette de marque ────────────────────────────────────────────── */
   --color-cecj-green:  #024339;
   --color-cecj-gold:   #ffcb32;
   --color-cecj-red:    #fe0107;
   --color-cecj-light:  #f8f9fa;
   --color-cecj-muted:  #e9ecef;
 
-  /* Typographie */
+  /* ── Tokens sémantiques adaptatifs (light ↔ dark) ─────────────────── */
+  --color-cecj-page:       var(--cecj-page);
+  --color-cecj-tint:       var(--cecj-tint);
+  --color-cecj-panel:      var(--cecj-panel);
+  --color-cecj-rule:       var(--cecj-rule);
+  --color-cecj-ink:        var(--cecj-ink);
+  --color-cecj-ink-faint:  var(--cecj-ink-faint);
+  --color-cecj-ink-dim:    var(--cecj-ink-dim);
+
+  /* ── Typographie ──────────────────────────────────────────────────── */
   --font-sans:        var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-decorative:  var(--font-brittany), cursive;
+}
+
+/* ── Mode clair ───────────────────────────────────────────────────────── */
+:root {
+  --cecj-page:      #ffffff;
+  --cecj-tint:      #f8f9fa;
+  --cecj-panel:     #ffffff;
+  --cecj-rule:      #e9ecef;
+  --cecj-ink:       #374151;
+  --cecj-ink-faint: #6b7280;
+  --cecj-ink-dim:   #9ca3af;
+}
+
+/* ── Mode sombre — palette verte CECJ ────────────────────────────────── */
+/*    Dérivée de #024339, chaque niveau est légèrement plus clair         */
+.dark {
+  --cecj-page:      #060f0d;   /* bg page principal */
+  --cecj-tint:      #0a1a15;   /* bg sections alternées */
+  --cecj-panel:     #0e2219;   /* bg cartes/panels */
+  --cecj-rule:      #1a3d2e;   /* bordures subtiles */
+  --cecj-ink:       #d4e8e0;   /* texte corps */
+  --cecj-ink-faint: #6fa894;   /* texte atténué */
+  --cecj-ink-dim:   #3d7060;   /* texte très discret */
 }
 
 html {
@@ -18,6 +53,6 @@ html {
 }
 
 body {
-  background: #ffffff;
-  color: #171717;
+  background: var(--cecj-page);
+  color: var(--cecj-ink);
 }

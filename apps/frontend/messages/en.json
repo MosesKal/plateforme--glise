@@ -1,0 +1,170 @@
+{
+  "nav": {
+    "accueil": "Home",
+    "presentation": "About",
+    "vision": "Vision",
+    "mission": "Mission",
+    "extensions": "Churches",
+    "evenements": "Events",
+    "galerie": "Gallery",
+    "leadership": "Leadership",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Welcome to Camp de Jésus Bel-Air Fizi",
+    "subtitle": "A church grounded in the sound doctrine of the Lord Jesus Christ — a community that forms, transforms, loves and lives by faith.",
+    "quote": "Christ in us, the hope of glory.",
+    "quoteRef": "Colossians 1:27",
+    "cta_discover": "Discover the Church",
+    "cta_extensions": "Find a Church Near You",
+    "cta_contact": "Contact Us"
+  },
+  "stats": {
+    "churches": "Churches planted",
+    "members": "Members",
+    "departments": "Departments",
+    "founded": "Year founded"
+  },
+  "vision": {
+    "title": "Our Vision",
+    "piliers": ["Word", "Prayer", "Formation", "Mission"],
+    "body": "To form a generation of disciples deeply rooted in the Word of God, fervent in prayer, and committed to faithfully living and proclaiming the doctrine of Jesus Christ to all nations.",
+    "link": "Learn more about our vision →"
+  },
+  "mission": {
+    "badge": "Our Mission",
+    "title": "What we do",
+    "items": [
+      "Teach the doctrine of Jesus abundantly",
+      "Lead every child of God to a daily and consistent reading of the Bible",
+      "Develop a culture of intense and constant prayer",
+      "Form spiritually mature disciples",
+      "Send disciples to evangelize and plant churches"
+    ],
+    "link": "Learn more about our mission →"
+  },
+  "about": {
+    "badge": "Who We Are",
+    "title": "Camp de Jésus Bel-Air Fizi",
+    "p1_prefix": "Officially founded on",
+    "p1_date": "November 13, 2016",
+    "p1_suffix": ", the Bel-Air Fizi Church was born following a biblical conference organized by the School of Bible Readers — starting as a simple prayer cell bringing together two families.",
+    "p2_prefix": "Under the leadership of",
+    "p2_apostle": "Apostle Paulin Mambwe",
+    "p2_mid": ", the work has grown to gather more than",
+    "p2_members": "2,000 members",
+    "p2_mid2": "and has contributed to the planting of more than",
+    "p2_churches": "50 churches",
+    "p2_suffix": "in the DRC and abroad.",
+    "cta_history": "Our story",
+    "cta_mission": "Our mission",
+    "cards": [
+      { "label": "Founded in 2016",      "desc": "Born from a biblical conference in Bel-Air Fizi" },
+      { "label": "2,000+ Members",       "desc": "A community in constant growth" },
+      { "label": "50+ Churches planted", "desc": "Present in the DRC and abroad" },
+      { "label": "Sound Doctrine",       "desc": "Founded on the teaching of Jesus Christ" }
+    ]
+  },
+  "values": {
+    "title": "Our Values",
+    "subtitle": "What guides our every step",
+    "items": [
+      { "label": "Faithfulness to the Word",  "desc": "The Bible is the foundation of the doctrine of Jesus" },
+      { "label": "Abundant teaching",          "desc": "We faithfully transmit the teaching of Jesus" },
+      { "label": "Continuous prayer",          "desc": "Intense personal and collective prayer life" },
+      { "label": "Spiritual discipline",       "desc": "Daily reading of the Bible" },
+      { "label": "Doctrinal purity",           "desc": "The doctrine of Jesus Christ without compromise" },
+      { "label": "Brotherly fellowship",       "desc": "Love, unity and mutual service" },
+      { "label": "Compassion",                 "desc": "Support in social events and life situations" },
+      { "label": "Passion for souls",          "desc": "Proclaiming Jesus Christ with compassion" },
+      { "label": "Multiplication",             "desc": "Training and sending disciples" },
+      { "label": "Excellence in service",      "desc": "Serving God with diligence" },
+      { "label": "Global mission",             "desc": "The Church called to impact the nations" }
+    ]
+  },
+  "programme": {
+    "title": "Weekly Schedule",
+    "subtitle": "Join us every week",
+    "badge": "Main service",
+    "items": [
+      { "day": "Tuesday",  "title": "Bible Study",           "featured": false },
+      { "day": "Thursday", "title": "Intercession & Prayer",  "featured": false },
+      { "day": "Sunday",   "title": "Grand Worship Service",  "featured": true  }
+    ]
+  },
+  "events": {
+    "title": "Upcoming Events",
+    "subtitle": "Conferences · Seminars · Prayer Vigils · Campaigns · Retreats",
+    "link": "View full calendar →"
+  },
+  "extensions": {
+    "badge": "International presence",
+    "title": "Our Churches",
+    "body": "Discover the different extensions of C.E.C.J. around the world and find the assembly closest to you.",
+    "mapCaption": "Map progressively enriched as extensions grow — click a marker for more information.",
+    "link": "View all churches →"
+  },
+  "testimonialsCta": {
+    "title": "God is still at work today.",
+    "body": "Discover how lives have been transformed by the power of Jesus Christ.",
+    "link": "Read testimonials"
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Relive the memorable moments of our community",
+    "link": "View gallery →",
+    "imageAlt": "Community life"
+  },
+  "testimonials": {
+    "pretitle": "What our community says",
+    "title": "Testimonials",
+    "items": [
+      {
+        "texte": "Since joining this community, my life has been transformed. The Word of God is taught with clarity and depth. I truly feel at home here.",
+        "nom": "Marie-Claire K.",
+        "role": "Member for 3 years",
+        "initiales": "MK"
+      },
+      {
+        "texte": "I found a sincere spiritual family here. The moments of prayer and intercession helped me go through difficult trials with the strength of God.",
+        "nom": "Jean-Paul M.",
+        "role": "Member for 5 years",
+        "initiales": "JM"
+      },
+      {
+        "texte": "Camp de Jésus Bel-Air helped me grow in my faith. The teachings are practical, rooted in the Bible and applicable to daily life.",
+        "nom": "Esther N.",
+        "role": "Member for 2 years",
+        "initiales": "EN"
+      },
+      {
+        "texte": "God healed me here — not just physically, but inwardly. This church truly believes in the power of the Holy Spirit and it shows.",
+        "nom": "Samuel B.",
+        "role": "Member for 4 years",
+        "initiales": "SB"
+      }
+    ]
+  },
+  "contactSection": {
+    "line1": "A question?",
+    "line2": "Need prayer?",
+    "line3": "Would you like to visit us?",
+    "subtitle": "We would be happy to welcome you.",
+    "link": "Contact us"
+  },
+  "footer": {
+    "tagline": "Community of the Church Camps of Jesus Christ",
+    "rights": "All rights reserved.",
+    "nav_title": "Navigation",
+    "community_title": "Community",
+    "contact_title": "Contact"
+  },
+  "theme": {
+    "light": "Switch to light mode",
+    "dark": "Switch to dark mode"
+  },
+  "lang": {
+    "fr": "Français",
+    "en": "English"
+  }
+}

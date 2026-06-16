@@ -1,0 +1,170 @@
+{
+  "nav": {
+    "accueil": "Accueil",
+    "presentation": "Présentation",
+    "vision": "Vision",
+    "mission": "Mission",
+    "extensions": "Extensions",
+    "evenements": "Événements",
+    "galerie": "Galerie",
+    "leadership": "Leadership",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Bienvenue au Camp de Jésus Bel-Air Fizi",
+    "subtitle": "Une église ayant pour fondement la saine doctrine du Seigneur Jésus-Christ — une communauté qui forme, transforme, aime et vit par la foi.",
+    "quote": "Christ en nous, l'espérance de la gloire.",
+    "quoteRef": "Colossiens 1:27",
+    "cta_discover": "Découvrir l'Église",
+    "cta_extensions": "Trouver une Extension",
+    "cta_contact": "Nous Contacter"
+  },
+  "stats": {
+    "churches": "Églises ouvertes",
+    "members": "Fidèles",
+    "departments": "Départements",
+    "founded": "Année de fondation"
+  },
+  "vision": {
+    "title": "Notre Vision",
+    "piliers": ["Parole", "Prière", "Formation", "Mission"],
+    "body": "Former une génération de disciples profondément enracinés dans la Parole de Dieu, fervents dans la prière et engagés à vivre et annoncer fidèlement la doctrine de Jésus-Christ à toutes les nations.",
+    "link": "En savoir plus sur notre vision →"
+  },
+  "mission": {
+    "badge": "Notre Mission",
+    "title": "Ce que nous faisons",
+    "items": [
+      "Enseigner abondamment la doctrine de Jésus",
+      "Amener chaque enfant de Dieu à une lecture quotidienne et constante de la Bible",
+      "Développer une culture de prière intense et constante",
+      "Former des disciples spirituellement matures",
+      "Envoyer les disciples évangéliser et implanter des églises"
+    ],
+    "link": "En savoir plus sur notre mission →"
+  },
+  "about": {
+    "badge": "Qui Sommes-Nous ?",
+    "title": "Le Camp de Jésus Bel-Air Fizi",
+    "p1_prefix": "Fondée officiellement le",
+    "p1_date": "13 novembre 2016",
+    "p1_suffix": ", l'Église de Bel-Air Fizi est née à la suite d'une conférence biblique organisée par l'École des Lecteurs de la Bible — débutant comme une simple cellule de prière réunissant deux familles.",
+    "p2_prefix": "Sous la direction de l'",
+    "p2_apostle": "Apôtre Paulin Mambwe",
+    "p2_mid": ", l'œuvre a crû pour rassembler aujourd'hui plus de",
+    "p2_members": "2 000 fidèles",
+    "p2_mid2": "et contribuer à l'implantation de plus de",
+    "p2_churches": "50 églises",
+    "p2_suffix": "en RDC et à l'étranger.",
+    "cta_history": "Notre histoire",
+    "cta_mission": "Notre mission",
+    "cards": [
+      { "label": "Fondée en 2016",       "desc": "Née d'une conférence biblique à Bel-Air Fizi" },
+      { "label": "2 000+ Fidèles",       "desc": "Une communauté en constante croissance" },
+      { "label": "50+ Églises ouvertes", "desc": "Présence en RDC et à l'étranger" },
+      { "label": "Saine Doctrine",       "desc": "Fondés sur l'enseignement de Jésus-Christ" }
+    ]
+  },
+  "values": {
+    "title": "Nos Valeurs",
+    "subtitle": "Ce qui guide chacun de nos pas",
+    "items": [
+      { "label": "Fidélité à la parole",          "desc": "La Bible est la fondation de la doctrine de Jésus" },
+      { "label": "Abondance dans l'enseignement", "desc": "Nous transmettons fidèlement l'enseignement de Jésus" },
+      { "label": "Prière continue",               "desc": "Vie de prière personnelle et collective intense" },
+      { "label": "Discipline spirituelle",        "desc": "Lecture quotidienne de la Bible" },
+      { "label": "Pureté doctrinale",             "desc": "Doctrine de Jésus-Christ sans compromis" },
+      { "label": "Communion fraternelle",         "desc": "Amour, unité et service mutuel" },
+      { "label": "Compassion",                    "desc": "Accompagnement dans les événements sociaux" },
+      { "label": "Passion pour les âmes",         "desc": "Annonce de Jésus-Christ avec compassion" },
+      { "label": "Multiplication",                "desc": "Former et envoyer des disciples" },
+      { "label": "Excellence dans le service",    "desc": "Servir Dieu avec diligence" },
+      { "label": "Mission globale",               "desc": "L'Église appelée à impacter les nations" }
+    ]
+  },
+  "programme": {
+    "title": "Programme Hebdomadaire",
+    "subtitle": "Rejoignez-nous chaque semaine",
+    "badge": "Culte principal",
+    "items": [
+      { "day": "Mardi",    "title": "Étude Biblique",         "featured": false },
+      { "day": "Jeudi",    "title": "Intercession et Prière",  "featured": false },
+      { "day": "Dimanche", "title": "Grand Culte d'Adoration", "featured": true  }
+    ]
+  },
+  "events": {
+    "title": "Événements à venir",
+    "subtitle": "Conférences · Séminaires · Veillées · Campagnes · Retraites",
+    "link": "Voir tout l'agenda →"
+  },
+  "extensions": {
+    "badge": "Présence internationale",
+    "title": "Nos Extensions",
+    "body": "Découvrez les différentes extensions de la C.E.C.J. à travers le monde et trouvez l'assemblée la plus proche de chez vous.",
+    "mapCaption": "Carte enrichie progressivement au fil des extensions — cliquez sur un marqueur pour plus d'informations.",
+    "link": "Voir toutes les extensions →"
+  },
+  "testimonialsCta": {
+    "title": "Dieu agit encore aujourd'hui.",
+    "body": "Découvrez comment des vies ont été transformées par la puissance de Jésus-Christ.",
+    "link": "Lire les témoignages"
+  },
+  "gallery": {
+    "title": "Galerie",
+    "subtitle": "Revivez les moments marquants de notre communauté",
+    "link": "Voir la galerie →",
+    "imageAlt": "Vie de la communauté"
+  },
+  "testimonials": {
+    "pretitle": "Ce que dit notre communauté",
+    "title": "Témoignages",
+    "items": [
+      {
+        "texte": "Depuis que j'ai rejoint cette communauté, ma vie a été transformée. La Parole de Dieu est enseignée avec clarté et profondeur. Je me sens vraiment chez moi.",
+        "nom": "Marie-Claire K.",
+        "role": "Membre depuis 3 ans",
+        "initiales": "MK"
+      },
+      {
+        "texte": "J'ai trouvé ici une famille spirituelle sincère. Les moments de prière et d'intercession m'ont aidé à traverser des épreuves difficiles avec la force de Dieu.",
+        "nom": "Jean-Paul M.",
+        "role": "Membre depuis 5 ans",
+        "initiales": "JM"
+      },
+      {
+        "texte": "Le Camp de Jésus Bel-Air m'a aidée à grandir dans ma foi. Les enseignements sont pratiques, ancrés dans la Bible et applicables au quotidien.",
+        "nom": "Esther N.",
+        "role": "Membre depuis 2 ans",
+        "initiales": "EN"
+      },
+      {
+        "texte": "Dieu m'a guéri ici — pas seulement physiquement, mais intérieurement. Cette église croit vraiment en la puissance du Saint-Esprit et cela se voit.",
+        "nom": "Samuel B.",
+        "role": "Membre depuis 4 ans",
+        "initiales": "SB"
+      }
+    ]
+  },
+  "contactSection": {
+    "line1": "Une question ?",
+    "line2": "Besoin de prière ?",
+    "line3": "Vous souhaitez nous rendre visite ?",
+    "subtitle": "Nous serons heureux de vous accueillir.",
+    "link": "Nous contacter"
+  },
+  "footer": {
+    "tagline": "Communauté des Eglise Camps de Jésus-Christ",
+    "rights": "Tous droits réservés.",
+    "nav_title": "Navigation",
+    "community_title": "Communauté",
+    "contact_title": "Contact"
+  },
+  "theme": {
+    "light": "Passer en mode clair",
+    "dark": "Passer en mode sombre"
+  },
+  "lang": {
+    "fr": "Français",
+    "en": "English"
+  }
+}

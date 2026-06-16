@@ -1,35 +1,41 @@
+"use client"
+
 import Link from "next/link"
 import Image from "next/image"
 import { SITE_ROUTES } from "@/constants/routes"
-
-const footerLinks = [
-  {
-    title: "Navigation",
-    links: [
-      { label: "Accueil",      href: SITE_ROUTES.accueil },
-      { label: "Présentation", href: SITE_ROUTES.presentation },
-      { label: "Vision",       href: SITE_ROUTES.vision },
-      { label: "Mission",      href: SITE_ROUTES.mission },
-    ],
-  },
-  {
-    title: "Communauté",
-    links: [
-      { label: "Leadership",   href: SITE_ROUTES.leadership },
-      { label: "Extensions",   href: SITE_ROUTES.extensions },
-      { label: "Événements",   href: SITE_ROUTES.evenements },
-      { label: "Galerie",      href: SITE_ROUTES.galerie },
-    ],
-  },
-  {
-    title: "Contact",
-    links: [
-      { label: "Nous contacter", href: SITE_ROUTES.contact },
-    ],
-  },
-]
+import { useI18n } from "@/components/providers/I18nProvider"
 
 export function PublicFooter() {
+  const { locale, t } = useI18n()
+
+  const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
+
+  const footerLinks = [
+    {
+      title: t("footer.nav_title"),
+      links: [
+        { label: t("nav.accueil"),       href: lp(SITE_ROUTES.accueil) },
+        { label: t("nav.presentation"),  href: lp(SITE_ROUTES.presentation) },
+        { label: t("nav.vision"),        href: lp(SITE_ROUTES.vision) },
+        { label: t("nav.mission"),       href: lp(SITE_ROUTES.mission) },
+      ],
+    },
+    {
+      title: t("footer.community_title"),
+      links: [
+        { label: t("nav.extensions"),    href: lp(SITE_ROUTES.extensions) },
+        { label: t("nav.evenements"),    href: lp(SITE_ROUTES.evenements) },
+        { label: t("nav.galerie"),    href: lp(SITE_ROUTES.galerie) },
+      ],
+    },
+    {
+      title: t("footer.contact_title"),
+      links: [
+        { label: t("nav.contact"),       href: lp(SITE_ROUTES.contact) },
+      ],
+    },
+  ]
+
   return (
     <footer className="bg-cecj-green text-white">
       <div className="mx-auto max-w-7xl px-4 py-12 lg:px-8">
@@ -44,7 +50,7 @@ export function PublicFooter() {
               className="h-16 w-auto object-contain"
             />
             <p className="mt-4 text-sm leading-relaxed text-white/70">
-              Communauté des Eglise Camps de Jésus-Christ
+              {t("footer.tagline")}
             </p>
           </div>
 
@@ -71,7 +77,7 @@ export function PublicFooter() {
         </div>
 
         <div className="mt-10 border-t border-white/10 pt-6 flex flex-col items-center justify-between gap-2 text-xs text-white/40 sm:flex-row">
-          <span>© {new Date().getFullYear()} C.E.C.J. — Tous droits réservés.</span>
+          <span>© {new Date().getFullYear()} C.E.C.J. — {t("footer.rights")}</span>
         </div>
       </div>
     </footer>
