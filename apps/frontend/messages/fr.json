@@ -142,6 +142,30 @@
         "nom": "Samuel B.",
         "role": "Membre depuis 4 ans",
         "initiales": "SB"
+      },
+      {
+        "texte": "En tant que jeune, j'ai trouvé un véritable encadrement spirituel ici. Le département jeunesse m'a appris à marcher avec Dieu dès le plus jeune âge.",
+        "nom": "David T.",
+        "role": "Membre depuis 1 an",
+        "initiales": "DT"
+      },
+      {
+        "texte": "Mon mariage traversait une crise profonde. Grâce à l'accompagnement pastoral et à la prière de l'église, nous avons retrouvé l'unité et la paix dans notre foyer.",
+        "nom": "Patrick L.",
+        "role": "Membre depuis 6 ans",
+        "initiales": "PL"
+      },
+      {
+        "texte": "J'étais esclave de l'alcool depuis des années. Le jour où j'ai accepté Christ dans cette église, ma vie a radicalement changé. Aujourd'hui je suis libre.",
+        "nom": "Innocent M.",
+        "role": "Membre depuis 2 ans",
+        "initiales": "IM"
+      },
+      {
+        "texte": "Le chœur de louange m'a permis de découvrir mon don et de servir Dieu avec joie. C'est ici que j'ai compris ma vocation.",
+        "nom": "Grace U.",
+        "role": "Membre depuis 3 ans",
+        "initiales": "GU"
       }
     ]
   },

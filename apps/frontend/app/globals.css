@@ -23,6 +23,14 @@
   /* ── Typographie ──────────────────────────────────────────────────── */
   --font-sans:        var(--font-montserrat), ui-sans-serif, system-ui, sans-serif;
   --font-decorative:  var(--font-brittany), cursive;
+
+  /* ── Animations ───────────────────────────────────────────────────── */
+  --animate-marquee: marquee 30s linear infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
 }
 
 /* ── Mode clair ───────────────────────────────────────────────────────── */
@@ -55,4 +63,8 @@ html {
 body {
   background: var(--cecj-page);
   color: var(--cecj-ink);
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
 }

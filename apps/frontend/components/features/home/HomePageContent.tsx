@@ -10,6 +10,7 @@ import { PublicFooter } from "@/components/layout/PublicFooter"
 import { SITE_ROUTES } from "@/constants/routes"
 import { cn } from "@/lib/utils"
 import { useI18n } from "@/components/providers/I18nProvider"
+import { TestimonialsMarquee } from "./TestimonialsMarquee"
 
 const ExtensionsMap = dynamic(
   () => import("./ExtensionsMap").then((m) => m.ExtensionsMap),
@@ -622,8 +623,8 @@ export function HomePageContent() {
       </section>
 
       {/* ── Témoignages ──────────────────────────────────────────────────── */}
-      <section className="bg-cecj-page px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl">
+      <section className="bg-cecj-page py-14 sm:py-20">
+        <div className="mx-auto max-w-6xl px-4">
           <motion.div className="mb-12 text-center" variants={stagger} {...inView()}>
             <motion.p variants={fadeUp} className="mb-2 text-sm font-semibold uppercase tracking-widest" style={{ color: "rgba(255,203,50,0.9)" }}>
               {t("testimonials.pretitle")}
@@ -633,45 +634,11 @@ export function HomePageContent() {
             </motion.h2>
             <motion.div variants={fadeUp} className="mx-auto mt-4 h-px w-16" style={{ background: "linear-gradient(to right, transparent, #024339, transparent)" }} />
           </motion.div>
-
-          <motion.div
-            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4"
-            variants={staggerSlow}
-            {...inView("-40px")}
-          >
-            {temoignages.map((t_item, i) => (
-              <motion.div
-                key={i}
-                variants={scaleUp}
-                className="group relative flex flex-col rounded-2xl border border-cecj-rule bg-cecj-tint p-6 shadow-sm transition-shadow duration-300 hover:shadow-md"
-              >
-                <div
-                  className="mb-3 font-serif text-6xl leading-none select-none"
-                  style={{ color: "rgba(255,203,50,0.35)", lineHeight: 1 }}
-                  aria-hidden
-                >
-                  &ldquo;
-                </div>
-                <p className="flex-1 text-sm leading-relaxed text-cecj-ink italic">
-                  {t_item.texte}
-                </p>
-                <div className="my-5 h-px w-10" style={{ background: "rgba(255,203,50,0.4)" }} />
-                <div className="flex items-center gap-3">
-                  <div
-                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
-                    style={{ background: "#024339" }}
-                  >
-                    {t_item.initiales}
-                  </div>
-                  <div>
-                    <p className="text-sm font-semibold text-cecj-green">{t_item.nom}</p>
-                    <p className="text-xs text-cecj-ink-dim">{t_item.role}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
         </div>
+
+        <motion.div variants={fadeIn} {...inView("-40px")}>
+          <TestimonialsMarquee items={temoignages} />
+        </motion.div>
       </section>
 
       {/* ── Contact Rapide ───────────────────────────────────────────────── */}
