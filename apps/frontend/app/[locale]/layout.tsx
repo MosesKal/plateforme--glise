@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
 import { notFound } from "next/navigation"
+import NextTopLoader from "nextjs-toploader"
 import { getDictionary, hasLocale } from "@/lib/i18n"
 import { I18nProvider } from "@/components/providers/I18nProvider"
 import "../globals.css"
@@ -48,6 +49,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${montserrat.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="h-full">
+        <NextTopLoader color="#ffcb32" height={3} showSpinner={false} />
         <I18nProvider locale={locale} dict={dict}>
           {children}
         </I18nProvider>

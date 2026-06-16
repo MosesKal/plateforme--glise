@@ -59,11 +59,32 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-color: var(--color-cecj-green) var(--cecj-tint);
+  scrollbar-width: thin;
 }
 
 body {
   background: var(--cecj-page);
   color: var(--cecj-ink);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cecj-tint);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-cecj-green);
+  border-radius: 999px;
+  border: 2px solid var(--cecj-tint);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cecj-gold);
 }
 
 .marquee-track:hover {
