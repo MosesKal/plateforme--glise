@@ -14,6 +14,7 @@ import { useI18n } from "@/components/providers/I18nProvider"
 import { TestimonialsMarquee } from "./TestimonialsMarquee"
 import { WeeklyProgramSection } from "./WeeklyProgramSection"
 import { EventsSection } from "./EventsSection"
+import { GalleryLightbox } from "./GalleryLightbox"
 
 const ExtensionsMap = dynamic(
   () => import("./ExtensionsMap").then((m) => m.ExtensionsMap),
@@ -25,12 +26,9 @@ const ExtensionsMap = dynamic(
   }
 )
 
-// ── Static data (placeholder — à remplacer par API) ───────────────────────────
+const GALLERY_PREVIEW_COUNT = 8
 
-const galerieImages = [
-  "/image_1.jpg", "/image_2.jpg", "/image_3.jpg", "/image_4.jpg", "/image_5.jpg",
-  "/image_6.jpg", "/image_7.jpg", "/image_8.jpg", "/image_9.jpg", "/image_10.jpg",
-]
+// ── Static data (placeholder — à remplacer par API) ───────────────────────────
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -57,10 +55,25 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
   return <span ref={ref}>{current}{suffix}</span>
 }
 
-function GalerieImageCard({ src, alt }: { src: string; alt: string }) {
+function GalerieImageCard({
+  src,
+  alt,
+  onClick,
+  extraCount,
+}: {
+  src: string
+  alt: string
+  onClick: () => void
+  extraCount?: number
+}) {
   const [loaded, setLoaded] = useState(false)
   return (
-    <motion.div variants={scaleUp} className="group relative aspect-square overflow-hidden rounded-xl">
+    <motion.button
+      type="button"
+      onClick={onClick}
+      variants={scaleUp}
+      className="group relative aspect-square overflow-hidden rounded-xl"
+    >
       {!loaded && (
         <div className="absolute inset-0 animate-pulse bg-cecj-green/10" />
       )}
@@ -76,21 +89,29 @@ function GalerieImageCard({ src, alt }: { src: string; alt: string }) {
         onLoad={() => setLoaded(true)}
       />
       <div className="absolute inset-0 bg-cecj-green/0 transition-colors duration-300 group-hover:bg-cecj-green/30" />
-    </motion.div>
+      {!!extraCount && extraCount > 0 && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-lg font-bold text-white">
+          +{extraCount}
+        </div>
+      )}
+    </motion.button>
   )
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function HomePageContent() {
+export function HomePageContent({ galleryImages }: { galleryImages: string[] }) {
   const { locale, t } = useI18n()
   const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
+  const [galleryIndex, setGalleryIndex] = useState<number | null>(null)
 
   const valeurs = t("values.items") as Array<{ label: string; desc: string }>
   const temoignages = t("testimonials.items") as Array<{ texte: string; nom: string; role: string; initiales: string }>
   const piliers = t("vision.piliers") as string[]
   const missionItems = t("mission.items") as string[]
   const aboutCards = t("about.cards") as Array<{ label: string; desc: string }>
+  const galleryPreview = galleryImages.slice(0, GALLERY_PREVIEW_COUNT)
+  const remainingGalleryCount = Math.max(galleryImages.length - GALLERY_PREVIEW_COUNT, 0)
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -249,15 +270,12 @@ export function HomePageContent() {
       <section className="bg-cecj-page px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <motion.div className="mb-10 text-center" variants={stagger} {...inView()}>
-            <motion.span
-              variants={fadeUp}
-              className="mb-3 inline-block rounded-full bg-cecj-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cecj-green"
-            >
-              {t("mission.badge")}
-            </motion.span>
             <motion.h2 variants={fadeUp} className="text-3xl font-bold text-cecj-green">
               {t("mission.title")}
             </motion.h2>
+            <motion.h3 variants={fadeUp} className="mt-2 text-lg font-semibold text-cecj-green/70">
+              {t("mission.subtitle")}
+            </motion.h3>
             <motion.div
               variants={fadeUp}
               className="mx-auto mt-4 h-px w-16 bg-cecj-gold/50"
@@ -445,25 +463,29 @@ export function HomePageContent() {
           </motion.div>
 
           <motion.div
-            className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
+            className="grid grid-cols-2 gap-3 sm:grid-cols-4"
             variants={staggerSlow}
             {...inView("-40px")}
           >
-            {galerieImages.map((src) => (
-              <GalerieImageCard key={src} src={src} alt={t("gallery.imageAlt")} />
+            {galleryPreview.map((src, i) => (
+              <GalerieImageCard
+                key={src}
+                src={src}
+                alt={t("gallery.imageAlt")}
+                onClick={() => setGalleryIndex(i)}
+                extraCount={i === galleryPreview.length - 1 ? remainingGalleryCount : undefined}
+              />
             ))}
-          </motion.div>
-
-          <motion.div variants={fadeUp} {...inView()} className="text-center">
-            <Link
-              href={lp(SITE_ROUTES.galerie)}
-              className="inline-block rounded-md bg-cecj-green px-8 py-3 font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02]"
-            >
-              {t("gallery.link")}
-            </Link>
           </motion.div>
         </div>
       </section>
+
+      <GalleryLightbox
+        images={galleryImages}
+        open={galleryIndex !== null}
+        index={galleryIndex ?? 0}
+        onClose={() => setGalleryIndex(null)}
+      />
 
       {/* ── Témoignages ──────────────────────────────────────────────────── */}
       <section className="bg-cecj-page py-14 sm:py-20">

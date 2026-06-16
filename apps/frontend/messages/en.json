@@ -27,13 +27,13 @@
   },
   "vision": {
     "title": "Our Vision",
-    "piliers": ["Word", "Prayer", "Formation", "Mission"],
+    "piliers": ["Word", "Prayer", "Formation", "Proclamation"],
     "body": "To form a generation of disciples deeply rooted in the Word of God, fervent in prayer, and committed to faithfully living and proclaiming the doctrine of Jesus Christ to all nations.",
     "link": "Learn more about our vision →"
   },
   "mission": {
-    "badge": "Our Mission",
-    "title": "What we do",
+    "title": "Our Mission",
+    "subtitle": "What we do",
     "items": [
       "Teach the doctrine of Jesus abundantly",
       "Lead every child of God to a daily and consistent reading of the Bible",
@@ -77,7 +77,7 @@
       { "label": "Brotherly fellowship",       "desc": "Love, unity and mutual service" },
       { "label": "Compassion",                 "desc": "Support in social events and life situations" },
       { "label": "Passion for souls",          "desc": "Proclaiming Jesus Christ with compassion" },
-      { "label": "Multiplication",             "desc": "Training and sending disciples" },
+      { "label": "Expansion",                  "desc": "Training and sending disciples" },
       { "label": "Excellence in service",      "desc": "Serving God with diligence" },
       { "label": "Global mission",             "desc": "The Church called to impact the nations" }
     ]

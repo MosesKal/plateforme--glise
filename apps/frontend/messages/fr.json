@@ -27,13 +27,13 @@
   },
   "vision": {
     "title": "Notre Vision",
-    "piliers": ["Parole", "Prière", "Formation", "Mission"],
+    "piliers": ["Parole", "Prière", "Formation", "Annonce"],
     "body": "Former une génération de disciples profondément enracinés dans la Parole de Dieu, fervents dans la prière et engagés à vivre et annoncer fidèlement la doctrine de Jésus-Christ à toutes les nations.",
     "link": "En savoir plus sur notre vision →"
   },
   "mission": {
-    "badge": "Notre Mission",
-    "title": "Ce que nous faisons",
+    "title": "Notre Mission",
+    "subtitle": "Ce que nous faisons",
     "items": [
       "Enseigner abondamment la doctrine de Jésus",
       "Amener chaque enfant de Dieu à une lecture quotidienne et constante de la Bible",
@@ -77,7 +77,7 @@
       { "label": "Communion fraternelle",         "desc": "Amour, unité et service mutuel" },
       { "label": "Compassion",                    "desc": "Accompagnement dans les événements sociaux" },
       { "label": "Passion pour les âmes",         "desc": "Annonce de Jésus-Christ avec compassion" },
-      { "label": "Multiplication",                "desc": "Former et envoyer des disciples" },
+      { "label": "Expansion",                      "desc": "Former et envoyer des disciples" },
       { "label": "Excellence dans le service",    "desc": "Servir Dieu avec diligence" },
       { "label": "Mission globale",               "desc": "L'Église appelée à impacter les nations" }
     ]

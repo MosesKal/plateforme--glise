@@ -90,3 +90,11 @@ body {
 .marquee-track:hover {
   animation-play-state: paused;
 }
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

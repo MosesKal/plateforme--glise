@@ -18,11 +18,8 @@ export function Navbar() {
 
   const navLinks = [
     { label: t("nav.accueil"),       href: lp(SITE_ROUTES.accueil) },
-    { label: t("nav.presentation"),  href: lp(SITE_ROUTES.presentation) },
-    { label: t("nav.vision"),        href: lp(SITE_ROUTES.vision) },
-    { label: t("nav.mission"),       href: lp(SITE_ROUTES.mission) },
-    { label: t("nav.extensions"),    href: lp(SITE_ROUTES.extensions) },
     { label: t("nav.evenements"),    href: lp(SITE_ROUTES.evenements) },
+    { label: t("nav.extensions"),    href: lp(SITE_ROUTES.extensions) },
     { label: t("nav.contact"),       href: lp(SITE_ROUTES.contact) },
   ]
 

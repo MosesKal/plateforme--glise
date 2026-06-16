@@ -1,5 +1,6 @@
 "use client"
 
+import { useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
@@ -8,7 +9,7 @@ import { fadeUp, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { SITE_ROUTES } from "@/constants/routes"
 import { CHURCH_EVENTS, isEventUpcoming, type ChurchEvent } from "@/constants/events"
-import { ClockIcon, MapPinIcon } from "@/components/ui/icons"
+import { ClockIcon, MapPinIcon, ChevronLeftIcon, ChevronRightIcon } from "@/components/ui/icons"
 
 function CalendarBadge({ day, month, compact }: { day: string; month: string; compact?: boolean }) {
   return (
@@ -95,17 +96,14 @@ function PastEventCard({ event }: { event: ChurchEvent }) {
   const { t } = useI18n()
 
   return (
-    <motion.div
-      variants={scaleUp}
-      className="group flex flex-col overflow-hidden rounded-xl border border-cecj-rule bg-cecj-page shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
-    >
+    <div className="group flex h-full flex-col overflow-hidden rounded-xl border border-cecj-rule bg-cecj-page shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
       <div className="relative h-36 shrink-0">
         <Image
           src={event.image}
           alt={event.title}
           fill
           className="object-cover grayscale-[35%] transition-all duration-300 group-hover:grayscale-0"
-          sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw"
+          sizes="(max-width: 639px) 80vw, (max-width: 1023px) 50vw, 25vw"
         />
         <div className="absolute inset-0 bg-black/15" />
         <span className="absolute right-2 top-2 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">
@@ -119,7 +117,57 @@ function PastEventCard({ event }: { event: ChurchEvent }) {
           <h4 className="mt-0.5 text-sm font-bold leading-snug text-cecj-green line-clamp-2">{event.title}</h4>
         </div>
       </div>
-    </motion.div>
+    </div>
+  )
+}
+
+function PastEventsCarousel({ events }: { events: ChurchEvent[] }) {
+  const trackRef = useRef<HTMLDivElement>(null)
+
+  const scrollByCard = (direction: 1 | -1) => {
+    const track = trackRef.current
+    if (!track) return
+    const card = track.firstElementChild as HTMLElement | null
+    const amount = (card?.offsetWidth ?? 280) + 16
+    track.scrollBy({ left: direction * amount, behavior: "smooth" })
+  }
+
+  return (
+    <div className="relative">
+      <motion.div
+        ref={trackRef}
+        className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-pl-1 pb-2"
+        variants={staggerSlow}
+        {...inView("-40px")}
+      >
+        {events.map((event) => (
+          <motion.div
+            key={event.id}
+            variants={scaleUp}
+            className="w-[80%] shrink-0 snap-start sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]"
+          >
+            <PastEventCard event={event} />
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <button
+        type="button"
+        onClick={() => scrollByCard(-1)}
+        aria-label="Précédent"
+        className="absolute -left-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-cecj-rule bg-cecj-page text-cecj-green shadow-sm transition-colors hover:bg-cecj-green hover:text-white sm:flex"
+      >
+        <ChevronLeftIcon className="h-4 w-4" />
+      </button>
+      <button
+        type="button"
+        onClick={() => scrollByCard(1)}
+        aria-label="Suivant"
+        className="absolute -right-3 top-1/2 hidden h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-cecj-rule bg-cecj-page text-cecj-green shadow-sm transition-colors hover:bg-cecj-green hover:text-white sm:flex"
+      >
+        <ChevronRightIcon className="h-4 w-4" />
+      </button>
+    </div>
   )
 }
 
@@ -166,15 +214,7 @@ export function EventsSection() {
             >
               {t("events.pastTitle")}
             </motion.p>
-            <motion.div
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
-              variants={staggerSlow}
-              {...inView("-40px")}
-            >
-              {past.map((event) => (
-                <PastEventCard key={event.id} event={event} />
-              ))}
-            </motion.div>
+            <PastEventsCarousel events={past} />
           </div>
         )}
 

@@ -16,7 +16,7 @@ export interface ProgramActivity {
 export const WEEKLY_PROGRAM: ProgramActivity[] = [
   {
     id: "culte-matinal",
-    days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"],
+    days: ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
     title: "Culte Matinal",
     startTime: "06:00",
     endTime: "07:00",
