@@ -288,7 +288,6 @@ export function ExtensionsContent() {
     { key: "all",     label: t("extensionsPage.filter_all") },
     { key: "rdc",     label: CONTINENT_LABELS.rdc[lang]     },
     { key: "afrique", label: CONTINENT_LABELS.afrique[lang] },
-    { key: "europe",  label: CONTINENT_LABELS.europe[lang]  },
   ]
 
   return (
