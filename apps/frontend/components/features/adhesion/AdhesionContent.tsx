@@ -31,9 +31,8 @@ export function AdhesionContent() {
   const { t, locale } = useI18n()
   const lp = (path: string) => `/${locale}${path}`
 
-  const benefits   = t("adhesion.benefits")   as { title: string; desc: string }[]
-  const criterias  = t("adhesion.criteria_items") as string[]
-  const steps      = t("adhesion.steps")      as { num: string; title: string; desc: string }[]
+  const benefits    = t("adhesion.benefits")   as { title: string; desc: string }[]
+  const steps       = t("adhesion.steps")      as { num: string; title: string; desc: string }[]
   const commitments = t("adhesion.commitments") as string[]
 
   const whatsappUrl = CHURCH_INFO.socials.whatsappContact ?? "#"
@@ -107,33 +106,18 @@ export function AdhesionContent() {
         </div>
       </section>
 
-      {/* ── Critères ──────────────────────────────────────────── */}
+      {/* ── Portes ouvertes ───────────────────────────────────── */}
       <section className="bg-cecj-green/5 py-20 md:py-28">
         <div className="mx-auto max-w-6xl px-4 lg:px-8">
-          <motion.div {...inView()} variants={fadeUp} className="mb-12">
+          <motion.div {...inView()} variants={fadeUp}>
             <span className="mb-3 inline-block rounded-full bg-cecj-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cecj-green">
               {t("adhesion.criteria_badge")}
             </span>
             <h2 className="font-decorative text-5xl leading-none text-cecj-green md:text-6xl lg:text-7xl">
               {t("adhesion.criteria_title")}
             </h2>
-            <p className="mt-3 max-w-xl text-gray-500">{t("adhesion.criteria_subtitle")}</p>
+            <p className="mt-4 max-w-xl text-gray-500">{t("adhesion.criteria_subtitle")}</p>
           </motion.div>
-
-          <motion.ul {...inView()} variants={stagger} className="space-y-4">
-            {criterias.map((item, i) => (
-              <motion.li
-                key={i}
-                variants={fadeUp}
-                className="flex items-start gap-4 rounded-2xl border border-white bg-white p-5 shadow-sm"
-              >
-                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cecj-gold/20">
-                  <Icon d={ICONS.heart} className="h-4 w-4 text-cecj-green" />
-                </span>
-                <p className="leading-relaxed text-gray-700">{item}</p>
-              </motion.li>
-            ))}
-          </motion.ul>
         </div>
       </section>
 
