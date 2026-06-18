@@ -128,7 +128,7 @@ export function AdhesionContent() {
                 className="flex items-start gap-4 rounded-2xl border border-white bg-white p-5 shadow-sm"
               >
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cecj-gold/20">
-                  <Icon d={ICONS.check} className="h-4 w-4 text-cecj-green" strokeWidth={3} />
+                  <Icon d={ICONS.heart} className="h-4 w-4 text-cecj-green" />
                 </span>
                 <p className="leading-relaxed text-gray-700">{item}</p>
               </motion.li>

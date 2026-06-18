@@ -294,15 +294,15 @@
       { "title": "Un service actif", "desc": "Participer à la vie de l'église à travers ses départements et ministères." },
       { "title": "Une formation continue", "desc": "Accéder aux enseignements approfondis, séminaires et formations bibliques." }
     ],
-    "criteria_badge": "Critères",
-    "criteria_title": "Qui peut adhérer ?",
-    "criteria_subtitle": "L'adhésion est ouverte à toute personne remplissant les conditions suivantes.",
+    "criteria_badge": "Portes ouvertes",
+    "criteria_title": "Tout le monde est le bienvenu",
+    "criteria_subtitle": "Il n'y a pas de condition particulière pour rejoindre notre famille. La porte est ouverte à tous.",
     "criteria_items": [
-      "Avoir accepté Jésus-Christ comme Seigneur et Sauveur personnel",
-      "Avoir reçu le baptême par immersion",
-      "Fréquenter régulièrement les cultes et activités de l'église",
-      "Adhérer à la doctrine et à la vision de l'Église Camp de Jésus-Christ",
-      "Avoir suivi le cours d'intégration pour les nouveaux membres"
+      "Tu cherches Dieu et veux en apprendre davantage sur Lui — tu as ta place ici",
+      "Tu fais tes premiers pas dans la foi — nous t'accompagnons",
+      "Tu viens d'un autre horizon ou d'une autre église — nous t'accueillons",
+      "Tu traverses une période difficile et cherches une communauté — nous sommes là",
+      "Tu veux grandir spirituellement et servir — rejoins-nous"
     ],
     "steps_badge": "Processus",
     "steps_title": "Comment rejoindre l'église ?",
