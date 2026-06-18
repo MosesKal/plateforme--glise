@@ -18,6 +18,7 @@ export interface ChurchInfo {
     tiktok?: string
     youtube?: string
     whatsappChannel?: string
+    whatsappContact?: string
   }
 }
 
@@ -41,5 +42,6 @@ export const CHURCH_INFO: ChurchInfo = {
     tiktok: "https://www.tiktok.com/@camp_de_jesusbel_air",
     youtube: "https://www.youtube.com/@EgliseleCampdeJésusBel-air",
     whatsappChannel: "https://whatsapp.com/channel/0029VanHIZF3QxRtb86lI61n",
+    whatsappContact: "https://wa.me/243898700596",
   },
 }

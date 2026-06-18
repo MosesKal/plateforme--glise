@@ -84,7 +84,7 @@ export function AProposContent() {
   const valeurs       = t("values.items")   as unknown as { label: string; desc: string }[]
 
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH_INFO.location.fullAddress)}`
-  const whatsappUrl = CHURCH_INFO.socials.whatsappChannel ?? "#"
+  const whatsappUrl = CHURCH_INFO.socials.whatsappContact ?? CHURCH_INFO.socials.whatsappChannel ?? "#"
   const phoneClean = CHURCH_INFO.contact.phone.replace(/\s/g, "")
 
   return (
