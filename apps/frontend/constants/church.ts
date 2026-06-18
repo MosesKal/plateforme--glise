@@ -32,7 +32,7 @@ export const CHURCH_INFO: ChurchInfo = {
     fullAddress: "13 Avenue Bondo, Bel-Air Kilobelobe, Référence Arrêt Fizi, Lubumbashi, RDC",
   },
   contact: {
-    phone: "+243 973 885 444",
+    phone: "+243 898 700 596",
   },
   socials: {
     facebookName: "Église Camp de Jésus Bel-air",
