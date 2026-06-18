@@ -20,7 +20,8 @@ function getYoutubeStatus(activity: ProgramActivity, today: string): "live" | "a
   if (activity.days.includes(today)) return "live"
   const todayIndex = DISPLAY_WEEK_DAYS.indexOf(today)
   const hasPastDay = activity.days.some((d) => DISPLAY_WEEK_DAYS.indexOf(d) < todayIndex)
-  return hasPastDay ? "available" : null
+  if (hasPastDay) return "available"
+  return "upcoming"
 }
 
 function formatHeure(time: string) {
@@ -59,6 +60,15 @@ function VideoAvailableBadge({ label }: { label: string }) {
   )
 }
 
+function UpcomingBadge({ label }: { label: string }) {
+  return (
+    <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-cecj-gold/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-cecj-green/70">
+      <YouTubeIcon className="h-3.5 w-3.5 text-[#FF0000]/60" />
+      {label}
+    </span>
+  )
+}
+
 function ActivityCard({ activity, today }: { activity: ProgramActivity; today: string }) {
   const { t } = useI18n()
   const featured = activity.category === "Adoration"
@@ -76,6 +86,7 @@ function ActivityCard({ activity, today }: { activity: ProgramActivity; today: s
     >
       {youtubeStatus === "live" && <LiveBadge label={t("weeklyProgram.liveOnYoutube")} />}
       {youtubeStatus === "available" && <VideoAvailableBadge label={t("weeklyProgram.videoAvailable")} />}
+      {youtubeStatus === "upcoming" && <UpcomingBadge label={t("weeklyProgram.upcomingLive")} />}
 
       <h3 className={cn("text-lg font-bold leading-snug", featured ? "text-white" : "text-cecj-green")}>
         {activity.title}
