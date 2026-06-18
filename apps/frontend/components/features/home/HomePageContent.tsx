@@ -185,7 +185,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
             </Link>
             <Link
               href={lp(SITE_ROUTES.contact)}
-              className="w-full rounded-md border border-white/30 px-5 py-3 text-center text-sm font-semibold text-white/80 transition-all hover:bg-white/10 hover:text-white hover:scale-[1.02] active:scale-95 sm:w-auto"
+              className="hidden sm:block sm:w-auto rounded-md border border-white/30 px-5 py-3 text-center text-sm font-semibold text-white/80 transition-all hover:bg-white/10 hover:text-white hover:scale-[1.02] active:scale-95"
             >
               {t("hero.cta_contact")}
             </Link>
@@ -227,45 +227,52 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
 
       {/* ── Vision ───────────────────────────────────────────────────────── */}
       <section className="bg-cecj-green px-4 py-14 sm:py-20">
-        <motion.div
-          className="mx-auto max-w-5xl grid items-center gap-12 md:grid-cols-2"
-          variants={stagger}
-          {...inView()}
-        >
-          <motion.div variants={fadeUp} className="space-y-6">
-            <h2 className="font-decorative text-6xl leading-none text-cecj-gold md:text-7xl">
+        <div className="mx-auto max-w-5xl">
+          <motion.div variants={fadeUp} {...inView()} className="mb-8">
+            <h2 className="font-decorative text-4xl leading-none text-cecj-gold md:text-6xl lg:text-7xl">
               {t("apropos.vision_badge")}
             </h2>
-            <p className="text-base text-white/80 leading-relaxed sm:text-lg">
-              {t("vision.body")}
-            </p>
-            <Link
-              href={lp(SITE_ROUTES.apropos) + "#vision"}
-              className="inline-block text-sm font-semibold text-cecj-gold/80 underline-offset-4 hover:underline hover:text-cecj-gold"
-            >
-              {t("vision.link")}
-            </Link>
           </motion.div>
 
-          <motion.div variants={stagger} className="grid grid-cols-2 gap-3">
-            {piliers.map((pilier) => (
-              <motion.div
-                key={pilier}
-                variants={scaleUp}
-                className="flex items-center justify-center rounded-2xl border border-cecj-gold/25 bg-white/8 px-4 py-8 text-center"
+          <motion.div
+            className="grid items-center gap-10 md:grid-cols-2"
+            variants={stagger}
+            {...inView()}
+          >
+            {/* Piliers — premier sur mobile, droite sur desktop */}
+            <motion.div variants={stagger} className="order-1 grid grid-cols-2 gap-3 md:order-2">
+              {piliers.map((pilier) => (
+                <motion.div
+                  key={pilier}
+                  variants={scaleUp}
+                  className="flex items-center justify-center rounded-2xl border border-cecj-gold/25 bg-white/8 px-4 py-8 text-center"
+                >
+                  <p className="font-semibold text-white">{pilier}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {/* Texte — second sur mobile, gauche sur desktop */}
+            <motion.div variants={fadeUp} className="order-2 space-y-5 md:order-1">
+              <p className="text-base text-white/80 leading-relaxed sm:text-lg">
+                {t("vision.body")}
+              </p>
+              <Link
+                href={lp(SITE_ROUTES.apropos) + "#vision"}
+                className="inline-block text-sm font-semibold text-cecj-gold/80 underline-offset-4 hover:underline hover:text-cecj-gold"
               >
-                <p className="font-semibold text-white">{pilier}</p>
-              </motion.div>
-            ))}
+                {t("vision.link")}
+              </Link>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </section>
 
       {/* ── Mission ──────────────────────────────────────────────────────── */}
       <section className="bg-cecj-page px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-4xl">
           <motion.div variants={fadeUp} {...inView()} className="mb-10">
-            <h2 className="font-decorative text-5xl leading-none text-cecj-green md:text-6xl">
+            <h2 className="font-decorative text-4xl leading-none text-cecj-green md:text-5xl lg:text-6xl">
               {t("apropos.mission_badge")}
             </h2>
           </motion.div>
@@ -306,7 +313,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
           {...inView()}
         >
           <motion.div variants={fadeUp} className="space-y-6">
-            <h2 className="font-decorative text-5xl leading-none text-cecj-green md:text-6xl">
+            <h2 className="font-decorative text-3xl leading-none text-cecj-green md:text-5xl lg:text-6xl">
               {t("about.badge")}
             </h2>
             <p className="text-cecj-ink leading-relaxed">
@@ -341,7 +348,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
       <section className="bg-cecj-page px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-5xl">
           <motion.div variants={fadeUp} {...inView()} className="mb-10">
-            <h2 className="font-decorative text-5xl leading-none text-cecj-green md:text-6xl">
+            <h2 className="font-decorative text-4xl leading-none text-cecj-green md:text-5xl lg:text-6xl">
               {t("apropos.valeurs_badge")}
             </h2>
           </motion.div>
