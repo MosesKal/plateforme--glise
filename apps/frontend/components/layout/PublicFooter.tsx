@@ -101,7 +101,7 @@ export function PublicFooter() {
                 </span>
               </li>
               <li>
-                <Link href={lp(SITE_ROUTES.contact)} className="transition-colors hover:text-white">
+                <Link href={lp(SITE_ROUTES.apropos) + "#contact"} className="transition-colors hover:text-white">
                   {t("nav.contact")} →
                 </Link>
               </li>
