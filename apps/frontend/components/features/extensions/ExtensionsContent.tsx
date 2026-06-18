@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useI18n } from "@/components/providers/I18nProvider"
-import { CHURCH_INFO } from "@/constants/church"
 import {
   EXTENSIONS,
   CONTINENT_LABELS,
@@ -13,7 +12,7 @@ import {
   type Extension,
   type Continent,
 } from "@/constants/extensions"
-import { fadeUp, fadeIn, stagger, scaleUp, inView } from "@/lib/motion"
+import { fadeUp, stagger, scaleUp, inView } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
 // ─── Stats ────────────────────────────────────────────────────────────────────
@@ -292,8 +291,6 @@ export function ExtensionsContent() {
     { key: "europe",  label: CONTINENT_LABELS.europe[lang]  },
   ]
 
-  const whatsappUrl = CHURCH_INFO.socials.whatsappContact ?? "#"
-
   return (
     <main className="bg-white">
 
@@ -434,30 +431,6 @@ export function ExtensionsContent() {
         ) : null}
       </div>
 
-      {/* ── CTA rejoindre le réseau ────────────────────────────────── */}
-      <section className="bg-cecj-green py-16 sm:py-20">
-        <motion.div {...inView()} variants={fadeIn} className="mx-auto max-w-3xl px-4 text-center lg:px-8">
-          <motion.span variants={fadeUp} className="mb-4 inline-block rounded-full border border-cecj-gold/40 bg-cecj-gold/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cecj-gold">
-            Réseau C.E.C.J.
-          </motion.span>
-          <motion.h2 variants={fadeUp} className="mb-4 font-decorative text-5xl leading-none text-cecj-gold md:text-6xl">
-            {t("extensionsPage.cta_title")}
-          </motion.h2>
-          <motion.p variants={fadeUp} className="mb-8 text-white/70">
-            {t("extensionsPage.cta_subtitle")}
-          </motion.p>
-          <motion.div variants={fadeUp}>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block rounded-full bg-cecj-gold px-8 py-3 text-sm font-semibold text-cecj-green transition-transform hover:scale-105"
-            >
-              {t("extensionsPage.cta_whatsapp")}
-            </a>
-          </motion.div>
-        </motion.div>
-      </section>
 
     </main>
   )
