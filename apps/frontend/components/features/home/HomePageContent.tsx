@@ -7,6 +7,7 @@ import { motion, useInView } from "framer-motion"
 import { Navbar } from "@/components/layout/Navbar"
 import { PublicFooter } from "@/components/layout/PublicFooter"
 import { SITE_ROUTES } from "@/constants/routes"
+import { CHURCH_INFO } from "@/constants/church"
 import { cn } from "@/lib/utils"
 import { fadeUp, fadeIn, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
@@ -182,26 +183,6 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
             <span className="ml-2 not-italic text-sm text-cecj-gold/80">— {t("hero.quoteRef")}</span>
           </motion.p>
 
-          <motion.div variants={fadeUp} className="mt-2 hidden w-full flex-col gap-3 sm:flex sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
-            <Link
-              href={lp(SITE_ROUTES.presentation)}
-              className="w-full rounded-md bg-white px-5 py-3 text-center text-sm font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95 sm:w-auto"
-            >
-              {t("hero.cta_discover")}
-            </Link>
-            <Link
-              href={lp(SITE_ROUTES.extensions)}
-              className="w-full rounded-md border border-white/60 px-5 py-3 text-center text-sm font-semibold text-white transition-all hover:bg-white/10 hover:scale-[1.02] active:scale-95 sm:w-auto"
-            >
-              {t("hero.cta_extensions")}
-            </Link>
-            <Link
-              href={lp(SITE_ROUTES.contact)}
-              className="hidden sm:block sm:w-auto rounded-md border border-white/30 px-5 py-3 text-center text-sm font-semibold text-white/80 transition-all hover:bg-white/10 hover:text-white hover:scale-[1.02] active:scale-95"
-            >
-              {t("hero.cta_contact")}
-            </Link>
-          </motion.div>
         </motion.div>
       </section>
 
@@ -465,12 +446,14 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
             {t("contactSection.subtitle")}
           </motion.p>
           <motion.div variants={fadeUp}>
-            <Link
-              href={lp(SITE_ROUTES.contact)}
+            <a
+              href={CHURCH_INFO.socials.whatsappContact ?? "#"}
+              target="_blank"
+              rel="noopener noreferrer"
               className="inline-block rounded-md bg-white px-6 py-2.5 text-sm font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02] sm:px-10 sm:py-3 sm:text-base"
             >
               {t("contactSection.link")}
-            </Link>
+            </a>
           </motion.div>
         </motion.div>
       </section>
