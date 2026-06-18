@@ -12,6 +12,7 @@ import { fadeUp, fadeIn, stagger, staggerSlow, scaleUp, inView } from "@/lib/mot
 import { useI18n } from "@/components/providers/I18nProvider"
 import { TestimonialsMarquee } from "./TestimonialsMarquee"
 import { WeeklyProgramSection } from "./WeeklyProgramSection"
+import { AmbianceCultesSection } from "./AmbianceCultesSection"
 import { EventsSection } from "./EventsSection"
 import { GalleryLightbox } from "./GalleryLightbox"
 
@@ -388,6 +389,8 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
         </motion.div>
       </section>
 
+      {/* ── Ambiance de nos cultes ───────────────────────────────────────── */}
+      <AmbianceCultesSection />
 
       {/* ── Galerie ──────────────────────────────────────────────────────── */}
       <section className="bg-cecj-tint px-4 py-14 sm:py-20">

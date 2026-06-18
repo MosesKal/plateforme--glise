@@ -1,15 +1,12 @@
 "use client"
 
 import { motion } from "framer-motion"
-import Link from "next/link"
 import { cn } from "@/lib/utils"
-import { fadeUp, fadeIn, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
+import { fadeUp, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { CHURCH_INFO } from "@/constants/church"
-import { SITE_ROUTES } from "@/constants/routes"
 import { WEEKLY_PROGRAM, type ProgramActivity } from "@/constants/weeklyProgram"
 import { ClockIcon, FacebookIcon, YouTubeIcon } from "@/components/ui/icons"
-import { ProgramPhotosMarquee } from "./ProgramPhotosMarquee"
 
 const FRENCH_WEEKDAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
 const DISPLAY_WEEK_DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
@@ -152,19 +149,6 @@ export function WeeklyProgramSection() {
       <p className="mt-4 text-center text-xs text-cecj-ink-faint sm:hidden">
         + {WEEKLY_PROGRAM.length - 3} autres activités dans la semaine
       </p>
-
-      <motion.div className="mt-10 text-center sm:mt-16" variants={fadeIn} {...inView("-40px")}>
-        <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-cecj-green/70 sm:mb-6">
-          {t("weeklyProgram.marqueeTitle")}
-        </p>
-        <ProgramPhotosMarquee />
-        <Link
-          href={`/${locale}${SITE_ROUTES.extensions}`}
-          className="mt-6 inline-block w-full rounded-md bg-cecj-green px-8 py-3 text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02] sm:mt-8 sm:w-auto"
-        >
-          {t("weeklyProgram.marqueeCta")}
-        </Link>
-      </motion.div>
     </section>
   )
 }
