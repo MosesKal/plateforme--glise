@@ -15,6 +15,14 @@ function getTodayLabel() {
   return FRENCH_WEEKDAYS[new Date().getDay()]
 }
 
+function getYoutubeStatus(activity: ProgramActivity, today: string): "live" | "available" | null {
+  if (!activity.liveOnYoutube) return null
+  if (activity.days.includes(today)) return "live"
+  const todayIndex = DISPLAY_WEEK_DAYS.indexOf(today)
+  const hasPastDay = activity.days.some((d) => DISPLAY_WEEK_DAYS.indexOf(d) < todayIndex)
+  return hasPastDay ? "available" : null
+}
+
 function formatHeure(time: string) {
   return time.replace(":", "h")
 }
@@ -37,9 +45,24 @@ function LiveBadge({ label }: { label: string }) {
   )
 }
 
+function VideoAvailableBadge({ label }: { label: string }) {
+  return (
+    <a
+      href={CHURCH_INFO.socials.youtube}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1.5 self-start rounded-full bg-gray-100 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-gray-500 transition-colors hover:bg-gray-200"
+    >
+      <YouTubeIcon className="h-3.5 w-3.5 text-[#FF0000]" />
+      {label}
+    </a>
+  )
+}
+
 function ActivityCard({ activity, today }: { activity: ProgramActivity; today: string }) {
   const { t } = useI18n()
   const featured = activity.category === "Adoration"
+  const youtubeStatus = getYoutubeStatus(activity, today)
 
   return (
     <motion.li
@@ -51,7 +74,8 @@ function ActivityCard({ activity, today }: { activity: ProgramActivity; today: s
           : "border border-cecj-rule bg-cecj-tint text-cecj-ink",
       )}
     >
-      {activity.liveOnYoutube && <LiveBadge label={t("weeklyProgram.liveOnYoutube")} />}
+      {youtubeStatus === "live" && <LiveBadge label={t("weeklyProgram.liveOnYoutube")} />}
+      {youtubeStatus === "available" && <VideoAvailableBadge label={t("weeklyProgram.videoAvailable")} />}
 
       <h3 className={cn("text-lg font-bold leading-snug", featured ? "text-white" : "text-cecj-green")}>
         {activity.title}
