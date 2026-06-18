@@ -31,9 +31,7 @@ export function AdhesionContent() {
   const { t, locale } = useI18n()
   const lp = (path: string) => `/${locale}${path}`
 
-  const benefits    = t("adhesion.benefits")   as { title: string; desc: string }[]
-  const steps       = t("adhesion.steps")      as { num: string; title: string; desc: string }[]
-  const commitments = t("adhesion.commitments") as string[]
+  const benefits = t("adhesion.benefits") as { title: string; desc: string }[]
 
   const whatsappUrl = CHURCH_INFO.socials.whatsappContact ?? "#"
 
@@ -118,69 +116,6 @@ export function AdhesionContent() {
             </h2>
             <p className="mt-4 max-w-xl text-gray-500">{t("adhesion.criteria_subtitle")}</p>
           </motion.div>
-        </div>
-      </section>
-
-      {/* ── Processus ─────────────────────────────────────────── */}
-      <section className="py-20 md:py-28">
-        <div className="mx-auto max-w-6xl px-4 lg:px-8">
-          <motion.div {...inView()} variants={fadeUp} className="mb-14">
-            <span className="mb-3 inline-block rounded-full bg-cecj-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cecj-green">
-              {t("adhesion.steps_badge")}
-            </span>
-            <h2 className="font-decorative text-5xl leading-none text-cecj-gold md:text-6xl lg:text-7xl">
-              {t("adhesion.steps_title")}
-            </h2>
-          </motion.div>
-
-          <motion.div {...inView()} variants={stagger} className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((step, i) => (
-              <motion.div key={i} variants={fadeUp} className="relative">
-                {/* Ligne de connexion entre les étapes */}
-                {i < steps.length - 1 && (
-                  <div className="absolute left-[calc(50%+2rem)] top-6 hidden h-px w-[calc(100%-2rem)] bg-cecj-gold/20 lg:block" />
-                )}
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cecj-green text-sm font-bold text-cecj-gold">
-                      {step.num}
-                    </span>
-                  </div>
-                  <h3 className="font-semibold text-cecj-green">{step.title}</h3>
-                  <p className="text-sm leading-relaxed text-gray-500">{step.desc}</p>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Engagements ───────────────────────────────────────── */}
-      <section className="bg-cecj-green py-20 md:py-28">
-        <div className="mx-auto max-w-6xl px-4 lg:px-8">
-          <motion.div {...inView()} variants={fadeUp} className="mb-12">
-            <span className="mb-3 inline-block rounded-full border border-cecj-gold/40 bg-cecj-gold/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cecj-gold">
-              {t("adhesion.commitment_badge")}
-            </span>
-            <h2 className="font-decorative text-5xl leading-none text-cecj-gold md:text-6xl lg:text-7xl">
-              {t("adhesion.commitment_title")}
-            </h2>
-          </motion.div>
-
-          <motion.ul {...inView()} variants={stagger} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {commitments.map((item, i) => (
-              <motion.li
-                key={i}
-                variants={fadeUp}
-                className="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-5"
-              >
-                <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-cecj-gold/20">
-                  <Icon d={ICONS.check} className="h-3 w-3 text-cecj-gold" />
-                </span>
-                <p className="text-sm leading-relaxed text-white/80">{item}</p>
-              </motion.li>
-            ))}
-          </motion.ul>
         </div>
       </section>
 
