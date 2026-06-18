@@ -37,7 +37,6 @@ export function AdhesionContent() {
   const commitments = t("adhesion.commitments") as string[]
 
   const whatsappUrl = CHURCH_INFO.socials.whatsappContact ?? "#"
-  const phoneClean  = CHURCH_INFO.contact.phone.replace(/\s/g, "")
 
   return (
     <main className="bg-white">
@@ -66,16 +65,10 @@ export function AdhesionContent() {
             </motion.p>
             <motion.div variants={fadeUp} className="flex flex-wrap justify-center gap-4 pt-2">
               <a
-                href={`tel:${phoneClean}`}
-                className="rounded-full bg-cecj-gold px-6 py-3 text-sm font-semibold text-cecj-green transition-transform hover:scale-105"
-              >
-                {t("adhesion.cta_contact")}
-              </a>
-              <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full border border-white/30 px-6 py-3 text-sm font-semibold text-white transition-all hover:bg-white/10"
+                className="rounded-full bg-cecj-gold px-6 py-3 text-sm font-semibold text-cecj-green transition-transform hover:scale-105"
               >
                 {t("adhesion.cta_whatsapp")}
               </a>
@@ -214,18 +207,12 @@ export function AdhesionContent() {
             {t("adhesion.cta_title")}
           </h2>
           <p className="mb-8 text-gray-500">{t("adhesion.cta_subtitle")}</p>
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
-            <a
-              href={`tel:${phoneClean}`}
-              className="w-full rounded-full bg-cecj-green px-8 py-3 text-sm font-semibold text-white transition-transform hover:scale-105 sm:w-auto"
-            >
-              {t("adhesion.cta_contact")}
-            </a>
+          <div className="flex justify-center">
             <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full rounded-full border border-cecj-green/30 px-8 py-3 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green/5 sm:w-auto"
+              className="rounded-full bg-cecj-green px-8 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
             >
               {t("adhesion.cta_whatsapp")}
             </a>

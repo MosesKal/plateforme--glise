@@ -85,7 +85,6 @@ export function AProposContent() {
 
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CHURCH_INFO.location.fullAddress)}`
   const whatsappUrl = CHURCH_INFO.socials.whatsappContact ?? CHURCH_INFO.socials.whatsappChannel ?? "#"
-  const phoneClean = CHURCH_INFO.contact.phone.replace(/\s/g, "")
 
   return (
     <main className="bg-white">
@@ -390,21 +389,7 @@ export function AProposContent() {
             </div>
           </motion.div>
 
-          <motion.div {...inView()} variants={stagger} className="grid gap-4 sm:grid-cols-3">
-            <motion.a
-              variants={fadeUp}
-              href={`tel:${phoneClean}`}
-              className="flex items-center gap-4 rounded-2xl bg-cecj-green p-5 text-white transition-transform hover:scale-[1.02]"
-            >
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10">
-                <Icon d={ICONS.phone} className="h-5 w-5" />
-              </span>
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">{t("footer.callUs")}</p>
-                <p className="font-semibold">{CHURCH_INFO.contact.phone}</p>
-              </div>
-            </motion.a>
-
+          <motion.div {...inView()} variants={stagger} className="grid gap-4 sm:grid-cols-2">
             <motion.a
               variants={fadeUp}
               href={mapsUrl}
