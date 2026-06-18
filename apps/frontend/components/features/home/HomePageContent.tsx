@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
 import { motion, useInView } from "framer-motion"
@@ -16,15 +15,6 @@ import { WeeklyProgramSection } from "./WeeklyProgramSection"
 import { EventsSection } from "./EventsSection"
 import { GalleryLightbox } from "./GalleryLightbox"
 
-const ExtensionsMap = dynamic(
-  () => import("./ExtensionsMap").then((m) => m.ExtensionsMap),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="h-full w-full animate-pulse rounded-2xl bg-cecj-green/10" />
-    ),
-  }
-)
 
 const GALLERY_PREVIEW_COUNT = 8
 
@@ -235,71 +225,71 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
       {/* ── Événements ───────────────────────────────────────────────────── */}
       <EventsSection />
 
-      {/* ── Notre Vision ─────────────────────────────────────────────────── */}
+      {/* ── Vision ───────────────────────────────────────────────────────── */}
       <section className="bg-cecj-green px-4 py-14 sm:py-20">
-        <motion.div className="mx-auto max-w-4xl text-center" variants={stagger} {...inView()}>
-          <motion.h2 variants={fadeUp} className="mb-4 text-3xl font-bold text-white">
-            {t("vision.title")}
-          </motion.h2>
-          <motion.div variants={stagger} className="mb-8 flex flex-wrap justify-center gap-3">
-            {piliers.map((pilier) => (
-              <motion.span
-                key={pilier}
-                variants={scaleUp}
-                className="rounded-full border border-cecj-gold/40 bg-white/10 px-5 py-1.5 text-sm font-semibold text-white"
-              >
-                {pilier}
-              </motion.span>
-            ))}
-          </motion.div>
-          <motion.p variants={fadeUp} className="text-base text-white/80 leading-relaxed max-w-3xl mx-auto sm:text-lg">
-            {t("vision.body")}
-          </motion.p>
-          <motion.div variants={fadeUp}>
+        <motion.div
+          className="mx-auto max-w-5xl grid items-center gap-12 md:grid-cols-2"
+          variants={stagger}
+          {...inView()}
+        >
+          <motion.div variants={fadeUp} className="space-y-6">
+            <h2 className="font-decorative text-6xl leading-none text-cecj-gold md:text-7xl">
+              {t("apropos.vision_badge")}
+            </h2>
+            <p className="text-base text-white/80 leading-relaxed sm:text-lg">
+              {t("vision.body")}
+            </p>
             <Link
-              href={lp(SITE_ROUTES.vision)}
-              className="mt-8 inline-block text-sm font-semibold text-white underline-offset-4 hover:underline"
+              href={lp(SITE_ROUTES.apropos) + "#vision"}
+              className="inline-block text-sm font-semibold text-cecj-gold/80 underline-offset-4 hover:underline hover:text-cecj-gold"
             >
               {t("vision.link")}
             </Link>
           </motion.div>
+
+          <motion.div variants={stagger} className="grid grid-cols-2 gap-3">
+            {piliers.map((pilier) => (
+              <motion.div
+                key={pilier}
+                variants={scaleUp}
+                className="flex items-center justify-center rounded-2xl border border-cecj-gold/25 bg-white/8 px-4 py-8 text-center"
+              >
+                <p className="font-semibold text-white">{pilier}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
       </section>
 
-      {/* ── Notre Mission ────────────────────────────────────────────────── */}
+      {/* ── Mission ──────────────────────────────────────────────────────── */}
       <section className="bg-cecj-page px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-4xl">
-          <motion.div className="mb-10 text-center" variants={stagger} {...inView()}>
-            <motion.h2 variants={fadeUp} className="text-3xl font-bold text-cecj-green">
-              {t("mission.title")}
-            </motion.h2>
-            <motion.h3 variants={fadeUp} className="mt-2 text-lg font-semibold text-cecj-green/70">
-              {t("mission.subtitle")}
-            </motion.h3>
-            <motion.div
-              variants={fadeUp}
-              className="mx-auto mt-4 h-px w-16 bg-cecj-gold/50"
-            />
+          <motion.div variants={fadeUp} {...inView()} className="mb-10">
+            <h2 className="font-decorative text-5xl leading-none text-cecj-green md:text-6xl">
+              {t("apropos.mission_badge")}
+            </h2>
           </motion.div>
 
-          <motion.ol className="flex flex-col gap-5" variants={staggerSlow} {...inView("-40px")}>
-            {missionItems.map((item, i) => (
+          <motion.ul className="space-y-3" variants={stagger} {...inView("-40px")}>
+            {missionItems.slice(0, 3).map((item, i) => (
               <motion.li
                 key={i}
                 variants={fadeUp}
-                className="flex items-start gap-5 rounded-xl border border-cecj-rule bg-cecj-tint px-5 py-4"
+                className="flex items-start gap-4 rounded-xl border border-cecj-rule bg-cecj-tint px-5 py-4"
               >
-                <span className="shrink-0 text-2xl font-bold leading-none text-cecj-green/25 sm:text-3xl">
-                  {String(i + 1).padStart(2, "0")}
+                <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cecj-gold/30">
+                  <svg className="h-3 w-3 text-cecj-green" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
                 </span>
-                <p className="pt-0.5 text-sm leading-relaxed text-cecj-ink sm:text-base">{item}</p>
+                <p className="text-sm leading-relaxed text-cecj-ink sm:text-base">{item}</p>
               </motion.li>
             ))}
-          </motion.ol>
+          </motion.ul>
 
-          <motion.div variants={fadeUp} {...inView()} className="mt-10 text-center">
+          <motion.div variants={fadeUp} {...inView()} className="mt-8 text-center">
             <Link
-              href={lp(SITE_ROUTES.mission)}
+              href={lp(SITE_ROUTES.apropos) + "#mission"}
               className="inline-block rounded-md border border-cecj-green px-8 py-3 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02]"
             >
               {t("mission.link")}
@@ -308,48 +298,28 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
         </div>
       </section>
 
-      {/* ── Qui Sommes-Nous ? ─────────────────────────────────────────────── */}
+      {/* ── Qui sommes-nous ? ─────────────────────────────────────────────── */}
       <section className="bg-cecj-tint px-4 py-14 sm:py-20">
         <motion.div
           className="mx-auto max-w-6xl grid grid-cols-1 gap-12 md:grid-cols-2 items-center"
           variants={stagger}
           {...inView()}
         >
-          <motion.div variants={fadeUp}>
-            <span className="mb-3 inline-block rounded-full bg-cecj-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cecj-green">
+          <motion.div variants={fadeUp} className="space-y-6">
+            <h2 className="font-decorative text-5xl leading-none text-cecj-green md:text-6xl">
               {t("about.badge")}
-            </span>
-            <h2 className="mb-6 text-3xl font-bold leading-snug text-cecj-green">
-              {t("about.title")}
             </h2>
-            <p className="mb-4 text-cecj-ink leading-relaxed">
+            <p className="text-cecj-ink leading-relaxed">
               {t("about.p1_prefix")}{" "}
               <strong className="text-cecj-green">{t("about.p1_date")}</strong>
               {t("about.p1_suffix")}
             </p>
-            <p className="text-cecj-ink leading-relaxed">
-              {t("about.p2_prefix")}{" "}
-              <strong className="text-cecj-green">{t("about.p2_apostle")}</strong>
-              {t("about.p2_mid")}{" "}
-              <strong className="text-cecj-green">{t("about.p2_members")}</strong>{" "}
-              {t("about.p2_mid2")}{" "}
-              <strong className="text-cecj-green">{t("about.p2_churches")}</strong>{" "}
-              {t("about.p2_suffix")}
-            </p>
-            <div className="mt-8 flex gap-4">
-              <Link
-                href={lp(SITE_ROUTES.presentation)}
-                className="rounded-md bg-cecj-green px-6 py-3 text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02]"
-              >
-                {t("about.cta_history")}
-              </Link>
-              <Link
-                href={lp(SITE_ROUTES.mission)}
-                className="rounded-md border border-cecj-green px-6 py-3 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02]"
-              >
-                {t("about.cta_mission")}
-              </Link>
-            </div>
+            <Link
+              href={lp(SITE_ROUTES.apropos) + "#histoire"}
+              className="inline-block rounded-md bg-cecj-green px-6 py-3 text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02]"
+            >
+              {t("about.cta_history")}
+            </Link>
           </motion.div>
 
           <motion.div variants={stagger} className="grid grid-cols-2 gap-4">
@@ -367,70 +337,42 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
         </motion.div>
       </section>
 
-      {/* ── Nos Valeurs ──────────────────────────────────────────────────── */}
+      {/* ── Valeurs ──────────────────────────────────────────────────────── */}
       <section className="bg-cecj-page px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <motion.div className="text-center" variants={stagger} {...inView()}>
-            <motion.h2 variants={fadeUp} className="mb-2 text-3xl font-bold text-cecj-green">
-              {t("values.title")}
-            </motion.h2>
-            <motion.p variants={fadeUp} className="mb-12 text-cecj-ink-faint">
-              {t("values.subtitle")}
-            </motion.p>
+        <div className="mx-auto max-w-5xl">
+          <motion.div variants={fadeUp} {...inView()} className="mb-10">
+            <h2 className="font-decorative text-5xl leading-none text-cecj-green md:text-6xl">
+              {t("apropos.valeurs_badge")}
+            </h2>
           </motion.div>
+
           <motion.div
-            className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
-            variants={staggerSlow}
+            className="flex flex-wrap gap-3"
+            variants={stagger}
             {...inView("-40px")}
           >
-            {valeurs.map((valeur) => (
-              <motion.div
+            {valeurs.slice(0, 6).map((valeur) => (
+              <motion.span
                 key={valeur.label}
                 variants={scaleUp}
-                className="group flex flex-col rounded-xl border border-cecj-rule bg-cecj-tint p-4 transition-all hover:border-cecj-green hover:shadow-sm hover:-translate-y-0.5"
+                className="rounded-full border border-cecj-rule bg-cecj-tint px-5 py-2.5 text-sm font-medium text-cecj-green transition-colors hover:border-cecj-green hover:bg-cecj-green/5"
               >
-                <p className="text-sm font-semibold text-cecj-green leading-snug">{valeur.label}</p>
-                <p className="mt-1 text-xs leading-relaxed text-cecj-ink-faint">{valeur.desc}</p>
-              </motion.div>
+                {valeur.label}
+              </motion.span>
             ))}
+          </motion.div>
+
+          <motion.div variants={fadeUp} {...inView()} className="mt-8 text-center">
+            <Link
+              href={lp(SITE_ROUTES.apropos) + "#valeurs"}
+              className="inline-block rounded-md border border-cecj-green px-8 py-3 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02]"
+            >
+              {t("values.link")}
+            </Link>
           </motion.div>
         </div>
       </section>
 
-      {/* ── Nos Extensions ───────────────────────────────────────────────── */}
-      <section className="bg-cecj-tint px-4 py-14 sm:py-20">
-        <motion.div className="mx-auto max-w-4xl text-center" variants={stagger} {...inView()}>
-          <motion.div variants={fadeUp} className="mb-4 flex justify-center">
-            <span className="rounded-full bg-cecj-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cecj-green">
-              {t("extensions.badge")}
-            </span>
-          </motion.div>
-          <motion.h2 variants={fadeUp} className="mb-4 text-3xl font-bold text-cecj-green">
-            {t("extensions.title")}
-          </motion.h2>
-          <motion.p variants={fadeUp} className="mb-10 text-base text-cecj-ink leading-relaxed max-w-2xl mx-auto sm:text-lg">
-            {t("extensions.body")}
-          </motion.p>
-        </motion.div>
-
-        <motion.div className="mx-auto max-w-5xl" variants={fadeUp} {...inView("-40px")}>
-          <div className="h-[280px] overflow-hidden rounded-2xl border border-cecj-rule shadow-md sm:h-[380px] md:h-[420px]">
-            <ExtensionsMap />
-          </div>
-          <p className="mt-3 text-center text-xs text-cecj-ink-dim">
-            {t("extensions.mapCaption")}
-          </p>
-        </motion.div>
-
-        <motion.div variants={fadeUp} {...inView()} className="mt-8 text-center">
-          <Link
-            href={lp(SITE_ROUTES.extensions)}
-            className="inline-block rounded-md bg-cecj-green px-8 py-3 font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02]"
-          >
-            {t("extensions.link")}
-          </Link>
-        </motion.div>
-      </section>
 
       {/* ── Témoignages CTA ──────────────────────────────────────────────── */}
       <section className="bg-cecj-page px-4 py-14 sm:py-20">

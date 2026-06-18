@@ -1,5 +1,7 @@
 export const SITE_ROUTES = {
   accueil:       "/",
+  organisation:  "/organisation",
+  apropos:       "/a-propos",
   presentation:  "/presentation",
   vision:        "/vision",
   mission:       "/mission",

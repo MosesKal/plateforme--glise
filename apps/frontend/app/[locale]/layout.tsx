@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { Montserrat } from "next/font/google"
+import { Montserrat, Great_Vibes } from "next/font/google"
 import { notFound } from "next/navigation"
 import NextTopLoader from "nextjs-toploader"
 import { getDictionary, hasLocale } from "@/lib/i18n"
@@ -12,17 +12,20 @@ const montserrat = Montserrat({
   display: "swap",
 })
 
+const greatVibes = Great_Vibes({
+  variable: "--font-brittany",
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+})
+
 export const metadata: Metadata = {
   title: {
-    default: "C.E.C.J. — Camp de Jésus Bel-Air",
-    template: "%s | C.E.C.J.",
+    default: "Camps de Jésus-Christ Bel-air Fizi",
+    template: "%s | Camps de Jésus-Christ Bel-air Fizi",
   },
   description:
     "Bienvenue au Camp de Jésus Bel-Air. Une communauté chrétienne fondée sur la saine doctrine du Seigneur Jésus-Christ.",
-  icons: {
-    icon: "/Logo C.E.C.j.png",
-    apple: "/Logo C.E.C.j.png",
-  },
   openGraph: {
     siteName: "C.E.C.J.",
     type: "website",
@@ -47,7 +50,7 @@ export default async function LocaleLayout({
   const dict = await getDictionary(locale as "fr" | "en")
 
   return (
-    <html lang={locale} className={`${montserrat.variable} h-full antialiased`} suppressHydrationWarning>
+    <html lang={locale} className={`${montserrat.variable} ${greatVibes.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="h-full">
         <NextTopLoader color="#ffcb32" height={3} showSpinner={false} />
         <I18nProvider locale={locale} dict={dict}>

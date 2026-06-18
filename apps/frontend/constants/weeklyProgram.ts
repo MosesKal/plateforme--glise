@@ -60,7 +60,7 @@ export const WEEKLY_PROGRAM: ProgramActivity[] = [
   {
     id: "culte-dominical",
     days: ["Dimanche"],
-    title: "Culte Dominical",
+    title: "Culte de Dimanche",
     startTime: "08:00",
     endTime: "11:00",
     category: "Adoration",

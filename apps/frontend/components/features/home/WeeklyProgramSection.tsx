@@ -97,9 +97,14 @@ function ActivityCard({ activity, today }: { activity: ProgramActivity; today: s
           <FacebookIcon className="mt-0.5 h-4 w-4 shrink-0 text-[#1877F2]" />
           <p>
             {t("weeklyProgram.facebookPhotosNote")}{" "}
-            <span className={cn("font-semibold", featured ? "text-white" : "text-cecj-green")}>
+            <a
+              href={CHURCH_INFO.socials.facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn("font-semibold underline-offset-2 hover:underline", featured ? "text-white" : "text-cecj-green")}
+            >
               {CHURCH_INFO.socials.facebookName}
-            </span>
+            </a>
           </p>
         </div>
       )}

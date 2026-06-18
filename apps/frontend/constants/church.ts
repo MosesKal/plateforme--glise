@@ -36,6 +36,7 @@ export const CHURCH_INFO: ChurchInfo = {
   },
   socials: {
     facebookName: "Église Camp de Jésus Bel-air",
+    facebookUrl: "https://www.facebook.com/profile.php?id=61567215980367&mibextid=rS40aB7S9Ucbxw6v",
     instagram: "https://www.instagram.com/eglisecampdejesusbelair",
     tiktok: "https://www.tiktok.com/@camp_de_jesusbel_air",
     youtube: "https://www.youtube.com/@EgliseleCampdeJésusBel-air",
