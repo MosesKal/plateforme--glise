@@ -279,5 +279,51 @@
   "lang": {
     "fr": "Français",
     "en": "English"
+  },
+  "adhesion": {
+    "meta_title": "Adhésion — Rejoignez la famille",
+    "meta_desc": "Devenez membre du Camp de Jésus-Christ Bel-Air Fizi. Découvrez les critères, le processus et les engagements de l'adhésion.",
+    "hero_badge": "Devenir Membre",
+    "hero_title": "Rejoignez la famille du Camp de Jésus-Christ",
+    "hero_subtitle": "L'adhésion est une étape décisive dans votre marche avec Dieu. Elle vous engage dans une communauté, une vision et une mission communes.",
+    "why_badge": "Pourquoi adhérer",
+    "why_title": "Ce que l'adhésion vous apporte",
+    "benefits": [
+      { "title": "Une famille spirituelle", "desc": "Être entouré de frères et sœurs engagés dans la même foi et portant la même vision." },
+      { "title": "Un accompagnement pastoral", "desc": "Bénéficier du suivi du pasteur titulaire et des anciens de l'église." },
+      { "title": "Un service actif", "desc": "Participer à la vie de l'église à travers ses départements et ministères." },
+      { "title": "Une formation continue", "desc": "Accéder aux enseignements approfondis, séminaires et formations bibliques." }
+    ],
+    "criteria_badge": "Critères",
+    "criteria_title": "Qui peut adhérer ?",
+    "criteria_subtitle": "L'adhésion est ouverte à toute personne remplissant les conditions suivantes.",
+    "criteria_items": [
+      "Avoir accepté Jésus-Christ comme Seigneur et Sauveur personnel",
+      "Avoir reçu le baptême par immersion",
+      "Fréquenter régulièrement les cultes et activités de l'église",
+      "Adhérer à la doctrine et à la vision de l'Église Camp de Jésus-Christ",
+      "Avoir suivi le cours d'intégration pour les nouveaux membres"
+    ],
+    "steps_badge": "Processus",
+    "steps_title": "Comment rejoindre l'église ?",
+    "steps": [
+      { "num": "01", "title": "Assister aux cultes", "desc": "Commencez par participer régulièrement aux cultes dominicaux et aux activités hebdomadaires de l'église." },
+      { "num": "02", "title": "Cours d'intégration", "desc": "Suivez le cours d'intégration organisé pour mieux connaître la vision, la doctrine et le fonctionnement de l'église." },
+      { "num": "03", "title": "Entretien pastoral", "desc": "Rencontrez le pasteur ou un ancien pour un entretien de suivi et d'accompagnement spirituel." },
+      { "num": "04", "title": "Engagement formel", "desc": "Remplissez votre fiche d'adhésion et rejoignez officiellement la famille du Camp de Jésus-Christ." }
+    ],
+    "commitment_badge": "Engagements",
+    "commitment_title": "Vos engagements en tant que membre",
+    "commitments": [
+      "Participer fidèlement aux cultes et activités de l'église",
+      "Soutenir l'église dans la prière et par la dîme",
+      "Vivre selon les valeurs et la doctrine de l'église",
+      "Servir activement dans un département ou ministère",
+      "Contribuer à l'unité et à la croissance de la communauté"
+    ],
+    "cta_title": "Prêt(e) à faire le pas ?",
+    "cta_subtitle": "Contactez-nous pour en savoir plus ou pour vous inscrire au prochain cours d'intégration.",
+    "cta_contact": "Nous contacter",
+    "cta_whatsapp": "Écrire sur WhatsApp"
   }
 }

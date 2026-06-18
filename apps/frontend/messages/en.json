@@ -279,5 +279,51 @@
   "lang": {
     "fr": "Français",
     "en": "English"
+  },
+  "adhesion": {
+    "meta_title": "Membership — Join the family",
+    "meta_desc": "Become a member of Camp de Jésus-Christ Bel-Air Fizi. Discover the criteria, process and commitments of membership.",
+    "hero_badge": "Become a Member",
+    "hero_title": "Join the family of Camp de Jésus-Christ",
+    "hero_subtitle": "Membership is a decisive step in your walk with God. It commits you to a shared community, vision and mission.",
+    "why_badge": "Why join",
+    "why_title": "What membership brings you",
+    "benefits": [
+      { "title": "A spiritual family", "desc": "Be surrounded by brothers and sisters committed to the same faith and sharing the same vision." },
+      { "title": "Pastoral support", "desc": "Benefit from the guidance of the senior pastor and the church elders." },
+      { "title": "Active service", "desc": "Participate in the life of the church through its departments and ministries." },
+      { "title": "Ongoing training", "desc": "Access in-depth teachings, seminars and biblical training programs." }
+    ],
+    "criteria_badge": "Criteria",
+    "criteria_title": "Who can join?",
+    "criteria_subtitle": "Membership is open to anyone who meets the following conditions.",
+    "criteria_items": [
+      "Having accepted Jesus Christ as personal Lord and Savior",
+      "Having received baptism by immersion",
+      "Regularly attending the church's services and activities",
+      "Adhering to the doctrine and vision of the Camp de Jésus-Christ Church",
+      "Having completed the integration course for new members"
+    ],
+    "steps_badge": "Process",
+    "steps_title": "How to join the church?",
+    "steps": [
+      { "num": "01", "title": "Attend services", "desc": "Start by regularly attending Sunday services and the weekly activities of the church." },
+      { "num": "02", "title": "Integration course", "desc": "Complete the integration course organized to better understand the church's vision, doctrine and structure." },
+      { "num": "03", "title": "Pastoral interview", "desc": "Meet with the pastor or an elder for a follow-up and spiritual guidance interview." },
+      { "num": "04", "title": "Formal commitment", "desc": "Fill in your membership form and officially join the family of Camp de Jésus-Christ." }
+    ],
+    "commitment_badge": "Commitments",
+    "commitment_title": "Your commitments as a member",
+    "commitments": [
+      "Faithfully attend church services and activities",
+      "Support the church through prayer and tithing",
+      "Live according to the church's values and doctrine",
+      "Actively serve in a department or ministry",
+      "Contribute to the unity and growth of the community"
+    ],
+    "cta_title": "Ready to take the step?",
+    "cta_subtitle": "Contact us to learn more or to register for the next integration course.",
+    "cta_contact": "Contact us",
+    "cta_whatsapp": "Message on WhatsApp"
   }
 }
