@@ -60,10 +60,15 @@ function VideoAvailableBadge({ label }: { label: string }) {
   )
 }
 
-function UpcomingBadge({ label }: { label: string }) {
+function UpcomingBadge({ label, featured }: { label: string; featured?: boolean }) {
   return (
-    <span className="inline-flex items-center gap-1.5 self-start rounded-full bg-cecj-gold/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-cecj-green/70">
-      <YouTubeIcon className="h-3.5 w-3.5 text-[#FF0000]/60" />
+    <span className={cn(
+      "inline-flex items-center gap-1.5 self-start rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wide",
+      featured
+        ? "bg-white/10 text-white/70"
+        : "bg-cecj-gold/15 text-cecj-green/70"
+    )}>
+      <YouTubeIcon className="h-3.5 w-3.5 text-[#FF0000]/70" />
       {label}
     </span>
   )
@@ -86,7 +91,7 @@ function ActivityCard({ activity, today }: { activity: ProgramActivity; today: s
     >
       {youtubeStatus === "live" && <LiveBadge label={t("weeklyProgram.liveOnYoutube")} />}
       {youtubeStatus === "available" && <VideoAvailableBadge label={t("weeklyProgram.videoAvailable")} />}
-      {youtubeStatus === "upcoming" && <UpcomingBadge label={t("weeklyProgram.upcomingLive")} />}
+      {youtubeStatus === "upcoming" && <UpcomingBadge label={t("weeklyProgram.upcomingLive")} featured={featured} />}
 
       <h3 className={cn("text-lg font-bold leading-snug", featured ? "text-white" : "text-cecj-green")}>
         {activity.title}
