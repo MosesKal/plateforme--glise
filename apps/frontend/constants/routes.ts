@@ -7,6 +7,7 @@ export const SITE_ROUTES = {
   mission:       "/mission",
   leadership:    "/leadership",
   extensions:    "/extensions",
+  adhesion:      "/adhesion",
   galerie:       "/galerie",
   evenements:    "/evenements",
   contact:       "/contact",

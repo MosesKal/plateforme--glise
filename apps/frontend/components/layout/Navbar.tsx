@@ -17,11 +17,11 @@ export function Navbar() {
   const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
 
   const navLinks = [
-    { label: t("nav.accueil"),       href: lp(SITE_ROUTES.accueil) },
-    { label: t("nav.apropos"),       href: lp(SITE_ROUTES.apropos) },
-    { label: t("nav.organisation"),  href: lp(SITE_ROUTES.organisation) },
-    { label: t("nav.evenements"),    href: lp(SITE_ROUTES.evenements) },
-    { label: t("nav.extensions"),    href: lp(SITE_ROUTES.extensions) },
+    { label: t("nav.accueil"),    href: lp(SITE_ROUTES.accueil) },
+    { label: t("nav.apropos"),    href: lp(SITE_ROUTES.apropos) },
+    { label: t("nav.evenements"), href: lp(SITE_ROUTES.evenements) },
+    { label: t("nav.adhesion"),   href: lp(SITE_ROUTES.adhesion) },
+    { label: t("nav.extensions"), href: lp(SITE_ROUTES.extensions) },
   ]
 
   return (
