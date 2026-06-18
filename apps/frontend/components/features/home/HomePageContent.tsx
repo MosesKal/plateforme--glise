@@ -392,24 +392,6 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
       </section>
 
 
-      {/* ── Témoignages CTA ──────────────────────────────────────────────── */}
-      <section className="bg-cecj-page px-4 py-14 sm:py-20">
-        <motion.div className="mx-auto max-w-4xl" variants={scaleUp} {...inView()}>
-          <div className="rounded-2xl border border-cecj-rule bg-cecj-tint p-6 text-center sm:p-10">
-            <h2 className="mb-3 text-3xl font-bold text-cecj-green">{t("testimonialsCta.title")}</h2>
-            <p className="mb-8 text-lg text-cecj-ink max-w-xl mx-auto">
-              {t("testimonialsCta.body")}
-            </p>
-            <Link
-              href="#"
-              className="inline-block rounded-md border border-cecj-green px-7 py-3 font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02]"
-            >
-              {t("testimonialsCta.link")}
-            </Link>
-          </div>
-        </motion.div>
-      </section>
-
       {/* ── Galerie ──────────────────────────────────────────────────────── */}
       <section className="bg-cecj-tint px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-6xl">
