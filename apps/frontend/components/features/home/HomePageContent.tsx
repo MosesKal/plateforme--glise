@@ -313,6 +313,42 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
         </div>
       </section>
 
+      {/* ── Valeurs ──────────────────────────────────────────────────────── */}
+      <section className="bg-cecj-page px-4 py-14 sm:py-20">
+        <div className="mx-auto max-w-5xl">
+          <motion.div variants={fadeUp} {...inView()} className="mb-10">
+            <h2 className="font-decorative text-4xl leading-none text-cecj-green md:text-5xl lg:text-6xl">
+              {t("apropos.valeurs_badge")}
+            </h2>
+          </motion.div>
+
+          <motion.div
+            className="flex flex-wrap gap-3"
+            variants={stagger}
+            {...inView("-40px")}
+          >
+            {valeurs.slice(0, 6).map((valeur) => (
+              <motion.span
+                key={valeur.label}
+                variants={scaleUp}
+                className="rounded-full border border-cecj-rule bg-cecj-tint px-5 py-2.5 text-sm font-medium text-cecj-green transition-colors hover:border-cecj-green hover:bg-cecj-green/5"
+              >
+                {valeur.label}
+              </motion.span>
+            ))}
+          </motion.div>
+
+          <motion.div variants={fadeUp} {...inView()} className="mt-8 text-center">
+            <Link
+              href={lp(SITE_ROUTES.apropos) + "#valeurs"}
+              className="inline-block rounded-md border border-cecj-green px-5 py-2 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02] sm:px-8 sm:py-3"
+            >
+              {t("values.link")}
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ── Qui sommes-nous ? ─────────────────────────────────────────────── */}
       <section className="bg-cecj-tint px-4 py-14 sm:py-20">
         <motion.div
@@ -350,42 +386,6 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
             ))}
           </motion.div>
         </motion.div>
-      </section>
-
-      {/* ── Valeurs ──────────────────────────────────────────────────────── */}
-      <section className="bg-cecj-page px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-5xl">
-          <motion.div variants={fadeUp} {...inView()} className="mb-10">
-            <h2 className="font-decorative text-4xl leading-none text-cecj-green md:text-5xl lg:text-6xl">
-              {t("apropos.valeurs_badge")}
-            </h2>
-          </motion.div>
-
-          <motion.div
-            className="flex flex-wrap gap-3"
-            variants={stagger}
-            {...inView("-40px")}
-          >
-            {valeurs.slice(0, 6).map((valeur) => (
-              <motion.span
-                key={valeur.label}
-                variants={scaleUp}
-                className="rounded-full border border-cecj-rule bg-cecj-tint px-5 py-2.5 text-sm font-medium text-cecj-green transition-colors hover:border-cecj-green hover:bg-cecj-green/5"
-              >
-                {valeur.label}
-              </motion.span>
-            ))}
-          </motion.div>
-
-          <motion.div variants={fadeUp} {...inView()} className="mt-8 text-center">
-            <Link
-              href={lp(SITE_ROUTES.apropos) + "#valeurs"}
-              className="inline-block rounded-md border border-cecj-green px-5 py-2 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02] sm:px-8 sm:py-3"
-            >
-              {t("values.link")}
-            </Link>
-          </motion.div>
-        </div>
       </section>
 
 
