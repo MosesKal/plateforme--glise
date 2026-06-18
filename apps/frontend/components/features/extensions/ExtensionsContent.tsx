@@ -60,9 +60,8 @@ function ExtensionCard({
   const { t } = useI18n()
   const [expanded, setExpanded] = useState(false)
 
-  const typeLbl   = TYPE_LABELS[ext.type][locale as "fr" | "en"]
-  const isSiege   = ext.type === "siege"
-  const isActive  = ext.status === "active"
+  const typeLbl  = TYPE_LABELS[ext.type][locale as "fr" | "en"]
+  const isActive = ext.status === "active"
 
   return (
     <motion.div
@@ -70,15 +69,12 @@ function ExtensionCard({
       variants={scaleUp}
       className={cn(
         "group relative flex flex-col overflow-hidden rounded-2xl border bg-white shadow-sm transition-shadow hover:shadow-md",
-        isSiege   ? "border-cecj-gold/40 ring-1 ring-cecj-gold/20" :
-        isNearest ? "border-cecj-green/40 ring-1 ring-cecj-green/20" :
-                    "border-gray-100",
+        isNearest ? "border-cecj-green/40 ring-1 ring-cecj-green/20" : "border-gray-100",
       )}
     >
       {/* Bandeau supérieur coloré */}
       <div className={cn(
         "h-1.5 w-full",
-        isSiege   ? "bg-cecj-gold" :
         isNearest ? "bg-cecj-green" :
         isActive  ? "bg-emerald-400" :
                     "bg-gray-200",
@@ -96,12 +92,7 @@ function ExtensionCard({
             </div>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1">
-            {isSiege && (
-              <span className="rounded-full bg-cecj-gold/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cecj-green">
-                Siège
-              </span>
-            )}
-            {isNearest && !isSiege && (
+            {isNearest && (
               <span className="rounded-full bg-cecj-green/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cecj-green">
                 {t("extensionsPage.nearest_label")}
               </span>

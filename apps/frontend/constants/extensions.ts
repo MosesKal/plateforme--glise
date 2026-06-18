@@ -1,4 +1,4 @@
-export type ExtensionType   = "siege" | "fille" | "point_priere"
+export type ExtensionType   = "fille" | "point_priere"
 export type ExtensionStatus = "active" | "establishing"
 export type Continent       = "rdc" | "afrique"
 
@@ -25,7 +25,7 @@ export const EXTENSIONS: Extension[] = [
   {
     id:          "lubumbashi-belair",
     name:        "Camp de Jésus-Christ Bel-Air Fizi",
-    type:        "siege",
+    type:        "fille",
     status:      "active",
     continent:   "rdc",
     country:     "République Démocratique du Congo",
@@ -190,7 +190,6 @@ export const CONTINENT_LABELS: Record<Continent, { fr: string; en: string }> = {
 }
 
 export const TYPE_LABELS: Record<ExtensionType, { fr: string; en: string }> = {
-  siege:        { fr: "Siège",           en: "Main Church"  },
   fille:        { fr: "Église fille",    en: "Church Plant" },
   point_priere: { fr: "Point de prière", en: "Prayer Point" },
 }
