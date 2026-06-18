@@ -1,11 +1,9 @@
 "use client"
 
-import Link from "next/link"
 import { motion } from "framer-motion"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { CHURCH_INFO } from "@/constants/church"
-import { SITE_ROUTES } from "@/constants/routes"
-import { fadeUp, fadeIn, stagger, scaleUp, inView } from "@/lib/motion"
+import { fadeUp, stagger, scaleUp, inView } from "@/lib/motion"
 
 function Icon({ d, className, strokeWidth = 1.5 }: { d: string; className?: string; strokeWidth?: number }) {
   return (
@@ -28,8 +26,7 @@ const ICONS = {
 const BENEFIT_ICONS = [ICONS.users, ICONS.heart, ICONS.shield, ICONS.book]
 
 export function AdhesionContent() {
-  const { t, locale } = useI18n()
-  const lp = (path: string) => `/${locale}${path}`
+  const { t } = useI18n()
 
   const benefits = t("adhesion.benefits") as { title: string; desc: string }[]
 
@@ -104,39 +101,34 @@ export function AdhesionContent() {
         </div>
       </section>
 
-      {/* ── Portes ouvertes ───────────────────────────────────── */}
+      {/* ── Portes ouvertes + CTA ─────────────────────────────── */}
       <section className="bg-cecj-green/5 py-20 md:py-28">
-        <div className="mx-auto max-w-6xl px-4 lg:px-8">
-          <motion.div {...inView()} variants={fadeUp}>
-            <span className="mb-3 inline-block rounded-full bg-cecj-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cecj-green">
+        <div className="mx-auto max-w-2xl px-4 text-center lg:px-8">
+          <motion.div {...inView()} variants={stagger} className="space-y-6">
+            <motion.span
+              variants={fadeUp}
+              className="inline-block rounded-full bg-cecj-green/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cecj-green"
+            >
               {t("adhesion.criteria_badge")}
-            </span>
-            <h2 className="font-decorative text-5xl leading-none text-cecj-green md:text-6xl lg:text-7xl">
+            </motion.span>
+            <motion.h2 variants={fadeUp} className="font-decorative text-5xl leading-none text-cecj-green md:text-6xl lg:text-7xl">
               {t("adhesion.criteria_title")}
-            </h2>
-            <p className="mt-4 max-w-xl text-gray-500">{t("adhesion.criteria_subtitle")}</p>
+            </motion.h2>
+            <motion.p variants={fadeUp} className="text-gray-500">
+              {t("adhesion.criteria_subtitle")}
+            </motion.p>
+            <motion.div variants={fadeUp} className="pt-2">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block rounded-full bg-cecj-green px-8 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
+              >
+                {t("adhesion.cta_whatsapp")}
+              </a>
+            </motion.div>
           </motion.div>
         </div>
-      </section>
-
-      {/* ── CTA final ─────────────────────────────────────────── */}
-      <section className="bg-cecj-green/5 py-20 md:py-28">
-        <motion.div {...inView()} variants={fadeIn} className="mx-auto max-w-2xl px-4 text-center lg:px-8">
-          <h2 className="mb-4 font-decorative text-5xl leading-none text-cecj-green md:text-6xl">
-            {t("adhesion.cta_title")}
-          </h2>
-          <p className="mb-8 text-gray-500">{t("adhesion.cta_subtitle")}</p>
-          <div className="flex justify-center">
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-cecj-green px-8 py-3 text-sm font-semibold text-white transition-transform hover:scale-105"
-            >
-              {t("adhesion.cta_whatsapp")}
-            </a>
-          </div>
-        </motion.div>
       </section>
 
     </main>
