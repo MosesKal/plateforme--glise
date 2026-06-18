@@ -318,5 +318,29 @@
     "cta_subtitle": "Contactez-nous pour en savoir plus ou pour vous inscrire au prochain cours d'intégration.",
     "cta_contact": "Nous contacter",
     "cta_whatsapp": "Écrire sur WhatsApp"
+  },
+  "evenementsPage": {
+    "meta_title": "Événements — C.E.C.J.",
+    "meta_desc": "Découvrez les événements à venir et passés de la Communauté des Églises Le Camp de Jésus-Christ.",
+    "hero_badge": "Événements",
+    "hero_title": "Nos Événements",
+    "hero_subtitle": "Conférences · Séminaires · Veillées de prière · Campagnes · Retraites",
+    "countdown_label": "Prochain événement",
+    "days": "Jours",
+    "hours": "Heures",
+    "min": "Min.",
+    "sec": "Sec.",
+    "filter_all": "Tous",
+    "calendar_title": "Calendrier",
+    "categories_legend": "Catégories",
+    "no_events_day": "Aucun événement ce jour",
+    "history_badge": "Historique",
+    "history_title": "Nos derniers événements",
+    "cta_title": "Une question sur un événement ?",
+    "cta_subtitle": "Contactez-nous sur WhatsApp, nous répondons rapidement.",
+    "cta_whatsapp": "Écrire sur WhatsApp",
+    "speaker_label": "Intervenant :",
+    "upcoming_badge": "À venir",
+    "past_badge": "Passé"
   }
 }

@@ -318,5 +318,29 @@
     "cta_subtitle": "Contact us to learn more or to register for the next integration course.",
     "cta_contact": "Contact us",
     "cta_whatsapp": "Message on WhatsApp"
+  },
+  "evenementsPage": {
+    "meta_title": "Events — C.E.C.J.",
+    "meta_desc": "Discover upcoming and past events of the Community of the Church Camps of Jesus Christ.",
+    "hero_badge": "Events",
+    "hero_title": "Our Events",
+    "hero_subtitle": "Conferences · Seminars · Prayer Vigils · Campaigns · Retreats",
+    "countdown_label": "Next event",
+    "days": "Days",
+    "hours": "Hours",
+    "min": "Min.",
+    "sec": "Sec.",
+    "filter_all": "All",
+    "calendar_title": "Calendar",
+    "categories_legend": "Categories",
+    "no_events_day": "No events on this day",
+    "history_badge": "Past",
+    "history_title": "Our latest events",
+    "cta_title": "Have a question about an event?",
+    "cta_subtitle": "Contact us on WhatsApp — we respond quickly.",
+    "cta_whatsapp": "Message on WhatsApp",
+    "speaker_label": "Speaker:",
+    "upcoming_badge": "Upcoming",
+    "past_badge": "Past"
   }
 }
