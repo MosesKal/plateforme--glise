@@ -236,7 +236,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
 
       {/* ── Vision ───────────────────────────────────────────────────────── */}
       <section className="bg-cecj-green px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <motion.div variants={fadeUp} {...inView()} className="mb-8">
             <h2 className="font-decorative text-4xl leading-none text-cecj-gold md:text-6xl lg:text-7xl">
               {t("apropos.vision_badge")}
@@ -279,7 +279,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
 
       {/* ── Mission ──────────────────────────────────────────────────────── */}
       <section className="bg-cecj-page px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-6xl">
           <motion.div variants={fadeUp} {...inView()} className="mb-10">
             <h2 className="font-decorative text-4xl leading-none text-cecj-green md:text-5xl lg:text-6xl">
               {t("apropos.mission_badge")}
@@ -316,7 +316,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
 
       {/* ── Valeurs ──────────────────────────────────────────────────────── */}
       <section className="bg-cecj-page px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <motion.div variants={fadeUp} {...inView()} className="mb-10">
             <h2 className="font-decorative text-4xl leading-none text-cecj-green md:text-5xl lg:text-6xl">
               {t("apropos.valeurs_badge")}
