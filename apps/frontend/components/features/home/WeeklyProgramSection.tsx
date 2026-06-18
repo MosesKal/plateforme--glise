@@ -37,7 +37,7 @@ function LiveBadge({ label }: { label: string }) {
   )
 }
 
-function ActivityCard({ activity, today, index = 0 }: { activity: ProgramActivity; today: string; index?: number }) {
+function ActivityCard({ activity, today }: { activity: ProgramActivity; today: string }) {
   const { t } = useI18n()
   const featured = activity.category === "Adoration"
 
@@ -49,7 +49,6 @@ function ActivityCard({ activity, today, index = 0 }: { activity: ProgramActivit
         featured
           ? "bg-cecj-green text-white ring-1 ring-cecj-gold/40"
           : "border border-cecj-rule bg-cecj-tint text-cecj-ink",
-        index >= 3 && "max-sm:hidden"
       )}
     >
       {activity.liveOnYoutube && <LiveBadge label={t("weeklyProgram.liveOnYoutube")} />}
@@ -140,15 +139,12 @@ export function WeeklyProgramSection() {
           variants={staggerSlow}
           {...inView("-40px")}
         >
-          {WEEKLY_PROGRAM.map((activity, i) => (
-            <ActivityCard key={activity.id} activity={activity} today={today} index={i} />
+          {WEEKLY_PROGRAM.map((activity) => (
+            <ActivityCard key={activity.id} activity={activity} today={today} />
           ))}
         </motion.ul>
       </div>
 
-      <p className="mt-4 text-center text-xs text-cecj-ink-faint sm:hidden">
-        + {WEEKLY_PROGRAM.length - 3} autres activités dans la semaine
-      </p>
     </section>
   )
 }
