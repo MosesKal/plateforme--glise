@@ -4,6 +4,7 @@ import { notFound } from "next/navigation"
 import NextTopLoader from "nextjs-toploader"
 import { getDictionary, hasLocale } from "@/lib/i18n"
 import { I18nProvider } from "@/components/providers/I18nProvider"
+import { SplashLoader } from "@/components/ui/SplashLoader"
 import "../globals.css"
 
 const montserrat = Montserrat({
@@ -52,6 +53,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} className={`${montserrat.variable} ${greatVibes.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="h-full">
+        <SplashLoader />
         <NextTopLoader color="#ffcb32" height={3} showSpinner={false} />
         <I18nProvider locale={locale} dict={dict}>
           {children}
