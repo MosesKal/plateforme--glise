@@ -233,9 +233,6 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
       {/* ── Programme Hebdomadaire ───────────────────────────────────────── */}
       <WeeklyProgramSection />
 
-      {/* ── Événements ───────────────────────────────────────────────────── */}
-      <EventsSection />
-
       {/* ── Vision ───────────────────────────────────────────────────────── */}
       <section className="bg-cecj-green px-4 py-14 sm:py-20">
         <div className="mx-auto max-w-5xl">
@@ -430,6 +427,9 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
         index={galleryIndex ?? 0}
         onClose={() => setGalleryIndex(null)}
       />
+
+      {/* ── Événements ───────────────────────────────────────────────────── */}
+      <EventsSection />
 
       {/* ── Témoignages ──────────────────────────────────────────────────── */}
       <section className="bg-cecj-page py-14 sm:py-20">
