@@ -47,7 +47,7 @@ function FeaturedEventCard({ event }: { event: ChurchEvent }) {
       variants={fadeUp}
       className="grid grid-cols-1 overflow-hidden rounded-2xl border border-cecj-rule bg-cecj-page shadow-sm sm:grid-cols-2"
     >
-      <div className="relative h-56 sm:h-auto">
+      <div className="relative h-40 sm:h-auto">
         <Image
           src={event.image}
           alt={event.title}
@@ -57,7 +57,7 @@ function FeaturedEventCard({ event }: { event: ChurchEvent }) {
         />
       </div>
 
-      <div className="flex flex-col gap-4 p-6 sm:p-8">
+      <div className="flex flex-col gap-3 p-4 sm:gap-4 sm:p-8">
         <div className="flex items-center gap-3">
           <CalendarBadge day={event.day} month={event.month} />
           <span className="inline-block rounded-full bg-cecj-red/10 px-3 py-1 text-xs font-bold uppercase tracking-wide text-cecj-red">
@@ -97,7 +97,7 @@ function PastEventCard({ event }: { event: ChurchEvent }) {
 
   return (
     <div className="group flex h-full flex-col overflow-hidden rounded-xl border border-cecj-rule bg-cecj-page shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
-      <div className="relative h-36 shrink-0">
+      <div className="relative h-28 shrink-0 sm:h-36">
         <Image
           src={event.image}
           alt={event.title}
@@ -144,7 +144,7 @@ function PastEventsCarousel({ events }: { events: ChurchEvent[] }) {
           <motion.div
             key={event.id}
             variants={scaleUp}
-            className="w-[80%] shrink-0 snap-start sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]"
+            className="w-[72%] shrink-0 snap-start sm:w-[calc(50%-8px)] lg:w-[calc(25%-12px)]"
           >
             <PastEventCard event={event} />
           </motion.div>

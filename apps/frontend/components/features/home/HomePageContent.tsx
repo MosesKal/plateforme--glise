@@ -17,6 +17,7 @@ import { GalleryLightbox } from "./GalleryLightbox"
 
 
 const GALLERY_PREVIEW_COUNT = 8
+const GALLERY_MOBILE_COUNT = 4
 
 // ── Static data (placeholder — à remplacer par API) ───────────────────────────
 
@@ -50,11 +51,15 @@ function GalerieImageCard({
   alt,
   onClick,
   extraCount,
+  mobileExtraCount,
+  className,
 }: {
   src: string
   alt: string
   onClick: () => void
   extraCount?: number
+  mobileExtraCount?: number
+  className?: string
 }) {
   const [loaded, setLoaded] = useState(false)
   return (
@@ -62,7 +67,7 @@ function GalerieImageCard({
       type="button"
       onClick={onClick}
       variants={scaleUp}
-      className="group relative aspect-square overflow-hidden rounded-xl"
+      className={cn("group relative aspect-square overflow-hidden rounded-xl", className)}
     >
       {!loaded && (
         <div className="absolute inset-0 animate-pulse bg-cecj-green/10" />
@@ -80,8 +85,13 @@ function GalerieImageCard({
       />
       <div className="absolute inset-0 bg-cecj-green/0 transition-colors duration-300 group-hover:bg-cecj-green/30" />
       {!!extraCount && extraCount > 0 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-lg font-bold text-white">
+        <div className="absolute inset-0 hidden items-center justify-center bg-black/50 text-lg font-bold text-white sm:flex">
           +{extraCount}
+        </div>
+      )}
+      {!!mobileExtraCount && mobileExtraCount > 0 && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-lg font-bold text-white sm:hidden">
+          +{mobileExtraCount}
         </div>
       )}
     </motion.button>
@@ -102,6 +112,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
   const aboutCards = t("about.cards") as Array<{ label: string; desc: string }>
   const galleryPreview = galleryImages.slice(0, GALLERY_PREVIEW_COUNT)
   const remainingGalleryCount = Math.max(galleryImages.length - GALLERY_PREVIEW_COUNT, 0)
+  const mobileRemainingCount = Math.max(galleryImages.length - GALLERY_MOBILE_COUNT, 0)
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -170,7 +181,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
             <span className="ml-2 not-italic text-sm text-cecj-gold/80">— {t("hero.quoteRef")}</span>
           </motion.p>
 
-          <motion.div variants={fadeUp} className="mt-2 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
+          <motion.div variants={fadeUp} className="mt-2 hidden w-full flex-col gap-3 sm:flex sm:w-auto sm:flex-row sm:flex-wrap sm:justify-center sm:gap-4">
             <Link
               href={lp(SITE_ROUTES.presentation)}
               className="w-full rounded-md bg-white px-5 py-3 text-center text-sm font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02] active:scale-95 sm:w-auto"
@@ -297,7 +308,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
           <motion.div variants={fadeUp} {...inView()} className="mt-8 text-center">
             <Link
               href={lp(SITE_ROUTES.apropos) + "#mission"}
-              className="inline-block rounded-md border border-cecj-green px-8 py-3 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02]"
+              className="inline-block rounded-md border border-cecj-green px-5 py-2 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02] sm:px-8 sm:py-3"
             >
               {t("mission.link")}
             </Link>
@@ -323,7 +334,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
             </p>
             <Link
               href={lp(SITE_ROUTES.apropos) + "#histoire"}
-              className="inline-block rounded-md bg-cecj-green px-6 py-3 text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02]"
+              className="inline-block rounded-md bg-cecj-green px-5 py-2 text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02] sm:px-6 sm:py-3"
             >
               {t("about.cta_history")}
             </Link>
@@ -372,7 +383,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
           <motion.div variants={fadeUp} {...inView()} className="mt-8 text-center">
             <Link
               href={lp(SITE_ROUTES.apropos) + "#valeurs"}
-              className="inline-block rounded-md border border-cecj-green px-8 py-3 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02]"
+              className="inline-block rounded-md border border-cecj-green px-5 py-2 text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02] sm:px-8 sm:py-3"
             >
               {t("values.link")}
             </Link>
@@ -422,7 +433,9 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
                 src={src}
                 alt={t("gallery.imageAlt")}
                 onClick={() => setGalleryIndex(i)}
-                extraCount={i === galleryPreview.length - 1 ? remainingGalleryCount : undefined}
+                className={i >= GALLERY_MOBILE_COUNT ? "max-sm:hidden" : undefined}
+                extraCount={i === GALLERY_PREVIEW_COUNT - 1 ? remainingGalleryCount : undefined}
+                mobileExtraCount={i === GALLERY_MOBILE_COUNT - 1 ? mobileRemainingCount : undefined}
               />
             ))}
           </motion.div>
@@ -469,7 +482,7 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
           <motion.div variants={fadeUp}>
             <Link
               href={lp(SITE_ROUTES.contact)}
-              className="inline-block rounded-md bg-white px-10 py-3 font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02]"
+              className="inline-block rounded-md bg-white px-6 py-2.5 text-sm font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02] sm:px-10 sm:py-3 sm:text-base"
             >
               {t("contactSection.link")}
             </Link>
