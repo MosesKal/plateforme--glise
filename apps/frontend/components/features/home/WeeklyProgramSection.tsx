@@ -15,7 +15,7 @@ function getTodayLabel() {
   return FRENCH_WEEKDAYS[new Date().getDay()]
 }
 
-function getYoutubeStatus(activity: ProgramActivity, today: string): "live" | "available" | null {
+function getYoutubeStatus(activity: ProgramActivity, today: string): "live" | "available" | "upcoming" | null {
   if (!activity.liveOnYoutube) return null
   if (activity.days.includes(today)) return "live"
   const todayIndex = DISPLAY_WEEK_DAYS.indexOf(today)
