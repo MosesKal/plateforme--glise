@@ -5,6 +5,7 @@ import NextTopLoader from "nextjs-toploader"
 import { getDictionary, hasLocale } from "@/lib/i18n"
 import { I18nProvider } from "@/components/providers/I18nProvider"
 import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider"
+import { AuthInitializer } from "@/components/auth/AuthInitializer"
 import { SplashLoader } from "@/components/ui/SplashLoader"
 import "../globals.css"
 
@@ -57,6 +58,7 @@ export default async function LocaleLayout({
         <SplashLoader />
         <NextTopLoader color="#ffcb32" height={3} showSpinner={false} />
         <ReactQueryProvider>
+          <AuthInitializer />
           <I18nProvider locale={locale} dict={dict}>
             {children}
           </I18nProvider>

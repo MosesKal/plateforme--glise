@@ -1,18 +1,16 @@
 import type { Metadata } from "next"
+import { LoginForm } from "@/components/features/auth/LoginForm"
 
 export const metadata: Metadata = {
-  title: "Connexion",
+  title: "Connexion — C.E.C.J.",
 }
 
-export default function LoginPage() {
-  return (
-    <div className="space-y-6">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold text-cecj-green">Connexion</h1>
-        <p className="mt-1 text-sm text-cecj-ink-faint">
-          Accédez à votre espace de gestion
-        </p>
-      </div>
-    </div>
-  )
+export default async function LoginPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
+
+  return <LoginForm locale={locale} />
 }
