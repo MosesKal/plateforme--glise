@@ -25,8 +25,9 @@ export class EventsController {
   findAll(
     @Query() pagination: PaginationDto,
     @Query('upcoming') upcoming?: string,
+    @Query('status') status?: string,
   ) {
-    return this.eventsService.findAll(pagination, upcoming === 'true');
+    return this.eventsService.findAll(pagination, upcoming === 'true', status);
   }
 
   @Public()

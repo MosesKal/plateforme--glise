@@ -44,6 +44,18 @@ export class CreateEventDto {
   @IsOptional()
   coverImage?: string;
 
+  @IsString()
+  @IsOptional()
+  category?: string;
+
+  @IsString()
+  @IsOptional()
+  speaker?: string;
+
+  @IsString()
+  @IsOptional()
+  organizer?: string;
+
   @IsEnum(EventStatus)
   @IsOptional()
   status?: EventStatus;

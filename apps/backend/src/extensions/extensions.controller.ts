@@ -24,8 +24,9 @@ export class ExtensionsController {
   findAll(
     @Query() pagination: PaginationDto,
     @Query('country') country?: string,
+    @Query('status') status?: string,
   ) {
-    return this.extensionsService.findAll(pagination, country);
+    return this.extensionsService.findAll(pagination, country, status);
   }
 
   @Public()

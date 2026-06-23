@@ -9,12 +9,19 @@ import { UpdateExtensionDto } from './dto/update-extension.dto';
 export class ExtensionsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(pagination: PaginationDto, country?: string) {
+  async findAll(pagination: PaginationDto, country?: string, status?: string) {
     const { page = 1, limit = 20 } = pagination;
     const skip = (page - 1) * limit;
 
+    const statusFilter =
+      status === 'all'
+        ? {}
+        : status && Object.values(ExtensionStatus).includes(status as ExtensionStatus)
+          ? { status: status as ExtensionStatus }
+          : { status: ExtensionStatus.ACTIVE };
+
     const where = {
-      status: ExtensionStatus.ACTIVE,
+      ...statusFilter,
       ...(country ? { country } : {}),
     };
 

@@ -14,12 +14,19 @@ import { RegisterEventDto } from './dto/register-event.dto';
 export class EventsService {
   constructor(private prisma: PrismaService) {}
 
-  async findAll(pagination: PaginationDto, upcoming?: boolean) {
+  async findAll(pagination: PaginationDto, upcoming?: boolean, status?: string) {
     const { page = 1, limit = 20 } = pagination;
     const skip = (page - 1) * limit;
 
+    const statusFilter =
+      status === 'all'
+        ? {}
+        : status && Object.values(EventStatus).includes(status as EventStatus)
+          ? { status: status as EventStatus }
+          : { status: EventStatus.PUBLISHED };
+
     const where = {
-      status: EventStatus.PUBLISHED,
+      ...statusFilter,
       ...(upcoming ? { startDate: { gte: new Date() } } : {}),
     };
 
