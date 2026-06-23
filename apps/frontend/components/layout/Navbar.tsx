@@ -22,6 +22,7 @@ export function Navbar() {
     { label: t("nav.evenements"), href: lp(SITE_ROUTES.evenements) },
     { label: t("nav.adhesion"),   href: lp(SITE_ROUTES.adhesion) },
     { label: t("nav.extensions"), href: lp(SITE_ROUTES.extensions) },
+    { label: t("nav.lecture"),    href: lp(SITE_ROUTES.lectureBiblique) },
   ]
 
   return (
