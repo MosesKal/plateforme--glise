@@ -5,7 +5,8 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { CHURCH_INFO } from "@/constants/church"
-import { CHURCH_EVENTS, isEventUpcoming, type ChurchEvent } from "@/constants/events"
+import { isEventUpcoming, type ChurchEvent } from "@/constants/events"
+import { useEvents } from "@/hooks/useEvents"
 import { fadeUp, fadeIn, stagger, scaleUp, inView } from "@/lib/motion"
 import { cn } from "@/lib/utils"
 
@@ -310,23 +311,45 @@ function EventCalendar({ events, locale }: { events: ChurchEvent[]; locale: stri
   )
 }
 
+// ─── Skeleton card ─────────────────────────────────────────────────────────────
+
+function SkeletonEventCard({ featured }: { featured?: boolean }) {
+  return (
+    <div className={cn("animate-pulse overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm", featured ? "h-64" : "flex h-24 gap-4 p-4")}>
+      {featured ? (
+        <div className="h-full w-full bg-gray-200" />
+      ) : (
+        <>
+          <div className="h-16 w-16 shrink-0 rounded-lg bg-gray-200" />
+          <div className="flex flex-1 flex-col gap-2 pt-1">
+            <div className="h-3 w-20 rounded bg-gray-200" />
+            <div className="h-4 w-3/4 rounded bg-gray-200" />
+            <div className="h-3 w-1/2 rounded bg-gray-200" />
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export function EvenementsContent() {
   const { t, locale } = useI18n()
+  const { data: events, isLoading, isError } = useEvents()
 
   const upcoming = useMemo(
-    () => CHURCH_EVENTS.filter(isEventUpcoming).sort((a, b) => a.startDate.localeCompare(b.startDate)),
-    [],
+    () => events.filter(isEventUpcoming).sort((a, b) => a.startDate.localeCompare(b.startDate)),
+    [events],
   )
   const past = useMemo(
-    () => CHURCH_EVENTS.filter((e) => !isEventUpcoming(e)).sort((a, b) => b.startDate.localeCompare(a.startDate)),
-    [],
+    () => events.filter((e) => !isEventUpcoming(e)).sort((a, b) => b.startDate.localeCompare(a.startDate)),
+    [events],
   )
 
   const [activeCategory, setActiveCategory] = useState<string | null>(null)
 
-  const categories = useMemo(() => Array.from(new Set(CHURCH_EVENTS.map((e) => e.category))), [])
+  const categories = useMemo(() => Array.from(new Set(events.map((e) => e.category))), [events])
 
   const filteredUpcoming = activeCategory ? upcoming.filter((e) => e.category === activeCategory) : upcoming
   const filteredPast     = activeCategory ? past.filter((e) => e.category === activeCategory)     : past
@@ -413,17 +436,33 @@ export function EvenementsContent() {
 
       {/* ── Contenu principal : événements + calendrier ────────── */}
       <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20 lg:px-8">
+
+        {isError && (
+          <div className="mb-6 flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
+            <span className="font-semibold">Données hors ligne</span>
+            <span className="text-amber-600">— Impossible de contacter le serveur. Les événements affichés sont les données locales.</span>
+          </div>
+        )}
+
         <div className="grid gap-12 lg:grid-cols-[1fr_380px] lg:gap-10">
 
           {/* Colonne gauche : événements à venir */}
           <div>
             <motion.p {...inView()} variants={fadeUp} className="mb-6 text-sm font-semibold uppercase tracking-widest text-cecj-green/60">
-              {filteredUpcoming.length > 0
-                ? `${filteredUpcoming.length} événement${filteredUpcoming.length > 1 ? "s" : ""} à venir`
-                : t("events.noUpcoming")}
+              {isLoading
+                ? "Chargement des événements…"
+                : filteredUpcoming.length > 0
+                  ? `${filteredUpcoming.length} événement${filteredUpcoming.length > 1 ? "s" : ""} à venir`
+                  : t("events.noUpcoming")}
             </motion.p>
 
-            {filteredUpcoming.length > 0 ? (
+            {isLoading ? (
+              <div className="space-y-5">
+                <SkeletonEventCard featured />
+                <SkeletonEventCard />
+                <SkeletonEventCard />
+              </div>
+            ) : filteredUpcoming.length > 0 ? (
               <motion.div {...inView()} variants={stagger} className="space-y-5">
                 {filteredUpcoming.map((event, i) => (
                   <motion.div key={event.id} variants={fadeUp}>
@@ -443,7 +482,7 @@ export function EvenementsContent() {
             <p className="text-sm font-semibold uppercase tracking-widest text-cecj-green/60">
               {t("evenementsPage.calendar_title")}
             </p>
-            <EventCalendar events={CHURCH_EVENTS} locale={locale} />
+            <EventCalendar events={events} locale={locale} />
 
             {/* Légende des catégories */}
             <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">

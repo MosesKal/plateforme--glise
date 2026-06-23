@@ -16,7 +16,7 @@ export interface Departement {
 export const LEADERSHIP: Leader[] = [
   {
     nom: "Apôtre Paulin Mambwe",
-    titre: { fr: "Apôtre — Fondateur", en: "Apostle — Founder" },
+    titre: { fr: "Pasteur Titulaire", en: "Titular Pastor" },
     description: {
       fr: "Fondateur et visionnaire du Camp de Jésus-Christ Bel-Air Fizi, il conduit l'œuvre depuis 2016 avec une passion pour la saine doctrine et l'expansion du Royaume.",
       en: "Founder and visionary of Camp de Jésus-Christ Bel-Air Fizi, he has led the work since 2016 with a passion for sound doctrine and the expansion of the Kingdom.",

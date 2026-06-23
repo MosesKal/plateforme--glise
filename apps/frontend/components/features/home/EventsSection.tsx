@@ -8,7 +8,8 @@ import { cn } from "@/lib/utils"
 import { fadeUp, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { SITE_ROUTES } from "@/constants/routes"
-import { CHURCH_EVENTS, isEventUpcoming, type ChurchEvent } from "@/constants/events"
+import { isEventUpcoming, type ChurchEvent } from "@/constants/events"
+import { useEvents } from "@/hooks/useEvents"
 import { ClockIcon, MapPinIcon, ChevronLeftIcon, ChevronRightIcon } from "@/components/ui/icons"
 
 function CalendarBadge({ day, month, compact }: { day: string; month: string; compact?: boolean }) {
@@ -173,9 +174,10 @@ function PastEventsCarousel({ events }: { events: ChurchEvent[] }) {
 
 export function EventsSection() {
   const { t, locale } = useI18n()
+  const { data: events } = useEvents()
 
-  const upcoming = CHURCH_EVENTS.filter(isEventUpcoming).sort((a, b) => a.startDate.localeCompare(b.startDate))
-  const past = CHURCH_EVENTS.filter((event) => !isEventUpcoming(event)).sort((a, b) => b.startDate.localeCompare(a.startDate))
+  const upcoming = events.filter(isEventUpcoming).sort((a, b) => a.startDate.localeCompare(b.startDate))
+  const past = events.filter((event) => !isEventUpcoming(event)).sort((a, b) => b.startDate.localeCompare(a.startDate))
 
   return (
     <section className="bg-cecj-tint px-4 py-14 sm:py-20">

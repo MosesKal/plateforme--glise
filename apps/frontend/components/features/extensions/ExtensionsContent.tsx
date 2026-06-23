@@ -12,16 +12,9 @@ import {
   type Extension,
   type Continent,
 } from "@/constants/extensions"
+import { useExtensions } from "@/hooks/useExtensions"
 import { fadeUp, stagger, scaleUp, inView } from "@/lib/motion"
 import { cn } from "@/lib/utils"
-
-// ─── Stats ────────────────────────────────────────────────────────────────────
-
-const STATS = {
-  extensions: EXTENSIONS.length,
-  countries:  new Set(EXTENSIONS.map((e) => e.countryCode)).size,
-  continents: new Set(EXTENSIONS.map((e) => e.continent)).size,
-}
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
@@ -42,6 +35,33 @@ const I = {
   locate:  "M15 10.5a3 3 0 11-6 0 3 3 0 016 0zM19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z",
   calendar:"M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5",
   cross:   "M6 18L18 6M6 6l12 12",
+}
+
+// ─── Skeleton card ────────────────────────────────────────────────────────────
+
+function SkeletonCard() {
+  return (
+    <div className="animate-pulse overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
+      <div className="h-1.5 w-full bg-gray-100" />
+      <div className="flex flex-col gap-3 p-5">
+        <div className="flex items-start justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="h-8 w-8 rounded-full bg-gray-100" />
+            <div className="h-3 w-32 rounded bg-gray-100" />
+          </div>
+          <div className="h-5 w-14 rounded-full bg-gray-100" />
+        </div>
+        <div className="space-y-1.5">
+          <div className="h-3 w-16 rounded bg-gray-100" />
+          <div className="h-4 w-48 rounded bg-gray-100" />
+        </div>
+        <div className="space-y-1.5">
+          <div className="h-3 w-36 rounded bg-gray-100" />
+          <div className="h-3 w-24 rounded bg-gray-100" />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 // ─── Extension card ───────────────────────────────────────────────────────────
@@ -72,7 +92,6 @@ function ExtensionCard({
         isNearest ? "border-cecj-green/40 ring-1 ring-cecj-green/20" : "border-gray-100",
       )}
     >
-      {/* Bandeau supérieur coloré */}
       <div className={cn(
         "h-1.5 w-full",
         isNearest ? "bg-cecj-green" :
@@ -81,7 +100,6 @@ function ExtensionCard({
       )} />
 
       <div className="flex flex-1 flex-col gap-3 p-5">
-        {/* Header : drapeau + badges */}
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2.5">
             <span className="text-2xl leading-none" role="img" aria-label={ext.country}>
@@ -106,7 +124,6 @@ function ExtensionCard({
           </div>
         </div>
 
-        {/* Nom */}
         <div>
           <span className="mb-1 inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-gray-500">
             {typeLbl}
@@ -114,7 +131,6 @@ function ExtensionCard({
           <h3 className="mt-1 font-bold leading-snug text-cecj-green">{ext.name}</h3>
         </div>
 
-        {/* Distance */}
         {distanceKm !== undefined && (
           <div className="flex items-center gap-1.5 text-sm font-semibold text-cecj-green">
             <Icon d={I.pin} className="h-4 w-4 shrink-0 text-cecj-green" />
@@ -127,29 +143,36 @@ function ExtensionCard({
           </div>
         )}
 
-        {/* Infos principales */}
         <div className="space-y-1.5 text-sm text-gray-500">
           {ext.pastor && (
             <div className="flex items-center gap-2">
               <Icon d={I.user} className="h-4 w-4 shrink-0 text-cecj-green/60" />
-              <span><span className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t("extensionsPage.pastor_label")} </span>{ext.pastor}</span>
+              <span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t("extensionsPage.pastor_label")} </span>
+                {ext.pastor}
+              </span>
             </div>
           )}
           {ext.founded && (
             <div className="flex items-center gap-2">
               <Icon d={I.calendar} className="h-4 w-4 shrink-0 text-cecj-green/60" />
-              <span><span className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t("extensionsPage.founded_label")} </span>{ext.founded}</span>
+              <span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t("extensionsPage.founded_label")} </span>
+                {ext.founded}
+              </span>
             </div>
           )}
           {ext.members && (
             <div className="flex items-center gap-2">
               <Icon d={I.globe} className="h-4 w-4 shrink-0 text-cecj-green/60" />
-              <span><span className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t("extensionsPage.members_label")} </span>{ext.members}</span>
+              <span>
+                <span className="text-xs font-semibold uppercase tracking-wide text-gray-400">{t("extensionsPage.members_label")} </span>
+                {ext.members}
+              </span>
             </div>
           )}
         </div>
 
-        {/* Détails dépliables */}
         <AnimatePresence>
           {expanded && (
             <motion.div
@@ -176,7 +199,6 @@ function ExtensionCard({
           )}
         </AnimatePresence>
 
-        {/* Toggle détails */}
         {(ext.address || ext.phone) && (
           <button
             onClick={() => setExpanded((v) => !v)}
@@ -215,11 +237,20 @@ export function ExtensionsContent() {
   const { t, locale } = useI18n()
   const lang = locale as "fr" | "en"
 
-  const [query,        setQuery]        = useState("")
-  const [continent,    setContinent]    = useState<Continent | "all">("all")
-  const [userPos,      setUserPos]      = useState<UserPos>(null)
-  const [geoLoading,   setGeoLoading]   = useState(false)
-  const [geoError,     setGeoError]     = useState(false)
+  const { data: extensions = EXTENSIONS, isLoading, isError } = useExtensions()
+
+  const [query,      setQuery]      = useState("")
+  const [continent,  setContinent]  = useState<Continent | "all">("all")
+  const [userPos,    setUserPos]    = useState<UserPos>(null)
+  const [geoLoading, setGeoLoading] = useState(false)
+  const [geoError,   setGeoError]   = useState(false)
+
+  // Stats calculées depuis les données réelles
+  const stats = useMemo(() => ({
+    extensions: extensions.length,
+    countries:  new Set(extensions.map((e) => e.countryCode)).size,
+    continents: new Set(extensions.map((e) => e.continent)).size,
+  }), [extensions])
 
   // Geolocation
   const handleLocate = () => {
@@ -241,11 +272,11 @@ export function ExtensionsContent() {
 
   // Distances
   const withDistance = useMemo(() => {
-    if (!userPos) return EXTENSIONS.map((e) => ({ ext: e, dist: undefined as number | undefined }))
-    return EXTENSIONS
+    if (!userPos) return extensions.map((e) => ({ ext: e, dist: undefined as number | undefined }))
+    return extensions
       .map((e) => ({ ext: e, dist: haversineKm(userPos.lat, userPos.lng, e.lat, e.lng) }))
       .sort((a, b) => (a.dist ?? 0) - (b.dist ?? 0))
-  }, [userPos])
+  }, [userPos, extensions])
 
   const nearestId = userPos ? withDistance[0]?.ext.id : undefined
 
@@ -304,12 +335,12 @@ export function ExtensionsContent() {
               {t("extensionsPage.hero_subtitle")}
             </motion.p>
 
-            {/* Stats */}
+            {/* Stats live */}
             <motion.div variants={stagger} className="flex justify-center gap-6 pt-2 sm:gap-12">
               {[
-                { value: `${STATS.extensions}+`, label: t("extensionsPage.stat_extensions") },
-                { value: `${STATS.countries}+`,  label: t("extensionsPage.stat_countries")  },
-                { value: `${STATS.continents}`,  label: t("extensionsPage.stat_continents") },
+                { value: `${stats.extensions}+`, label: t("extensionsPage.stat_extensions") },
+                { value: `${stats.countries}+`,  label: t("extensionsPage.stat_countries")  },
+                { value: `${stats.continents}`,  label: t("extensionsPage.stat_continents") },
               ].map(({ value, label }) => (
                 <motion.div key={label as string} variants={fadeUp} className="text-center">
                   <p className="text-3xl font-bold text-cecj-gold sm:text-4xl">{value}</p>
@@ -343,7 +374,6 @@ export function ExtensionsContent() {
       {/* ── Filtres + Géolocalisation (sticky) ────────────────────── */}
       <div className="sticky top-[64px] z-30 border-b border-gray-100 bg-white/95 backdrop-blur-sm">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 lg:px-8">
-          {/* Tabs continent */}
           <div className="no-scrollbar flex flex-1 gap-2 overflow-x-auto">
             {continents.map(({ key, label }) => (
               <button
@@ -361,7 +391,6 @@ export function ExtensionsContent() {
             ))}
           </div>
 
-          {/* Bouton géolocalisation */}
           <button
             onClick={userPos ? clearLocation : handleLocate}
             disabled={geoLoading}
@@ -384,15 +413,25 @@ export function ExtensionsContent() {
         )}
       </div>
 
+      {/* ── Bannière erreur API ────────────────────────────────────── */}
+      {isError && (
+        <div className="bg-amber-50 px-4 py-2 text-center text-xs text-amber-700">
+          Données hors ligne — affichage en mode statique.
+        </div>
+      )}
+
       {/* ── Liste des extensions ────────────────────────────────────── */}
       <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20 lg:px-8">
 
-        {filtered.length === 0 ? (
+        {isLoading ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-gray-50">
             <p className="text-sm text-gray-400">{t("extensionsPage.no_results")}</p>
           </div>
         ) : userPos ? (
-          /* Mode géolocalisation : tri par distance, pas de groupement */
           <div>
             <motion.p {...inView()} variants={fadeUp} className="mb-6 text-sm font-semibold uppercase tracking-widest text-cecj-green/60">
               {filtered.length} église{filtered.length > 1 ? "s" : ""} — triée{filtered.length > 1 ? "s" : ""} par proximité
@@ -404,7 +443,6 @@ export function ExtensionsContent() {
             </motion.div>
           </div>
         ) : grouped ? (
-          /* Mode normal : groupé par pays */
           <div className="space-y-12">
             {grouped.map(({ country, code, items }) => (
               <motion.div key={code} {...inView()} variants={stagger}>
@@ -420,7 +458,6 @@ export function ExtensionsContent() {
           </div>
         ) : null}
       </div>
-
 
     </main>
   )
