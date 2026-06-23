@@ -1,0 +1,310 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─── RBAC ─────────────────────────────────────────────────────────────────────
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+model User {
+  id            String         @id @default(cuid())
+  email         String         @unique
+  password      String
+  firstName     String
+  lastName      String
+  phone         String?
+  avatarUrl     String?
+  status        UserStatus     @default(ACTIVE)
+  roleId        String
+  role          Role           @relation(fields: [roleId], references: [id])
+  refreshTokens RefreshToken[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@map("users")
+}
+
+model Role {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  description String?
+  users       User[]
+  permissions RolePermission[]
+  createdAt   DateTime         @default(now())
+
+  @@map("roles")
+}
+
+model Permission {
+  id       String           @id @default(cuid())
+  action   String           // create | read | update | delete
+  resource String           // events | extensions | gallery | users | sermons ...
+  roles    RolePermission[]
+
+  @@unique([action, resource])
+  @@map("permissions")
+}
+
+model RolePermission {
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([roleId, permissionId])
+  @@map("role_permissions")
+}
+
+model RefreshToken {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("refresh_tokens")
+}
+
+// ─── EXTENSIONS ───────────────────────────────────────────────────────────────
+
+enum ExtensionStatus {
+  ACTIVE
+  INACTIVE
+  COMING_SOON
+}
+
+model Extension {
+  id          String          @id @default(cuid())
+  name        String
+  country     String
+  city        String
+  address     String?
+  phone       String?
+  email       String?
+  pastorName  String?
+  pastorPhone String?
+  latitude    Float?
+  longitude   Float?
+  status      ExtensionStatus @default(ACTIVE)
+  coverImage  String?
+  description String?         @db.Text
+  foundedAt   DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("extensions")
+}
+
+// ─── LEADERS ──────────────────────────────────────────────────────────────────
+
+enum LeaderRole {
+  FOUNDER
+  SENIOR_PASTOR
+  PASTOR
+  ELDER
+  DEACON
+  WORSHIP_LEADER
+  YOUTH_LEADER
+  OTHER
+}
+
+model Leader {
+  id        String     @id @default(cuid())
+  firstName String
+  lastName  String
+  title     String?
+  role      LeaderRole @default(OTHER)
+  bio       String?    @db.Text
+  photoUrl  String?
+  email     String?
+  phone     String?
+  order     Int        @default(0)
+  isActive  Boolean    @default(true)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@map("leaders")
+}
+
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+}
+
+model Event {
+  id            String              @id @default(cuid())
+  titleFr       String
+  titleEn       String?
+  descriptionFr String?             @db.Text
+  descriptionEn String?             @db.Text
+  category      String?
+  speaker       String?
+  organizer     String?
+  startDate     DateTime
+  endDate       DateTime?
+  location      String?
+  address       String?
+  coverImage    String?
+  status        EventStatus         @default(DRAFT)
+  isFeatured    Boolean             @default(false)
+  registrations EventRegistration[]
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  @@map("events")
+}
+
+model EventRegistration {
+  id        String   @id @default(cuid())
+  eventId   String
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  createdAt DateTime @default(now())
+
+  @@unique([eventId, email])
+  @@map("event_registrations")
+}
+
+// ─── GALLERY ──────────────────────────────────────────────────────────────────
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model Album {
+  id          String        @id @default(cuid())
+  title       String
+  description String?
+  coverUrl    String?
+  items       GalleryItem[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@map("albums")
+}
+
+model GalleryItem {
+  id        String    @id @default(cuid())
+  title     String?
+  mediaUrl  String
+  mediaType MediaType @default(IMAGE)
+  albumId   String?
+  album     Album?    @relation(fields: [albumId], references: [id], onDelete: SetNull)
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+
+  @@map("gallery_items")
+}
+
+// ─── SERMONS ──────────────────────────────────────────────────────────────────
+
+model SermonCategory {
+  id      String   @id @default(cuid())
+  name    String   @unique
+  sermons Sermon[]
+
+  @@map("sermon_categories")
+}
+
+model Sermon {
+  id          String          @id @default(cuid())
+  title       String
+  speaker     String
+  description String?         @db.Text
+  videoUrl    String?
+  audioUrl    String?
+  pdfUrl      String?
+  coverImage  String?
+  categoryId  String?
+  category    SermonCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  publishedAt DateTime?
+  isPublished Boolean         @default(false)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@map("sermons")
+}
+
+// ─── DEPARTMENTS ──────────────────────────────────────────────────────────────
+
+model Department {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  leaderName  String?
+  photoUrl    String?
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("departments")
+}
+
+// ─── TESTIMONIES ──────────────────────────────────────────────────────────────
+
+enum TestimonyStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Testimony {
+  id        String          @id @default(cuid())
+  fullName  String
+  content   String          @db.Text
+  photoUrl  String?
+  status    TestimonyStatus @default(PENDING)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@map("testimonies")
+}
+
+// ─── CONTACT & NEWSLETTER ─────────────────────────────────────────────────────
+
+enum ContactStatus {
+  UNREAD
+  READ
+  REPLIED
+}
+
+model ContactMessage {
+  id        String        @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String
+  phone     String?
+  subject   String
+  message   String        @db.Text
+  status    ContactStatus @default(UNREAD)
+  createdAt DateTime      @default(now())
+
+  @@map("contact_messages")
+}
+
+model NewsletterSubscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  isActive     Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+
+  @@map("newsletter_subscribers")
+}

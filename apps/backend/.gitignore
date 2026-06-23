@@ -1,0 +1,22 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Logs
+*.log
+logs/
+
+# Prisma
+prisma/migrations/*.sql.bak
+
+# OS
+.DS_Store
+Thumbs.db
