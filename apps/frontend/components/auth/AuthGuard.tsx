@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/store/auth.store"
 import { getRefreshToken } from "@/lib/token-store"
@@ -8,15 +8,22 @@ import { getRefreshToken } from "@/lib/token-store"
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    // After mount: if no access token in memory AND no refresh token in localStorage → login
-    if (!isAuthenticated && !getRefreshToken()) {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (mounted && !isAuthenticated && !getRefreshToken()) {
       router.replace("/fr/login")
     }
-  }, [isAuthenticated, router])
+  }, [mounted, isAuthenticated, router])
 
-  // While AuthInitializer is restoring the session, show a loading state
+  // Same render on server and first client pass — avoids hydration mismatch
+  if (!mounted) return null
+
+  // After mount: waiting for AuthInitializer to restore the session from localStorage
   if (!isAuthenticated && getRefreshToken()) {
     return (
       <div className="flex h-screen items-center justify-center bg-gray-50">
