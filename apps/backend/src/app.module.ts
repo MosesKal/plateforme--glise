@@ -8,6 +8,7 @@ import { EventsModule } from './events/events.module';
 import { GalleryModule } from './gallery/gallery.module';
 import { LeadersModule } from './leaders/leaders.module';
 import { ContactModule } from './contact/contact.module';
+import { ScheduleModule } from './schedule/schedule.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
@@ -23,6 +24,7 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
     GalleryModule,
     LeadersModule,
     ContactModule,
+    ScheduleModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

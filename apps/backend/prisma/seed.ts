@@ -299,6 +299,64 @@ async function main() {
   })
   console.log("OK 9 evenements crees")
 
+  // ── Programme hebdomadaire (récurrent) ─────────────────────────────────────
+
+  await prisma.scheduleEntry.deleteMany({ where: { isRecurring: true } })
+  await prisma.scheduleEntry.createMany({
+    data: [
+      {
+        title:      "Culte Matinal",
+        days:       ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"],
+        startTime:  "06:00",
+        endTime:    "07:00",
+        category:   "Prière",
+        isRecurring: true,
+        sortOrder:  0,
+      },
+      {
+        title:      "Culte des Mamans",
+        days:       ["Mardi"],
+        startTime:  "16:00",
+        endTime:    "17:30",
+        category:   "Famille",
+        isRecurring: true,
+        sortOrder:  1,
+      },
+      {
+        title:           "Nuit de Prière",
+        days:            ["Mardi"],
+        startTime:       "21:00",
+        endTime:         "00:00",
+        category:        "Prière",
+        liveOnYoutube:   true,
+        isRecurring:     true,
+        sortOrder:       2,
+      },
+      {
+        title:         "Culte d'Enseignements et Prières",
+        days:          ["Mercredi", "Jeudi", "Vendredi"],
+        startTime:     "12:00",
+        endTime:       "18:00",
+        category:      "Enseignement",
+        liveOnYoutube: true,
+        isRecurring:   true,
+        sortOrder:     3,
+      },
+      {
+        title:              "Culte de Dimanche",
+        days:               ["Dimanche"],
+        startTime:          "08:00",
+        endTime:            "11:00",
+        category:           "Adoration",
+        liveOnYoutube:      true,
+        facebookPhotosAfter: true,
+        isRecurring:        true,
+        sortOrder:          4,
+      },
+    ],
+  })
+  console.log("OK Programme hebdomadaire seede (5 entrees recurrentes)")
+
   console.log("\nSeed termine avec succes !")
   console.log("  Super Admin : admin@cecj.org")
   console.log("  Mot de passe: Admin1234!")

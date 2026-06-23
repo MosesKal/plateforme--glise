@@ -5,8 +5,9 @@ import { cn } from "@/lib/utils"
 import { fadeUp, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { CHURCH_INFO } from "@/constants/church"
-import { WEEKLY_PROGRAM, type ProgramActivity } from "@/constants/weeklyProgram"
+import type { ProgramActivity } from "@/constants/weeklyProgram"
 import { ClockIcon, FacebookIcon, YouTubeIcon } from "@/components/ui/icons"
+import { useWeeklySchedule } from "@/hooks/useWeeklySchedule"
 
 const FRENCH_WEEKDAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
 const DISPLAY_WEEK_DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
@@ -152,6 +153,8 @@ function ActivityCard({ activity, today }: { activity: ProgramActivity; today: s
 export function WeeklyProgramSection() {
   const { t, locale } = useI18n()
   const today = getTodayLabel()
+  const { data } = useWeeklySchedule()
+  const program = data?.program ?? []
 
   return (
     <section
@@ -172,6 +175,12 @@ export function WeeklyProgramSection() {
           <motion.p variants={fadeUp} className="mt-3 text-base italic text-cecj-green/70">
             {CHURCH_INFO.slogan}
           </motion.p>
+          {data?.source === "weekly" && (
+            <motion.p variants={fadeUp} className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-cecj-gold/20 px-4 py-1 text-sm font-semibold text-cecj-green">
+              <span className="h-1.5 w-1.5 rounded-full bg-cecj-gold" />
+              Programme spécial cette semaine
+            </motion.p>
+          )}
         </motion.div>
 
         <motion.ul
@@ -179,7 +188,7 @@ export function WeeklyProgramSection() {
           variants={staggerSlow}
           {...inView("-40px")}
         >
-          {WEEKLY_PROGRAM.map((activity) => (
+          {program.map((activity) => (
             <ActivityCard key={activity.id} activity={activity} today={today} />
           ))}
         </motion.ul>

@@ -11,6 +11,7 @@ const navItems = [
   { label: "Utilisateurs",    href: ADMIN_ROUTES.utilisateurs },
   { label: "Rôles",           href: ADMIN_ROUTES.roles },
   { label: "Événements",      href: ADMIN_ROUTES.evenements },
+  { label: "Programme",       href: ADMIN_ROUTES.programme },
   { label: "Galerie",         href: ADMIN_ROUTES.galerie },
   { label: "Extensions",      href: ADMIN_ROUTES.extensions },
   { label: "Pages",           href: ADMIN_ROUTES.pages },

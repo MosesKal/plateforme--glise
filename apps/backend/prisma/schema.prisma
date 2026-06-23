@@ -105,6 +105,27 @@ model Extension {
   @@map("extensions")
 }
 
+// ─── PROGRAMME HEBDOMADAIRE ───────────────────────────────────────────────────
+
+model ScheduleEntry {
+  id                  String    @id @default(cuid())
+  title               String
+  days                String[]
+  startTime           String
+  endTime             String
+  category            String
+  liveOnYoutube       Boolean   @default(false)
+  facebookPhotosAfter Boolean   @default(false)
+  isRecurring         Boolean   @default(true)
+  weekStart           DateTime?
+  sortOrder           Int       @default(0)
+  isActive            Boolean   @default(true)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  @@map("schedule_entries")
+}
+
 // ─── LEADERS ──────────────────────────────────────────────────────────────────
 
 enum LeaderRole {

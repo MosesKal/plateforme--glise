@@ -24,6 +24,7 @@ export const ADMIN_ROUTES = {
   utilisateurs: "/admin/utilisateurs",
   roles:        "/admin/roles",
   evenements:   "/admin/evenements",
+  programme:    "/admin/programme",
   galerie:      "/admin/galerie",
   extensions:   "/admin/extensions",
   pages:        "/admin/pages",
