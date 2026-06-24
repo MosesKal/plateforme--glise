@@ -12,6 +12,7 @@ import { LeadersModule } from './leaders/leaders.module';
 import { ContactModule } from './contact/contact.module';
 import { SermonsModule } from './sermons/sermons.module';
 import { TestimoniesModule } from './testimonies/testimonies.module';
+import { DepartmentsModule } from './departments/departments.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
@@ -32,6 +33,7 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
     ContactModule,
     SermonsModule,
     TestimoniesModule,
+    DepartmentsModule,
     ScheduleModule,
   ],
   providers: [
