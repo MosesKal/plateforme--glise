@@ -138,10 +138,10 @@ export function ExtensionFormModal({ open, onClose, onSubmit, initialData }: Pro
           {/* Géolocalisation */}
           <div className="grid grid-cols-2 gap-4">
             <Field label="Latitude">
-              <input {...register("latitude")} type="number" step="any" className={inputCls} placeholder="50.8503" />
+              <input {...register("latitude", { valueAsNumber: true })} type="number" step="any" className={inputCls} placeholder="50.8503" />
             </Field>
             <Field label="Longitude">
-              <input {...register("longitude")} type="number" step="any" className={inputCls} placeholder="4.3517" />
+              <input {...register("longitude", { valueAsNumber: true })} type="number" step="any" className={inputCls} placeholder="4.3517" />
             </Field>
           </div>
 

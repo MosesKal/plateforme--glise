@@ -9,15 +9,9 @@ export const extensionSchema = z.object({
   email:       z.union([z.literal(""), z.string().email("Email invalide")]).optional(),
   pastorName:  z.string().optional(),
   pastorPhone: z.string().optional(),
-  latitude:    z.preprocess(
-    (v) => (v === "" || v === null || v === undefined ? undefined : Number(v)),
-    z.number().optional(),
-  ),
-  longitude:   z.preprocess(
-    (v) => (v === "" || v === null || v === undefined ? undefined : Number(v)),
-    z.number().optional(),
-  ),
-  status:      z.enum(["ACTIVE", "INACTIVE", "COMING_SOON"]).default("ACTIVE"),
+  latitude:    z.number().optional(),
+  longitude:   z.number().optional(),
+  status:      z.enum(["ACTIVE", "INACTIVE", "COMING_SOON"]),
   coverImage:  z.string().optional(),
   description: z.string().optional(),
   foundedAt:   z.string().optional(),
