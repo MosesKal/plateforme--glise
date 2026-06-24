@@ -1,10 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { motion, type Variants } from "framer-motion"
+import { useQuery } from "@tanstack/react-query"
 import { Skeleton } from "@/components/ui/Skeleton"
 import { cn } from "@/lib/utils"
+import type { GalleryAlbum } from "@/lib/api/admin/gallery"
+import { adminGalleryApi } from "@/lib/api/admin/gallery"
 
 const scaleUp: Variants = {
   hidden: { opacity: 0, scale: 0.92 },
@@ -16,20 +19,6 @@ const staggerSlow: Variants = {
   visible: { transition: { staggerChildren: 0.06 } },
 }
 
-// Données statiques — à remplacer par un appel React Query vers l'API
-const galerieImages = [
-  { src: "/image_1.jpg",  alt: "Vie de la communauté" },
-  { src: "/image_2.jpg",  alt: "Vie de la communauté" },
-  { src: "/image_3.jpg",  alt: "Vie de la communauté" },
-  { src: "/image_4.jpg",  alt: "Vie de la communauté" },
-  { src: "/image_5.jpg",  alt: "Vie de la communauté" },
-  { src: "/image_6.jpg",  alt: "Vie de la communauté" },
-  { src: "/image_7.jpg",  alt: "Vie de la communauté" },
-  { src: "/image_8.jpg",  alt: "Vie de la communauté" },
-  { src: "/image_9.jpg",  alt: "Vie de la communauté" },
-  { src: "/image_10.jpg", alt: "Vie de la communauté" },
-]
-
 function GalerieImageCard({ src, alt }: { src: string; alt: string }) {
   const [loaded, setLoaded] = useState(false)
 
@@ -38,9 +27,7 @@ function GalerieImageCard({ src, alt }: { src: string; alt: string }) {
       variants={scaleUp}
       className="group relative aspect-square overflow-hidden rounded-xl"
     >
-      {!loaded && (
-        <div className="absolute inset-0 animate-pulse bg-cecj-green/10" />
-      )}
+      {!loaded && <div className="absolute inset-0 animate-pulse bg-cecj-green/10" />}
       <Image
         src={src}
         alt={alt}
@@ -58,13 +45,23 @@ function GalerieImageCard({ src, alt }: { src: string; alt: string }) {
 }
 
 export function GaleriePageContent() {
-  // isLoading simule le délai d'un appel API — à remplacer par useQuery
-  const [isLoading, setIsLoading] = useState(true)
+  const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null)
 
-  useEffect(() => {
-    const timer = setTimeout(() => setIsLoading(false), 1200)
-    return () => clearTimeout(timer)
-  }, [])
+  const { data: albums = [] } = useQuery<GalleryAlbum[]>({
+    queryKey: ["public", "gallery", "albums"],
+    queryFn: adminGalleryApi.listAlbums,
+  })
+
+  const { data: itemsData, isLoading } = useQuery({
+    queryKey: ["public", "gallery", "items", selectedAlbumId],
+    queryFn: () => adminGalleryApi.listItems({
+      albumId: selectedAlbumId ?? undefined,
+      mediaType: "IMAGE",
+      limit: 50,
+    }),
+  })
+
+  const items = itemsData?.items ?? []
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 sm:py-16">
@@ -74,11 +71,45 @@ export function GaleriePageContent() {
         <p className="text-gray-500">Photos et moments marquants de la communauté C.E.C.J.</p>
       </div>
 
+      {albums.length > 0 && (
+        <div className="mb-6 flex flex-wrap gap-2">
+          <button
+            onClick={() => setSelectedAlbumId(null)}
+            className={cn(
+              "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+              selectedAlbumId === null
+                ? "bg-cecj-green text-white"
+                : "border border-gray-200 text-gray-600 hover:border-cecj-green hover:text-cecj-green",
+            )}
+          >
+            Tout voir
+          </button>
+          {albums.map((album) => (
+            <button
+              key={album.id}
+              onClick={() => setSelectedAlbumId(album.id)}
+              className={cn(
+                "rounded-full px-4 py-1.5 text-sm font-medium transition-colors",
+                selectedAlbumId === album.id
+                  ? "bg-cecj-green text-white"
+                  : "border border-gray-200 text-gray-600 hover:border-cecj-green hover:text-cecj-green",
+              )}
+            >
+              {album.title}
+            </button>
+          ))}
+        </div>
+      )}
+
       {isLoading ? (
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 md:grid-cols-4 lg:grid-cols-5">
           {Array.from({ length: 10 }).map((_, i) => (
             <Skeleton key={i} className="aspect-square w-full rounded-xl" />
           ))}
+        </div>
+      ) : items.length === 0 ? (
+        <div className="py-20 text-center">
+          <p className="text-gray-400">Aucune photo disponible pour le moment.</p>
         </div>
       ) : (
         <motion.div
@@ -87,8 +118,8 @@ export function GaleriePageContent() {
           initial="hidden"
           animate="visible"
         >
-          {galerieImages.map((img) => (
-            <GalerieImageCard key={img.src} src={img.src} alt={img.alt} />
+          {items.map((item) => (
+            <GalerieImageCard key={item.id} src={item.mediaUrl} alt={item.title ?? "Photo C.E.C.J."} />
           ))}
         </motion.div>
       )}

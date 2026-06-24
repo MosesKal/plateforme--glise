@@ -10,10 +10,10 @@ import {
 } from '@nestjs/common';
 import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
-import { PaginationDto } from '../common/dto/pagination.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { RegisterEventDto } from './dto/register-event.dto';
+import { EventsQueryDto } from './dto/events-query.dto';
 import { EventsService } from './events.service';
 
 @Controller('events')
@@ -22,12 +22,8 @@ export class EventsController {
 
   @Public()
   @Get()
-  findAll(
-    @Query() pagination: PaginationDto,
-    @Query('upcoming') upcoming?: string,
-    @Query('status') status?: string,
-  ) {
-    return this.eventsService.findAll(pagination, upcoming === 'true', status);
+  findAll(@Query() query: EventsQueryDto) {
+    return this.eventsService.findAll(query, query.upcoming === 'true', query.status);
   }
 
   @Public()
