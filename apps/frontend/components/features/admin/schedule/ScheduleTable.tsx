@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { Fragment, useState } from "react"
 import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
 import type { AdminScheduleEntry } from "@/lib/api/admin/schedule"
@@ -209,8 +209,8 @@ export function ScheduleTable({ entries, onEdit, onDelete }: Props) {
               </>
             )}
             {Object.entries(specialsByWeek).map(([weekStart, weekEntries]) => (
-              <>
-                <tr key={weekStart} className="bg-amber-50/50">
+              <Fragment key={weekStart}>
+                <tr className="bg-amber-50/50">
                   <td colSpan={6} className="px-4 py-2">
                     <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-700">
                       <span>Semaine spéciale</span>
@@ -220,7 +220,7 @@ export function ScheduleTable({ entries, onEdit, onDelete }: Props) {
                   </td>
                 </tr>
                 {weekEntries.map((e) => <Row key={e.id} entry={e} />)}
-              </>
+              </Fragment>
             ))}
           </tbody>
         </table>

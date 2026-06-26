@@ -1,5 +1,6 @@
 import type { ReactNode } from "react"
 import { Montserrat } from "next/font/google"
+import NextTopLoader from "nextjs-toploader"
 import { AdminSidebar } from "@/components/layout/AdminSidebar"
 import { Header } from "@/components/layout/Header"
 import { AuthGuard } from "@/components/auth/AuthGuard"
@@ -17,6 +18,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="fr" className={`${montserrat.variable} h-full antialiased`} suppressHydrationWarning>
       <body className="h-full">
+        <NextTopLoader color="#ffcb32" height={3} showSpinner={false} />
         <ReactQueryProvider>
           <AuthInitializer />
           <AuthGuard>
