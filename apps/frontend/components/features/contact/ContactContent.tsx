@@ -208,7 +208,11 @@ const INFO_ITEMS = [
       </svg>
     ),
     label: "Adresse",
-    value: "Kinshasa, République Démocratique du Congo",
+    value: "13 Avenue Bondo, Bel-Air Kilobelobe\nRéf. Arrêt Fizi, Lubumbashi, RDC",
+    link: {
+      href: "https://maps.google.com/?q=13+Avenue+Bondo+Bel-Air+Kilobelobe+Lubumbashi",
+      label: "Voir l'itinéraire →",
+    },
   },
   {
     icon: (
@@ -217,7 +221,11 @@ const INFO_ITEMS = [
       </svg>
     ),
     label: "Téléphone",
-    value: "+243 81 000 0000",
+    value: "+243 898 700 596",
+    link: {
+      href: "tel:+243898700596",
+      label: "Contact →",
+    },
   },
   {
     icon: (
@@ -227,6 +235,10 @@ const INFO_ITEMS = [
     ),
     label: "Email",
     value: "contact@cecj.org",
+    link: {
+      href: "mailto:contact@cecj.org",
+      label: "Contact →",
+    },
   },
   {
     icon: (
@@ -236,6 +248,7 @@ const INFO_ITEMS = [
     ),
     label: "Cultes",
     value: "Dimanche 09h00 & 11h30",
+    link: null,
   },
 ]
 
@@ -301,7 +314,17 @@ export function ContactContent() {
                     <p className="text-xs font-bold uppercase tracking-widest text-gray-400">
                       {item.label}
                     </p>
-                    <p className="mt-0.5 text-sm font-medium text-gray-700">{item.value}</p>
+                    <p className="mt-0.5 text-sm font-medium text-gray-700 whitespace-pre-line">{item.value}</p>
+                    {item.link && (
+                      <a
+                        href={item.link.href}
+                        target={item.link.href.startsWith("http") ? "_blank" : undefined}
+                        rel={item.link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                        className="mt-1 inline-flex items-center text-xs font-bold text-cecj-green hover:opacity-70"
+                      >
+                        {item.link.label}
+                      </a>
+                    )}
                   </div>
                 </motion.div>
               ))}
