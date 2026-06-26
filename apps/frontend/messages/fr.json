@@ -11,8 +11,11 @@
     "evenements": "Événements",
     "galerie": "Galerie",
     "leadership": "Leadership",
+    "temoignages": "Témoignages",
+    "departements": "Départements",
     "contact": "Contact",
-    "lecture": "Lecture Biblique"
+    "lecture": "Lecture Biblique",
+    "explorer": "Explorer"
   },
   "organisation": {
     "meta_title": "Organisation",

@@ -13,16 +13,10 @@ import { fadeUp, fadeIn, stagger, staggerSlow, scaleUp, inView } from "@/lib/mot
 import { useI18n } from "@/components/providers/I18nProvider"
 import { useQuery } from "@tanstack/react-query"
 import { adminTestimoniesApi } from "@/lib/api/admin/testimonies"
-import { adminGalleryApi } from "@/lib/api/admin/gallery"
 import { TestimonySpotlight } from "./TestimonySpotlight"
 import { WeeklyProgramSection } from "./WeeklyProgramSection"
 import { AmbianceCultesSection } from "./AmbianceCultesSection"
 import { EventsSection } from "./EventsSection"
-import { GalleryLightbox } from "./GalleryLightbox"
-
-
-const GALLERY_PREVIEW_COUNT = 8
-const GALLERY_MOBILE_COUNT = 4
 
 // ── Static data (placeholder — à remplacer par API) ───────────────────────────
 
@@ -126,64 +120,11 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
   return <span ref={ref}>{current}{suffix}</span>
 }
 
-function GalerieImageCard({
-  src,
-  alt,
-  onClick,
-  extraCount,
-  mobileExtraCount,
-  className,
-}: {
-  src: string
-  alt: string
-  onClick: () => void
-  extraCount?: number
-  mobileExtraCount?: number
-  className?: string
-}) {
-  const [loaded, setLoaded] = useState(false)
-  return (
-    <motion.button
-      type="button"
-      onClick={onClick}
-      variants={scaleUp}
-      className={cn("group relative aspect-square overflow-hidden rounded-xl", className)}
-    >
-      {!loaded && (
-        <div className="absolute inset-0 animate-pulse bg-cecj-green/10" />
-      )}
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        className={cn(
-          "object-cover transition-all duration-500 group-hover:scale-110",
-          loaded ? "opacity-100" : "opacity-0",
-        )}
-        sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, (max-width: 1024px) 25vw, 20vw"
-        onLoad={() => setLoaded(true)}
-      />
-      <div className="absolute inset-0 bg-cecj-green/0 transition-colors duration-300 group-hover:bg-cecj-green/30" />
-      {!!extraCount && extraCount > 0 && (
-        <div className="absolute inset-0 hidden items-center justify-center bg-black/50 text-lg font-bold text-white sm:flex">
-          +{extraCount}
-        </div>
-      )}
-      {!!mobileExtraCount && mobileExtraCount > 0 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 text-lg font-bold text-white sm:hidden">
-          +{mobileExtraCount}
-        </div>
-      )}
-    </motion.button>
-  )
-}
-
 // ── Component ─────────────────────────────────────────────────────────────────
 
 export function HomePageContent() {
   const { locale, t } = useI18n()
   const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
-  const [galleryIndex, setGalleryIndex] = useState<number | null>(null)
 
   const valeurs = t("values.items") as Array<{ label: string; desc: string }>
   const piliers = t("vision.piliers") as string[]
@@ -193,17 +134,9 @@ export function HomePageContent() {
     queryFn: adminTestimoniesApi.listApproved,
   })
 
-  const { data: galleryData } = useQuery({
-    queryKey: ["public", "gallery", "images"],
-    queryFn: () => adminGalleryApi.listItems({ mediaType: "IMAGE", limit: 20 }),
-  })
-  const galleryImages = (galleryData?.items ?? []).map((item) => item.mediaUrl)
-
   const missionItems = t("mission.items") as string[]
   const aboutCards = t("about.cards") as Array<{ label: string; desc: string }>
-  const galleryPreview = galleryImages.slice(0, GALLERY_PREVIEW_COUNT)
-  const remainingGalleryCount = Math.max(galleryImages.length - GALLERY_PREVIEW_COUNT, 0)
-  const mobileRemainingCount = Math.max(galleryImages.length - GALLERY_MOBILE_COUNT, 0)
+
 
   return (
     <div className="flex min-h-screen flex-col">
