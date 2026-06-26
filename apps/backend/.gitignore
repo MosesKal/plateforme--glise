@@ -17,6 +17,10 @@ logs/
 # Prisma
 prisma/migrations/*.sql.bak
 
+# Uploads (fichiers locaux — en prod remplacés par S3)
+uploads/*
+!uploads/.gitkeep
+
 # OS
 .DS_Store
 Thumbs.db
