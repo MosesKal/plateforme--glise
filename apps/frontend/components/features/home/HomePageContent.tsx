@@ -13,6 +13,7 @@ import { fadeUp, fadeIn, stagger, staggerSlow, scaleUp, inView } from "@/lib/mot
 import { useI18n } from "@/components/providers/I18nProvider"
 import { useQuery } from "@tanstack/react-query"
 import { adminTestimoniesApi } from "@/lib/api/admin/testimonies"
+import { adminGalleryApi } from "@/lib/api/admin/gallery"
 import { TestimonySpotlight } from "./TestimonySpotlight"
 import { WeeklyProgramSection } from "./WeeklyProgramSection"
 import { AmbianceCultesSection } from "./AmbianceCultesSection"
@@ -179,7 +180,7 @@ function GalerieImageCard({
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
-export function HomePageContent({ galleryImages }: { galleryImages: string[] }) {
+export function HomePageContent() {
   const { locale, t } = useI18n()
   const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
   const [galleryIndex, setGalleryIndex] = useState<number | null>(null)
@@ -191,6 +192,13 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
     queryKey: ["public", "testimonies", "approved"],
     queryFn: adminTestimoniesApi.listApproved,
   })
+
+  const { data: galleryData } = useQuery({
+    queryKey: ["public", "gallery", "images"],
+    queryFn: () => adminGalleryApi.listItems({ mediaType: "IMAGE", limit: 20 }),
+  })
+  const galleryImages = (galleryData?.items ?? []).map((item) => item.mediaUrl)
+
   const missionItems = t("mission.items") as string[]
   const aboutCards = t("about.cards") as Array<{ label: string; desc: string }>
   const galleryPreview = galleryImages.slice(0, GALLERY_PREVIEW_COUNT)
