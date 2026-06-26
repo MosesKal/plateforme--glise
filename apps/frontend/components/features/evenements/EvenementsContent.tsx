@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { motion } from "framer-motion"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { CHURCH_INFO } from "@/constants/church"
@@ -526,6 +527,30 @@ export function EvenementsContent() {
           </div>
         </section>
       )}
+
+      {/* ── CTA Témoignage ─────────────────────────────────────── */}
+      <section className="border-t border-gray-100 bg-white py-14 sm:py-16">
+        <motion.div {...inView()} variants={fadeIn} className="mx-auto max-w-3xl px-4 text-center lg:px-8">
+          <p className="mb-2 text-xs font-bold uppercase tracking-widest text-cecj-gold">
+            Vous y étiez ?
+          </p>
+          <h2 className="mb-3 text-2xl font-bold text-cecj-green sm:text-3xl">
+            Un de nos cultes ou événements a changé quelque chose dans votre vie ?
+          </h2>
+          <p className="mb-7 text-gray-500">
+            Vos témoignages encouragent toute la communauté. Quelques lignes suffisent.
+          </p>
+          <Link
+            href={`/${locale}/temoignages`}
+            className="inline-flex items-center gap-2 rounded-full bg-cecj-green px-7 py-3 text-sm font-bold text-white transition-all hover:opacity-90 hover:scale-[1.02]"
+          >
+            <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+            Partager mon témoignage
+          </Link>
+        </motion.div>
+      </section>
 
       {/* ── CTA WhatsApp ───────────────────────────────────────── */}
       <section className="bg-cecj-green py-16 sm:py-20">
