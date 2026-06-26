@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, useInView } from "framer-motion"
+import { motion, useInView, AnimatePresence } from "framer-motion"
 import { Navbar } from "@/components/layout/Navbar"
 import { PublicFooter } from "@/components/layout/PublicFooter"
 import { SITE_ROUTES } from "@/constants/routes"
@@ -11,7 +11,9 @@ import { CHURCH_INFO } from "@/constants/church"
 import { cn } from "@/lib/utils"
 import { fadeUp, fadeIn, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
-import { TestimonialsMarquee } from "./TestimonialsMarquee"
+import { useQuery } from "@tanstack/react-query"
+import { adminTestimoniesApi } from "@/lib/api/admin/testimonies"
+import { TestimonySpotlight } from "./TestimonySpotlight"
 import { WeeklyProgramSection } from "./WeeklyProgramSection"
 import { AmbianceCultesSection } from "./AmbianceCultesSection"
 import { EventsSection } from "./EventsSection"
@@ -22,6 +24,81 @@ const GALLERY_PREVIEW_COUNT = 8
 const GALLERY_MOBILE_COUNT = 4
 
 // ── Static data (placeholder — à remplacer par API) ───────────────────────────
+
+// ── Verses carousel ───────────────────────────────────────────────────────────
+
+const TESTIMONY_VERSES = [
+  {
+    text: "Je publierai ton nom à mes frères, je te louerai au milieu de la grande assemblée.",
+    ref: "Psaume 22:22",
+  },
+  {
+    text: "À la loi et au témoignage ! Si l'on ne parle pas d'après cette parole, il n'y aura point d'aurore pour le peuple.",
+    ref: "Ésaïe 8:20",
+  },
+  {
+    text: "Ils l'ont vaincu à cause du sang de l'Agneau et à cause de la parole de leur témoignage.",
+    ref: "Apocalypse 12:11",
+  },
+  {
+    text: "Venez, écoutez, vous tous qui craignez Dieu, et je raconterai ce qu'il a fait pour mon âme.",
+    ref: "Psaume 66:16",
+  },
+  {
+    text: "Je ne mourrai point, mais je vivrai, et je raconterai les œuvres de l'Éternel.",
+    ref: "Psaume 118:17",
+  },
+  {
+    text: "Va dans ta maison, vers les tiens, et raconte-leur tout ce que le Seigneur t'a fait.",
+    ref: "Marc 5:19",
+  },
+]
+
+function AnimatedVerse() {
+  const [idx, setIdx] = useState(0)
+
+  useEffect(() => {
+    const id = setInterval(() => setIdx((i) => (i + 1) % TESTIMONY_VERSES.length), 5000)
+    return () => clearInterval(id)
+  }, [])
+
+  return (
+    <div className="space-y-3">
+      <div className="relative min-h-[3.5rem]">
+        <AnimatePresence mode="wait">
+          <motion.p
+            key={idx}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.45 }}
+            className="absolute text-sm italic leading-relaxed text-white/45"
+          >
+            &ldquo;{TESTIMONY_VERSES[idx].text}&rdquo;
+            <span className="ml-1.5 not-italic font-medium text-cecj-gold/70">
+              &mdash; {TESTIMONY_VERSES[idx].ref}
+            </span>
+          </motion.p>
+        </AnimatePresence>
+      </div>
+
+      <div className="flex gap-1.5">
+        {TESTIMONY_VERSES.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setIdx(i)}
+            aria-label={`Verset ${i + 1}`}
+            className={`h-1 rounded-full transition-all duration-300 ${
+              i === idx
+                ? "w-6 bg-cecj-gold/70"
+                : "w-1.5 bg-white/20 hover:bg-white/40"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
@@ -108,8 +185,12 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
   const [galleryIndex, setGalleryIndex] = useState<number | null>(null)
 
   const valeurs = t("values.items") as Array<{ label: string; desc: string }>
-  const temoignages = t("testimonials.items") as Array<{ texte: string; nom: string; role: string; initiales: string }>
   const piliers = t("vision.piliers") as string[]
+
+  const { data: temoignages = [] } = useQuery({
+    queryKey: ["public", "testimonies", "approved"],
+    queryFn: adminTestimoniesApi.listApproved,
+  })
   const missionItems = t("mission.items") as string[]
   const aboutCards = t("about.cards") as Array<{ label: string; desc: string }>
   const galleryPreview = galleryImages.slice(0, GALLERY_PREVIEW_COUNT)
@@ -416,44 +497,82 @@ export function HomePageContent({ galleryImages }: { galleryImages: string[] }) 
       <EventsSection />
 
       {/* ── Témoignages ──────────────────────────────────────────────────── */}
-      <section className="bg-cecj-page py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl px-4">
-          <motion.div className="mb-12 text-center" variants={stagger} {...inView()}>
-            <motion.p variants={fadeUp} className="mb-2 text-sm font-semibold uppercase tracking-widest" style={{ color: "rgba(255,203,50,0.9)" }}>
-              {t("testimonials.pretitle")}
-            </motion.p>
-            <motion.h2 variants={fadeUp} className="text-3xl font-bold text-cecj-green">
-              {t("testimonials.title")}
-            </motion.h2>
-            <motion.div variants={fadeUp} className="mx-auto mt-4 h-px w-16" style={{ background: "linear-gradient(to right, transparent, #024339, transparent)" }} />
-          </motion.div>
+      {temoignages.length > 0 && (
+        <section className="bg-cecj-page py-16 sm:py-24">
+          <div className="mb-14 text-center">
+            <p className="mb-2 text-sm font-semibold uppercase tracking-widest" style={{ color: "rgba(255,203,50,0.9)" }}>
+              La grâce de Dieu à l&apos;œuvre
+            </p>
+            <h2 className="text-3xl font-bold text-cecj-green">
+              Ce que Dieu accomplit dans nos vies
+            </h2>
+            <div className="mx-auto mt-4 h-px w-16" style={{ background: "linear-gradient(to right, transparent, #024339, transparent)" }} />
+          </div>
+          <TestimonySpotlight items={temoignages} />
+        </section>
+      )}
+
+      {/* ── CTA Témoignage ───────────────────────────────────────────────── */}
+      <section className="relative overflow-hidden bg-cecj-green py-16 sm:py-20">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -left-20 top-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-cecj-gold/8 blur-3xl" />
+          <div className="absolute right-0 bottom-0 h-72 w-72 rounded-full bg-white/5 blur-2xl" />
         </div>
 
-        <motion.div variants={fadeIn} {...inView("-40px")}>
-          <TestimonialsMarquee items={temoignages} />
-        </motion.div>
+        <div className="relative mx-auto max-w-5xl px-4 lg:px-8">
+          <motion.div
+            {...inView()}
+            variants={stagger}
+            className="flex flex-col items-center gap-10 text-center lg:flex-row lg:items-center lg:text-left lg:gap-16"
+          >
+            <motion.div variants={fadeUp} className="flex-1 space-y-5">
+              <span className="inline-block rounded-full border border-cecj-gold/30 bg-cecj-gold/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-cecj-gold">
+                Votre voix compte
+              </span>
+              <h2 className="text-3xl font-bold text-white sm:text-4xl">
+                Dieu a changé votre vie ?<br />
+                <span className="text-cecj-gold">Partagez-le.</span>
+              </h2>
+              <p className="text-base text-white/70 leading-relaxed">
+                Vos témoignages encouragent d&apos;autres croyants et glorifient Dieu.
+                Rejoignez la communauté et partagez ce que le Seigneur a accompli dans votre vie.
+              </p>
+              <AnimatedVerse />
+            </motion.div>
+
+            <motion.div variants={scaleUp} className="shrink-0">
+              <Link
+                href={lp(SITE_ROUTES.temoignages)}
+                className="inline-flex items-center gap-3 rounded-2xl bg-cecj-gold px-8 py-4 text-base font-bold text-cecj-green shadow-lg transition-all hover:scale-[1.03] hover:shadow-xl"
+              >
+                <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                Partager mon témoignage
+              </Link>
+            </motion.div>
+          </motion.div>
+        </div>
       </section>
 
       {/* ── Contact Rapide ───────────────────────────────────────────────── */}
-      <section className="bg-cecj-green px-4 py-14 text-center sm:py-20">
+      <section className="bg-white px-4 py-14 text-center sm:py-20">
         <motion.div className="mx-auto max-w-2xl" variants={stagger} {...inView()}>
-          <motion.h2 variants={fadeUp} className="mb-6 text-2xl font-bold text-white leading-snug sm:text-3xl">
-            {t("contactSection.line1")}<br />
-            {t("contactSection.line2")}<br />
-            {t("contactSection.line3")}
+          <motion.h2 variants={fadeUp} className="mb-4 text-2xl font-bold text-cecj-green leading-snug sm:text-3xl">
+            Une question ?<br />
+            Besoin de prière ?<br />
+            Vous souhaitez nous rendre visite ?
           </motion.h2>
-          <motion.p variants={fadeUp} className="mb-8 text-cecj-gold/80 text-lg">
-            {t("contactSection.subtitle")}
+          <motion.p variants={fadeUp} className="mb-8 text-gray-500 text-lg">
+            Nous serons heureux de vous accueillir.
           </motion.p>
           <motion.div variants={fadeUp}>
-            <a
-              href={CHURCH_INFO.socials.whatsappContact ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block rounded-md bg-white px-6 py-2.5 text-sm font-semibold text-cecj-green transition-all hover:opacity-90 hover:scale-[1.02] sm:px-10 sm:py-3 sm:text-base"
+            <Link
+              href={lp(SITE_ROUTES.contact)}
+              className="inline-block rounded-full bg-cecj-green px-8 py-3 text-sm font-bold text-white transition-all hover:opacity-90 hover:scale-[1.02] sm:px-10 sm:py-3.5 sm:text-base"
             >
-              {t("contactSection.link")}
-            </a>
+              Nous contacter
+            </Link>
           </motion.div>
         </motion.div>
       </section>
