@@ -1,10 +1,11 @@
 "use client"
 
 import { useEffect } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/Button"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import type { GalleryAlbum } from "@/lib/api/admin/gallery"
 
 const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
@@ -12,7 +13,7 @@ const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm out
 const schema = z.object({
   title:       z.string().min(1, "Le titre est requis"),
   description: z.string().optional(),
-  coverUrl:    z.string().url("URL invalide").optional().or(z.literal("")),
+  coverUrl:    z.string().optional(),
 })
 
 type FormValues = z.infer<typeof schema>
@@ -37,7 +38,7 @@ interface Props {
 export function AlbumFormModal({ open, onClose, onSubmit, initialData }: Props) {
   const isEdit = !!initialData
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } =
+  const { register, handleSubmit, reset, control, formState: { errors, isSubmitting } } =
     useForm<FormValues>({ resolver: zodResolver(schema) })
 
   useEffect(() => {
@@ -72,8 +73,14 @@ export function AlbumFormModal({ open, onClose, onSubmit, initialData }: Props) 
           <Field label="Description" error={errors.description?.message}>
             <textarea {...register("description")} className={inputCls} rows={3} placeholder="Description optionnelle…" />
           </Field>
-          <Field label="URL de couverture" error={errors.coverUrl?.message}>
-            <input {...register("coverUrl")} className={inputCls} placeholder="https://…" />
+          <Field label="Image de couverture" error={errors.coverUrl?.message}>
+            <Controller
+              name="coverUrl"
+              control={control}
+              render={({ field }) => (
+                <ImageUpload value={field.value} onChange={field.onChange} />
+              )}
+            />
           </Field>
 
           <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">

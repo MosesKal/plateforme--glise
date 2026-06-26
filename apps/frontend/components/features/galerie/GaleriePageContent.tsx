@@ -68,7 +68,7 @@ export function GaleriePageContent() {
       <div className="mb-10">
         <h1 className="mb-2 text-3xl font-bold text-cecj-green sm:text-4xl">Galerie</h1>
         <div className="mb-3 h-1 w-16 rounded bg-cecj-gold/60" />
-        <p className="text-gray-500">Photos et moments marquants de la communauté C.E.C.J.</p>
+        <p className="text-gray-500">Photos et moments marquants de l&apos;église Cité le Camps de Jésus-Christ Bel-Air Fizi</p>
       </div>
 
       {albums.length > 0 && (

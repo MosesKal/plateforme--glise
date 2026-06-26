@@ -43,15 +43,13 @@ export function Navbar() {
     { label: t("nav.evenements"), href: lp(SITE_ROUTES.evenements) },
     { label: t("nav.adhesion"),   href: lp(SITE_ROUTES.adhesion) },
     { label: t("nav.extensions"), href: lp(SITE_ROUTES.extensions) },
-    { label: t("nav.lecture"),    href: lp(SITE_ROUTES.lectureBiblique) },
   ]
 
   const exploreLinks = [
-    { label: t("nav.galerie"),      href: lp(SITE_ROUTES.galerie) },
-    { label: t("nav.leadership"),   href: lp(SITE_ROUTES.leadership) },
-    { label: t("nav.temoignages"),  href: lp(SITE_ROUTES.temoignages) },
-    { label: t("nav.departements"), href: lp(SITE_ROUTES.departements) },
-    { label: t("nav.contact"),      href: lp(SITE_ROUTES.contact) },
+    { label: t("nav.galerie"),     href: lp(SITE_ROUTES.galerie) },
+    { label: t("nav.temoignages"), href: lp(SITE_ROUTES.temoignages) },
+    { label: t("nav.lecture"),     href: lp(SITE_ROUTES.lectureBiblique) },
+    { label: t("nav.contact"),     href: lp(SITE_ROUTES.contact) },
   ]
 
   const isExploreActive = exploreLinks.some((l) => pathname === l.href)

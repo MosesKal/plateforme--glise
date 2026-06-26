@@ -395,45 +395,6 @@ export function HomePageContent() {
       {/* ── Ambiance de nos cultes ───────────────────────────────────────── */}
       <AmbianceCultesSection />
 
-      {/* ── Galerie ──────────────────────────────────────────────────────── */}
-      <section className="bg-cecj-tint px-4 py-14 sm:py-20">
-        <div className="mx-auto max-w-6xl">
-          <motion.div className="mb-10 text-center" variants={stagger} {...inView()}>
-            <motion.h2 variants={fadeUp} className="mb-2 text-3xl font-bold text-cecj-green">
-              {t("gallery.title")}
-            </motion.h2>
-            <motion.p variants={fadeUp} className="text-cecj-ink-faint">
-              {t("gallery.subtitle")}
-            </motion.p>
-          </motion.div>
-
-          <motion.div
-            className="grid grid-cols-2 gap-3 sm:grid-cols-4"
-            variants={staggerSlow}
-            {...inView("-40px")}
-          >
-            {galleryPreview.map((src, i) => (
-              <GalerieImageCard
-                key={src}
-                src={src}
-                alt={t("gallery.imageAlt")}
-                onClick={() => setGalleryIndex(i)}
-                className={i >= GALLERY_MOBILE_COUNT ? "max-sm:hidden" : undefined}
-                extraCount={i === GALLERY_PREVIEW_COUNT - 1 ? remainingGalleryCount : undefined}
-                mobileExtraCount={i === GALLERY_MOBILE_COUNT - 1 ? mobileRemainingCount : undefined}
-              />
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      <GalleryLightbox
-        images={galleryImages}
-        open={galleryIndex !== null}
-        index={galleryIndex ?? 0}
-        onClose={() => setGalleryIndex(null)}
-      />
-
       {/* ── Événements ───────────────────────────────────────────────────── */}
       <EventsSection />
 
