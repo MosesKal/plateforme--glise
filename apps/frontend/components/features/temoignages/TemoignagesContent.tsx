@@ -8,6 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { adminTestimoniesApi, type Testimony } from "@/lib/api/admin/testimonies"
+import { TestimonyCard } from "@/components/features/home/TestimonialsMarquee"
 import { stagger, fadeUp, inView } from "@/lib/motion"
 
 const inputCls = "w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
@@ -17,28 +18,6 @@ const schema = z.object({
   content:  z.string().min(20, "Le témoignage doit faire au moins 20 caractères").max(2000),
 })
 type FormValues = z.infer<typeof schema>
-
-function TestimonyCard({ testimony }: { testimony: Testimony }) {
-  return (
-    <motion.div
-      variants={fadeUp}
-      className="flex flex-col gap-4 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm"
-    >
-      <p className="text-sm leading-relaxed text-gray-600 italic">"{testimony.content}"</p>
-      <div className="flex items-center gap-3 border-t border-gray-50 pt-4">
-        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-cecj-green text-sm font-bold text-white">
-          {testimony.fullName.charAt(0).toUpperCase()}
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-gray-900">{testimony.fullName}</p>
-          <p className="text-[11px] text-gray-400">
-            {new Date(testimony.createdAt).toLocaleDateString("fr-FR", { month: "long", year: "numeric" })}
-          </p>
-        </div>
-      </div>
-    </motion.div>
-  )
-}
 
 function SkeletonCard() {
   return (
@@ -189,9 +168,20 @@ export function TemoignagesContent() {
                 <p className="text-sm text-gray-400">Aucun témoignage publié pour le moment.</p>
               </div>
             ) : (
-              <motion.div {...inView()} variants={stagger} className="grid gap-4 sm:grid-cols-2">
+              <motion.div
+                {...inView()}
+                variants={stagger}
+                className={cn(
+                  "grid gap-6",
+                  testimonies.length === 1 && "max-w-md",
+                  testimonies.length >= 2  && "sm:grid-cols-2",
+                  testimonies.length >= 4  && "lg:grid-cols-3",
+                )}
+              >
                 {testimonies.map((t) => (
-                  <TestimonyCard key={t.id} testimony={t} />
+                  <motion.div key={t.id} variants={fadeUp}>
+                    <TestimonyCard item={t} className="w-full" truncate={false} />
+                  </motion.div>
                 ))}
               </motion.div>
             )}
