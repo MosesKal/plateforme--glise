@@ -329,3 +329,21 @@ model NewsletterSubscriber {
 
   @@map("newsletter_subscribers")
 }
+
+// ─── SITE PAGES (CMS) ─────────────────────────────────────────────────────────
+
+model Page {
+  id              String   @id @default(cuid())
+  slug            String   @unique
+  titleFr         String
+  titleEn         String?
+  contentFr       String   @db.Text
+  contentEn       String?  @db.Text
+  metaDescription String?
+  coverUrl        String?
+  published       Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("site_pages")
+}
