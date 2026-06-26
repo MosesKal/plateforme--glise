@@ -5,10 +5,10 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 60 * 60 * 24 * 31,
+    // En dev : bypass complet de l'optimiseur (évite les problèmes remotePatterns avec localhost)
+    // En prod : activer l'optimisation + configurer remotePatterns avec le vrai domaine backend
+    unoptimized: process.env.NODE_ENV !== "production",
     remotePatterns: [
-      // Backend local (dev)
-      { protocol: "http", hostname: "localhost", port: "3001" },
-      // Backend en production (à ajuster avec le vrai domaine)
       { protocol: "https", hostname: "*.cecj.org" },
     ],
   },
