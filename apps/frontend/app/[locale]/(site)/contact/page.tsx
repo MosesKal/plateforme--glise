@@ -1,18 +1,15 @@
 import type { Metadata } from "next"
+import { ContactContent } from "@/components/features/contact/ContactContent"
 
 export const metadata: Metadata = {
-  title: "Contact",
-  description: "Contactez la Communauté des Eglise Camps de Jésus-Christ.",
+  title: "Contact | C.E.C.J.",
+  description: "Contactez la Communauté des Eglises Camp de Jésus-Christ. Une question, une demande de prière ou envie de nous rejoindre ? Nous sommes là pour vous.",
+  openGraph: {
+    title: "Contact | C.E.C.J.",
+    description: "Contactez la C.E.C.J. — nous sommes là pour vous.",
+  },
 }
 
 export default function ContactPage() {
-  return (
-    <div className="mx-auto max-w-4xl px-4 py-16">
-      <h1 className="mb-4 text-4xl font-bold text-cecj-green">Nous contacter</h1>
-      <div className="mb-8 h-1 w-16 rounded bg-cecj-green/40" />
-      <p className="mb-12 text-lg text-cecj-ink">
-        Une question ? Un besoin de prière ? Nous sommes là pour vous.
-      </p>
-    </div>
-  )
+  return <ContactContent />
 }

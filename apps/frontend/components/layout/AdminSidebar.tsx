@@ -7,14 +7,19 @@ import { cn } from "@/lib/utils"
 import { ADMIN_ROUTES } from "@/constants/routes"
 
 const navItems = [
-  { label: "Tableau de bord", href: ADMIN_ROUTES.dashboard },
-  { label: "Utilisateurs",    href: ADMIN_ROUTES.utilisateurs },
-  { label: "Rôles",           href: ADMIN_ROUTES.roles },
-  { label: "Événements",      href: ADMIN_ROUTES.evenements },
-  { label: "Programme",       href: ADMIN_ROUTES.programme },
-  { label: "Galerie",         href: ADMIN_ROUTES.galerie },
-  { label: "Extensions",      href: ADMIN_ROUTES.extensions },
-  { label: "Pages",           href: ADMIN_ROUTES.pages },
+  { label: "Tableau de bord",  href: ADMIN_ROUTES.dashboard     },
+  { label: "Utilisateurs",     href: ADMIN_ROUTES.utilisateurs  },
+  { label: "Rôles",            href: ADMIN_ROUTES.roles         },
+  { label: "Événements",       href: ADMIN_ROUTES.evenements    },
+  { label: "Programme",        href: ADMIN_ROUTES.programme     },
+  { label: "Galerie",          href: ADMIN_ROUTES.galerie       },
+  { label: "Extensions",       href: ADMIN_ROUTES.extensions    },
+  { label: "Enseignements",    href: ADMIN_ROUTES.enseignements },
+  { label: "Témoignages",      href: ADMIN_ROUTES.temoignages   },
+  { label: "Départements",     href: ADMIN_ROUTES.departements  },
+  { label: "Leadership",       href: ADMIN_ROUTES.leaders       },
+  { label: "Contact",          href: ADMIN_ROUTES.contact       },
+  { label: "Pages",            href: ADMIN_ROUTES.pages         },
 ]
 
 export function AdminSidebar() {

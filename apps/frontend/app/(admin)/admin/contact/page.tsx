@@ -1,0 +1,191 @@
+"use client"
+
+import { useState } from "react"
+import { PageHeader } from "@/components/shared/PageHeader"
+import { useAdminContact, useMarkContactRead, type ContactMessage } from "@/hooks/admin/useAdminContact"
+
+type StatusFilter = "all" | "UNREAD" | "READ"
+
+const STATUS_FILTERS: { value: StatusFilter; label: string }[] = [
+  { value: "all",    label: "Tous"    },
+  { value: "UNREAD", label: "Non lus" },
+  { value: "READ",   label: "Lus"     },
+]
+
+function StatusBadge({ status }: { status: ContactMessage["status"] }) {
+  if (status === "UNREAD") {
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">
+        <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+        Non lu
+      </span>
+    )
+  }
+  if (status === "REPLIED") {
+    return (
+      <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-[11px] font-bold text-blue-700">
+        Répondu
+      </span>
+    )
+  }
+  return (
+    <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-[11px] font-semibold text-gray-500">
+      Lu
+    </span>
+  )
+}
+
+function MessageRow({
+  msg,
+  onMarkRead,
+  expanded,
+  onToggle,
+}: {
+  msg: ContactMessage
+  onMarkRead: (id: string) => void
+  expanded: boolean
+  onToggle: () => void
+}) {
+  return (
+    <div
+      className={`rounded-xl border transition-colors ${
+        msg.status === "UNREAD"
+          ? "border-amber-200 bg-amber-50/40"
+          : "border-gray-100 bg-white"
+      }`}
+    >
+      <button
+        onClick={onToggle}
+        className="flex w-full items-start gap-4 px-5 py-4 text-left"
+      >
+        <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-cecj-green/10 text-sm font-bold text-cecj-green">
+          {msg.firstName[0]}{msg.lastName[0]}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="font-semibold text-gray-900">
+              {msg.firstName} {msg.lastName}
+            </span>
+            <span className="text-xs text-gray-400">{msg.email}</span>
+            {msg.phone && (
+              <span className="text-xs text-gray-400">{msg.phone}</span>
+            )}
+            <StatusBadge status={msg.status} />
+          </div>
+          <p className="mt-0.5 text-sm font-medium text-gray-700 truncate">{msg.subject}</p>
+          <p className="mt-0.5 text-xs text-gray-400">
+            {new Date(msg.createdAt).toLocaleDateString("fr-FR", {
+              day: "numeric", month: "long", year: "numeric",
+              hour: "2-digit", minute: "2-digit",
+            })}
+          </p>
+        </div>
+        <svg
+          className={`mt-1 h-4 w-4 shrink-0 text-gray-400 transition-transform ${expanded ? "rotate-180" : ""}`}
+          fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {expanded && (
+        <div className="border-t border-gray-100 px-5 pb-5 pt-4">
+          <p className="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">{msg.message}</p>
+          {msg.status === "UNREAD" && (
+            <div className="mt-4 flex justify-end">
+              <button
+                onClick={() => onMarkRead(msg.id)}
+                className="rounded-lg bg-cecj-green px-4 py-2 text-sm font-semibold text-white transition hover:bg-cecj-green/90"
+              >
+                Marquer comme lu
+              </button>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default function AdminContactPage() {
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("all")
+  const [expandedId, setExpandedId] = useState<string | null>(null)
+
+  const { data: messages = [], isLoading, isError } = useAdminContact()
+  const markRead = useMarkContactRead()
+
+  const filtered = statusFilter === "all"
+    ? messages
+    : messages.filter((m) => m.status === statusFilter)
+
+  const unread  = messages.filter((m) => m.status === "UNREAD").length
+  const read    = messages.filter((m) => m.status === "READ").length
+  const replied = messages.filter((m) => m.status === "REPLIED").length
+
+  return (
+    <div className="space-y-6">
+      <PageHeader
+        title="Messages de contact"
+        subtitle="Messages reçus via le formulaire de contact du site"
+      />
+
+      <div className="flex gap-4">
+        {[
+          { label: "Total",    value: messages.length, color: "text-gray-900"  },
+          { label: "Non lus",  value: unread,           color: "text-amber-600" },
+          { label: "Lus",      value: read,             color: "text-green-600" },
+          { label: "Répondus", value: replied,           color: "text-blue-600"  },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="rounded-xl border border-gray-200 bg-white px-5 py-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{label}</p>
+            <p className={`text-2xl font-bold ${color}`}>{value}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex gap-2 rounded-xl border border-gray-100 bg-white px-4 py-3">
+        {STATUS_FILTERS.map(({ value, label }) => (
+          <button
+            key={value}
+            onClick={() => setStatusFilter(value)}
+            className={`rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+              statusFilter === value
+                ? "bg-cecj-green text-white"
+                : "border border-gray-200 text-gray-600 hover:border-cecj-green hover:text-cecj-green"
+            }`}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {isLoading ? (
+        <div className="space-y-3">
+          {Array.from({ length: 4 }).map((_, i) => (
+            <div key={i} className="h-20 animate-pulse rounded-xl bg-gray-100" />
+          ))}
+        </div>
+      ) : isError ? (
+        <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          Erreur lors du chargement. Vérifiez que le backend est démarré et que vous êtes connecté.
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-gray-200 py-16 text-center">
+          <p className="text-sm text-gray-400">Aucun message {statusFilter !== "all" ? "dans cette catégorie" : "reçu"}.</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {filtered.map((msg) => (
+            <MessageRow
+              key={msg.id}
+              msg={msg}
+              onMarkRead={(id) => markRead.mutate(id)}
+              expanded={expandedId === msg.id}
+              onToggle={() => setExpandedId(expandedId === msg.id ? null : msg.id)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
