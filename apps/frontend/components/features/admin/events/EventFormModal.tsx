@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { eventSchema, type EventFormValues } from "@/lib/validations/admin/event"
 import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import type { AdminEvent } from "@/lib/api/admin/events"
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -46,6 +47,8 @@ export function EventFormModal({ open, onClose, onSubmit, initialData }: Props) 
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
@@ -135,8 +138,11 @@ export function EventFormModal({ open, onClose, onSubmit, initialData }: Props) 
             </Field>
           </div>
 
-          <Field label="URL de l'image de couverture">
-            <input {...register("coverImage")} className={inputCls} placeholder="/event_avenir.jpeg ou https://…" />
+          <Field label="Image de couverture">
+            <ImageUpload
+              value={watch("coverImage") ?? ""}
+              onChange={(url) => setValue("coverImage", url, { shouldValidate: true })}
+            />
           </Field>
 
           <Field label="Description">

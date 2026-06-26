@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import type { AdminSermon, SermonCategory } from "@/lib/api/admin/sermons"
 
 const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
@@ -46,7 +47,7 @@ interface Props {
 export function SermonFormModal({ open, onClose, onSubmit, initialData, categories }: Props) {
   const isEdit = !!initialData
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } =
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors, isSubmitting } } =
     useForm<FormValues>({ resolver: zodResolver(schema) })
 
   useEffect(() => {
@@ -121,7 +122,10 @@ export function SermonFormModal({ open, onClose, onSubmit, initialData, categori
               <input {...register("pdfUrl")} className={inputCls} placeholder="https://…/notes.pdf" />
             </Field>
             <Field label="Image de couverture" error={errors.coverImage?.message}>
-              <input {...register("coverImage")} className={inputCls} placeholder="https://…/cover.jpg" />
+              <ImageUpload
+                value={watch("coverImage") ?? ""}
+                onChange={(url) => setValue("coverImage", url, { shouldValidate: true })}
+              />
             </Field>
           </div>
 

@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import type { Department } from "@/lib/api/admin/departments"
 
 const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
@@ -41,7 +42,7 @@ interface Props {
 export function DepartmentFormModal({ open, onClose, onSubmit, initialData }: Props) {
   const isEdit = !!initialData
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } =
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors, isSubmitting } } =
     useForm<FormValues>({ resolver: zodResolver(schema) })
 
   useEffect(() => {
@@ -94,8 +95,11 @@ export function DepartmentFormModal({ open, onClose, onSubmit, initialData }: Pr
             </Field>
           </div>
 
-          <Field label="Photo / illustration (URL)" error={errors.photoUrl?.message}>
-            <input {...register("photoUrl")} className={inputCls} placeholder="https://…/jeunesse.jpg" />
+          <Field label="Photo / illustration" error={errors.photoUrl?.message}>
+            <ImageUpload
+              value={watch("photoUrl") ?? ""}
+              onChange={(url) => setValue("photoUrl", url, { shouldValidate: true })}
+            />
           </Field>
 
           <Field label="Statut" error={errors.isActive?.message}>

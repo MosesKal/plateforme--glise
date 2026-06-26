@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import type { Leader } from "@/lib/api/admin/leaders"
 
 const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
@@ -56,7 +57,7 @@ interface Props {
 export function LeaderFormModal({ open, onClose, onSubmit, initialData }: Props) {
   const isEdit = !!initialData
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } =
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors, isSubmitting } } =
     useForm<FormValues>({ resolver: zodResolver(schema) })
 
   useEffect(() => {
@@ -126,8 +127,11 @@ export function LeaderFormModal({ open, onClose, onSubmit, initialData }: Props)
             <textarea {...register("bio")} rows={4} className={cn(inputCls, "resize-none")} placeholder="Quelques mots sur ce leader…" />
           </Field>
 
-          <Field label="Photo (URL)" error={errors.photoUrl?.message}>
-            <input {...register("photoUrl")} className={inputCls} placeholder="https://…/photo.jpg" />
+          <Field label="Photo" error={errors.photoUrl?.message}>
+            <ImageUpload
+              value={watch("photoUrl") ?? ""}
+              onChange={(url) => setValue("photoUrl", url, { shouldValidate: true })}
+            />
           </Field>
 
           <div className="grid grid-cols-2 gap-4">

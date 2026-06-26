@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { extensionSchema, type ExtensionFormValues } from "@/lib/validations/admin/extension"
 import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import type { AdminExtension } from "@/lib/api/admin/extensions"
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -46,6 +47,8 @@ export function ExtensionFormModal({ open, onClose, onSubmit, initialData }: Pro
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ExtensionFormValues>({
     resolver: zodResolver(extensionSchema),
@@ -147,8 +150,11 @@ export function ExtensionFormModal({ open, onClose, onSubmit, initialData }: Pro
 
           {/* Médias & date */}
           <div className="grid grid-cols-2 gap-4">
-            <Field label="URL de l'image de couverture">
-              <input {...register("coverImage")} className={inputCls} placeholder="/extensions/bruxelles.jpg" />
+            <Field label="Image de couverture">
+              <ImageUpload
+                value={watch("coverImage") ?? ""}
+                onChange={(url) => setValue("coverImage", url, { shouldValidate: true })}
+              />
             </Field>
             <Field label="Date de fondation">
               <input {...register("foundedAt")} type="date" className={inputCls} />

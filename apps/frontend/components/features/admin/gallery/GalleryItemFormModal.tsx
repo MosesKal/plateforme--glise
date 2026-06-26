@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/Button"
+import { ImageUpload } from "@/components/ui/ImageUpload"
 import type { GalleryAlbum, GalleryItem } from "@/lib/api/admin/gallery"
 
 const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
@@ -42,8 +43,10 @@ interface Props {
 export function GalleryItemFormModal({ open, onClose, onSubmit, initialData, albums }: Props) {
   const isEdit = !!initialData
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } =
+  const { register, handleSubmit, reset, watch, setValue, formState: { errors, isSubmitting } } =
     useForm<FormValues>({ resolver: zodResolver(schema) })
+
+  const mediaType = watch("mediaType")
 
   useEffect(() => {
     if (!open) return
@@ -77,10 +80,6 @@ export function GalleryItemFormModal({ open, onClose, onSubmit, initialData, alb
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-6 py-5">
-          <Field label="URL du média *" error={errors.mediaUrl?.message}>
-            <input {...register("mediaUrl")} className={inputCls} placeholder="https://…/photo.jpg" />
-          </Field>
-
           <div className="grid grid-cols-2 gap-4">
             <Field label="Type *" error={errors.mediaType?.message}>
               <select {...register("mediaType")} className={inputCls}>
@@ -92,6 +91,20 @@ export function GalleryItemFormModal({ open, onClose, onSubmit, initialData, alb
               <input {...register("order", { valueAsNumber: true })} type="number" min={0} className={inputCls} placeholder="0" />
             </Field>
           </div>
+
+          {/* Image : upload si IMAGE, URL si VIDEO */}
+          {mediaType === "IMAGE" ? (
+            <Field label="Image *" error={errors.mediaUrl?.message}>
+              <ImageUpload
+                value={watch("mediaUrl") ?? ""}
+                onChange={(url) => setValue("mediaUrl", url, { shouldValidate: true })}
+              />
+            </Field>
+          ) : (
+            <Field label="URL de la vidéo *" error={errors.mediaUrl?.message}>
+              <input {...register("mediaUrl")} className={inputCls} placeholder="https://youtube.com/watch?v=…" />
+            </Field>
+          )}
 
           <Field label="Titre / légende" error={errors.title?.message}>
             <input {...register("title")} className={inputCls} placeholder="Description optionnelle…" />
