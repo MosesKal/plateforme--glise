@@ -19,18 +19,18 @@ export function PublicFooter() {
     {
       title: t("footer.nav_title"),
       links: [
-        { label: t("nav.accueil"),       href: lp(SITE_ROUTES.accueil) },
-        { label: t("nav.presentation"),  href: lp(SITE_ROUTES.presentation) },
-        { label: t("nav.vision"),        href: lp(SITE_ROUTES.vision) },
-        { label: t("nav.mission"),       href: lp(SITE_ROUTES.mission) },
+        { label: t("nav.accueil"),      href: lp(SITE_ROUTES.accueil) },
+        { label: t("nav.apropos"),      href: lp(SITE_ROUTES.apropos) },
+        { label: t("nav.leadership"),   href: lp(SITE_ROUTES.leadership) },
+        { label: t("nav.temoignages"),  href: lp(SITE_ROUTES.temoignages) },
       ],
     },
     {
       title: t("footer.community_title"),
       links: [
-        { label: t("nav.extensions"),    href: lp(SITE_ROUTES.extensions) },
-        { label: t("nav.evenements"),    href: lp(SITE_ROUTES.evenements) },
-        { label: t("nav.galerie"),    href: lp(SITE_ROUTES.galerie) },
+        { label: t("nav.extensions"),   href: lp(SITE_ROUTES.extensions) },
+        { label: t("nav.evenements"),   href: lp(SITE_ROUTES.evenements) },
+        { label: t("nav.galerie"),      href: lp(SITE_ROUTES.galerie) },
       ],
     },
   ]
