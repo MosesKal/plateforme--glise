@@ -437,7 +437,7 @@ export function HomePageContent() {
               </h2>
               <p className="text-base text-white/70 leading-relaxed">
                 Vos témoignages encouragent d&apos;autres croyants et glorifient Dieu.
-                Rejoignez la communauté et partagez ce que le Seigneur a accompli dans votre vie.
+                Rejoignez l'Église Camp de Jésus Bel-air et partagez ce que le Seigneur a accompli dans votre vie.
               </p>
               <AnimatedVerse />
             </motion.div>

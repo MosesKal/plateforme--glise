@@ -3,7 +3,7 @@ import { TemoignagesContent } from "@/components/features/temoignages/Temoignage
 
 export const metadata: Metadata = {
   title: "Témoignages",
-  description: "Découvrez les témoignages de transformation de la communauté C.E.C.J. et partagez le vôtre.",
+  description: "Découvrez les témoignages de transformation de l'Église Camp de Jésus Bel-air et partagez le vôtre.",
 }
 
 export default function TemoignagesPage() {

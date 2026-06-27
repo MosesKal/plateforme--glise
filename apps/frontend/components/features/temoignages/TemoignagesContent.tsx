@@ -156,7 +156,7 @@ export function TemoignagesContent() {
           {/* Grille des témoignages approuvés */}
           <div className="lg:col-span-2">
             <h2 className="mb-6 text-xl font-bold text-cecj-green">
-              Témoignages de la communauté
+              Témoignages de l'Église
             </h2>
 
             {isLoading ? (

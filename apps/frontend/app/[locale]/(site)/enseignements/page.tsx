@@ -3,7 +3,7 @@ import { EnseignementsContent } from "@/components/features/enseignements/Enseig
 
 export const metadata: Metadata = {
   title: "Enseignements",
-  description: "Sermons, messages et enseignements bibliques de la Communauté des Eglises Camp de Jésus-Christ.",
+  description: "Sermons, messages et enseignements bibliques de l'Église Camp de Jésus Bel-air.",
 }
 
 export default function EnseignementsPage() {

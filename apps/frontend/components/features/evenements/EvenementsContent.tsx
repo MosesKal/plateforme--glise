@@ -538,7 +538,7 @@ export function EvenementsContent() {
             Un de nos cultes ou événements a changé quelque chose dans votre vie ?
           </h2>
           <p className="mb-7 text-gray-500">
-            Vos témoignages encouragent toute la communauté. Quelques lignes suffisent.
+            Vos témoignages encouragent toute l'église. Quelques lignes suffisent.
           </p>
           <Link
             href={`/${locale}/temoignages`}

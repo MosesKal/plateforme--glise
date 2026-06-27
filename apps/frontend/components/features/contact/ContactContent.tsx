@@ -44,7 +44,7 @@ function SuccessMessage({ onReset, temoignagesHref }: { onReset: () => void; tem
           Dieu a accompli quelque chose dans votre vie ?
         </p>
         <p className="text-xs text-gray-400">
-          Votre témoignage peut encourager toute la communauté.
+          Votre témoignage peut encourager toute l'église.
         </p>
         <Link
           href={temoignagesHref}

@@ -118,7 +118,7 @@ export function LeadershipContent() {
               className="mx-auto max-w-2xl text-lg text-white/70 leading-relaxed"
             >
               Des hommes et des femmes appelés par Dieu pour guider, servir et bâtir
-              la Communauté des Eglises Camp de Jésus-Christ.
+              l'Église Camp de Jésus Bel-air.
             </motion.p>
           </motion.div>
         </div>
