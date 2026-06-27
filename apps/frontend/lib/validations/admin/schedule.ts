@@ -10,12 +10,12 @@ export const scheduleEntrySchema = z.object({
   startTime:   z.string().regex(timeRegex, "Format HH:mm requis"),
   endTime:     z.string().regex(timeRegex, "Format HH:mm requis"),
   category:    z.string().min(1, "La catégorie est requise"),
-  liveOnYoutube:       z.boolean().default(false),
-  facebookPhotosAfter: z.boolean().default(false),
-  isRecurring: z.boolean().default(true),
+  liveOnYoutube:       z.boolean(),
+  facebookPhotosAfter: z.boolean(),
+  isRecurring: z.boolean(),
   weekStart:   z.string().optional(),
-  sortOrder:   z.number().int().default(0),
-  isActive:    z.boolean().default(true),
+  sortOrder:   z.number().int(),
+  isActive:    z.boolean(),
 })
 
 export type ScheduleEntryFormValues = z.infer<typeof scheduleEntrySchema>

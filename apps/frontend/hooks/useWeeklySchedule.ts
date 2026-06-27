@@ -2,9 +2,15 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { fetchSchedule, toWeeklyProgram, FALLBACK_PROGRAM } from "@/lib/api/schedule"
+import type { ProgramActivity } from "@/constants/weeklyProgram"
+
+interface WeeklyScheduleData {
+  source: "recurring" | "weekly"
+  program: ProgramActivity[]
+}
 
 export function useWeeklySchedule(week?: string) {
-  return useQuery({
+  return useQuery<WeeklyScheduleData>({
     queryKey: ["schedule", week ?? "current"],
     queryFn: async () => {
       const result = await fetchSchedule(week)
@@ -15,7 +21,7 @@ export function useWeeklySchedule(week?: string) {
     },
     staleTime: 5 * 60 * 1000,
     placeholderData: {
-      source: "recurring" as const,
+      source: "recurring",
       program: FALLBACK_PROGRAM,
     },
   })

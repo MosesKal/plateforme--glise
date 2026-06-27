@@ -12,8 +12,8 @@ export const eventSchema = z.object({
   location:     z.string().optional(),
   address:      z.string().optional(),
   coverImage:   z.string().optional(),
-  status:       z.enum(["DRAFT", "PUBLISHED", "CANCELLED"]).default("DRAFT"),
-  isFeatured:   z.boolean().default(false),
+  status:       z.enum(["DRAFT", "PUBLISHED", "CANCELLED"]),
+  isFeatured:   z.boolean(),
 })
 
 export type EventFormValues = z.infer<typeof eventSchema>

@@ -15,13 +15,13 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3000,
-        NEXT_PUBLIC_API_URL: "https://api.dev.moseskalunga.com",
+        NEXT_PUBLIC_API_URL: "https://dev.impactgroup.cd/api/v1",
       },
     },
     {
       name: "cecj-backend",
       cwd: path.join(root, "apps/backend"),
-      script: path.join(root, "apps/backend/dist/main.js"),
+      script: path.join(root, "apps/backend/dist/src/main.js"),
       exec_mode: "fork",
       instances: 1,
       autorestart: true,
