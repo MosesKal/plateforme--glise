@@ -80,7 +80,7 @@ export function TemoignagesContent() {
               Témoignages
             </motion.h1>
             <motion.p variants={fadeUp} className="mx-auto max-w-xl text-lg text-white/70">
-              Découvrez comment Dieu transforme des vies au sein de la C.E.C.J. Partagez votre propre témoignage.
+              Découvrez comment Dieu transforme des vies au sein de l'Église Camp de Jésus Bel-air. Partagez votre propre témoignage.
             </motion.p>
             <motion.div variants={fadeUp} className="pt-2">
               <span className="text-3xl font-bold text-cecj-gold">{testimonies.length}</span>
