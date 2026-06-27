@@ -108,7 +108,6 @@ function ActivityCard({ activity, today }: { activity: ProgramActivity; today: s
       <ul className="flex flex-wrap gap-1.5" aria-label={t("weeklyProgram.daysLabel")}>
         {DISPLAY_WEEK_DAYS.map((day) => {
           const isConcerned = activity.days.includes(day)
-          const isToday = day === today
           return (
             <li key={day}>
               <span
@@ -119,11 +118,9 @@ function ActivityCard({ activity, today }: { activity: ProgramActivity; today: s
                     : featured
                       ? "bg-white/10 text-white/40"
                       : "bg-cecj-tint text-cecj-ink-dim",
-                  isToday && (isConcerned ? "ring-2 ring-cecj-green/60" : "ring-2 ring-cecj-gold/70")
                 )}
               >
                 {day.slice(0, 3)}
-                {isToday && <span className="sr-only"> ({t("weeklyProgram.todayBadge")})</span>}
               </span>
             </li>
           )
