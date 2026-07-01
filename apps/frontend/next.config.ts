@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
     unoptimized: process.env.NODE_ENV !== "production",
     remotePatterns: [
       { protocol: "https", hostname: "*.cecj.org" },
+      // Backend public servant les fichiers uploadés (/api/v1/uploads/*)
+      { protocol: "https", hostname: "dev.impactgroup.cd" },
     ],
   },
   async headers() {

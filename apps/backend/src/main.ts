@@ -3,11 +3,12 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import { AppModule } from './app.module';
+import { API_PREFIX } from './common/config/app-url';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
-  app.setGlobalPrefix('api/v1');
+  app.setGlobalPrefix(API_PREFIX);
 
   const corsOrigins = (
     process.env.CORS_ORIGINS ?? 'http://localhost:3000'
@@ -29,8 +30,12 @@ async function bootstrap() {
     }),
   );
 
-  // Serve uploaded files as static assets at /uploads/*
-  app.useStaticAssets(join(process.cwd(), 'uploads'), { prefix: '/uploads/' });
+  // Serve uploaded files as static assets under the API prefix so they are
+  // exposed through the same reverse proxy that routes /api/v1/* to the backend.
+  // (useStaticAssets ignores setGlobalPrefix, so the prefix is set explicitly.)
+  app.useStaticAssets(join(process.cwd(), 'uploads'), {
+    prefix: `/${API_PREFIX}/uploads/`,
+  });
 
   const port = process.env.PORT ?? 3001;
   await app.listen(port);

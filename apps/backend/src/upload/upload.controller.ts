@@ -6,6 +6,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { buildUploadUrl } from '../common/config/app-url';
 
 @Controller('upload')
 export class UploadController {
@@ -14,8 +15,7 @@ export class UploadController {
   uploadFile(@UploadedFile() file: Express.Multer.File) {
     if (!file) throw new BadRequestException('Aucun fichier reçu');
 
-    const baseUrl = process.env.BACKEND_URL ?? 'http://localhost:3001';
-    const url = `${baseUrl}/uploads/${file.filename}`;
+    const url = buildUploadUrl(file.filename);
 
     return { url, filename: file.filename, size: file.size, mimetype: file.mimetype };
   }
