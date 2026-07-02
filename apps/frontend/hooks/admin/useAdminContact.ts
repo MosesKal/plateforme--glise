@@ -20,4 +20,12 @@ export function useMarkContactRead() {
   })
 }
 
+export function useDeleteContact() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => adminContactApi.delete(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
+  })
+}
+
 export type { ContactMessage }

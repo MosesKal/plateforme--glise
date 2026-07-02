@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -36,5 +37,12 @@ export class ContactController {
   @Patch(':id/read')
   markRead(@Param('id') id: string) {
     return this.contactService.markRead(id);
+  }
+
+  @Roles('Super Admin', 'Administrateur Général')
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id') id: string) {
+    return this.contactService.remove(id);
   }
 }

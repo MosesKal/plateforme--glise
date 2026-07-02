@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { PageHeader } from "@/components/shared/PageHeader"
-import { useAdminContact, useMarkContactRead, type ContactMessage } from "@/hooks/admin/useAdminContact"
+import { useAdminContact, useMarkContactRead, useDeleteContact, type ContactMessage } from "@/hooks/admin/useAdminContact"
 
 type StatusFilter = "all" | "UNREAD" | "READ"
 
@@ -38,14 +38,18 @@ function StatusBadge({ status }: { status: ContactMessage["status"] }) {
 function MessageRow({
   msg,
   onMarkRead,
+  onDelete,
   expanded,
   onToggle,
 }: {
   msg: ContactMessage
   onMarkRead: (id: string) => void
+  onDelete: (id: string) => void
   expanded: boolean
   onToggle: () => void
 }) {
+  const [confirming, setConfirming] = useState(false)
+
   return (
     <div
       className={`rounded-xl border transition-colors ${
@@ -91,16 +95,43 @@ function MessageRow({
       {expanded && (
         <div className="border-t border-gray-100 px-5 pb-5 pt-4">
           <p className="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">{msg.message}</p>
-          {msg.status === "UNREAD" && (
-            <div className="mt-4 flex justify-end">
+          <div className="mt-4 flex items-center justify-between gap-3">
+            {confirming ? (
+              <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2">
+                <span className="text-sm text-red-700">Supprimer ce message ?</span>
+                <button
+                  onClick={() => { onDelete(msg.id); setConfirming(false) }}
+                  className="rounded-md bg-red-600 px-3 py-1 text-xs font-semibold text-white transition hover:bg-red-700"
+                >
+                  Confirmer
+                </button>
+                <button
+                  onClick={() => setConfirming(false)}
+                  className="rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-semibold text-gray-600 transition hover:border-gray-300"
+                >
+                  Annuler
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setConfirming(true)}
+                className="flex items-center gap-1.5 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-600 transition hover:bg-red-50"
+              >
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+                Supprimer
+              </button>
+            )}
+            {msg.status === "UNREAD" && !confirming && (
               <button
                 onClick={() => onMarkRead(msg.id)}
                 className="rounded-lg bg-cecj-green px-4 py-2 text-sm font-semibold text-white transition hover:bg-cecj-green/90"
               >
                 Marquer comme lu
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -113,6 +144,7 @@ export default function AdminContactPage() {
 
   const { data: messages = [], isLoading, isError } = useAdminContact()
   const markRead = useMarkContactRead()
+  const deleteContact = useDeleteContact()
 
   const filtered = statusFilter === "all"
     ? messages
@@ -180,6 +212,7 @@ export default function AdminContactPage() {
               key={msg.id}
               msg={msg}
               onMarkRead={(id) => markRead.mutate(id)}
+              onDelete={(id) => deleteContact.mutate(id)}
               expanded={expandedId === msg.id}
               onToggle={() => setExpandedId(expandedId === msg.id ? null : msg.id)}
             />

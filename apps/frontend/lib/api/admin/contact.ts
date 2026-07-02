@@ -20,4 +20,7 @@ export const adminContactApi = {
 
   markRead: (id: string) =>
     api.patch<ContactMessage>(`/contact/${id}/read`).then((r) => r.data),
+
+  delete: (id: string) =>
+    api.delete(`/contact/${id}`).then((r) => r.data),
 }

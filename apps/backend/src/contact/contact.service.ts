@@ -27,4 +27,8 @@ export class ContactService {
       data: { status: 'READ' },
     });
   }
+
+  remove(id: string) {
+    return this.prisma.contactMessage.delete({ where: { id } });
+  }
 }
