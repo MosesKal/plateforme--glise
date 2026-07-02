@@ -10,6 +10,8 @@ export interface GalleryAlbum {
   createdAt: string
   updatedAt: string
   _count: { items: number }
+  /** 1ère image de l'album (couverture de secours si coverUrl absent). */
+  items?: { mediaUrl: string }[]
 }
 
 export interface GalleryItem {

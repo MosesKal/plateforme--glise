@@ -42,7 +42,17 @@ export class GalleryService {
   findAllAlbums() {
     return this.prisma.album.findMany({
       orderBy: { createdAt: 'desc' },
-      include: { _count: { select: { items: true } } },
+      include: {
+        _count: { select: { items: true } },
+        // 1ère image de l'album : sert de couverture de secours côté public
+        // quand aucune coverUrl n'a été définie manuellement.
+        items: {
+          where: { mediaType: MediaType.IMAGE },
+          orderBy: { order: 'asc' },
+          take: 1,
+          select: { mediaUrl: true },
+        },
+      },
     });
   }
 
