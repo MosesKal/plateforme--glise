@@ -311,10 +311,10 @@ model ContactMessage {
   id        String        @id @default(cuid())
   firstName String
   lastName  String
-  email     String
+  email     String?
   phone     String?
-  subject   String
-  message   String        @db.Text
+  subject   String?
+  message   String?       @db.Text
   status    ContactStatus @default(UNREAD)
   createdAt DateTime      @default(now())
 

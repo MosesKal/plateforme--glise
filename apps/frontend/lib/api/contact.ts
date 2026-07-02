@@ -3,10 +3,9 @@ import { api } from "@/lib/api/client"
 export interface ContactPayload {
   firstName: string
   lastName: string
-  email: string
-  phone?: string
-  subject: string
-  message: string
+  phone: string
+  subject?: string
+  message?: string
 }
 
 export const contactApi = {

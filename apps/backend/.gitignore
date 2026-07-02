@@ -12,6 +12,7 @@ node_modules/
 
 # Logs
 *.log
+*.err
 logs/
 
 # Prisma

@@ -14,10 +14,9 @@ import { stagger, fadeUp, inView } from "@/lib/motion"
 const contactSchema = z.object({
   firstName: z.string().min(2, "Prénom requis (min. 2 caractères)"),
   lastName:  z.string().min(2, "Nom requis (min. 2 caractères)"),
-  email:     z.string().email("Adresse email invalide"),
-  phone:     z.string().optional(),
-  subject:   z.string().min(5, "Sujet requis (min. 5 caractères)"),
-  message:   z.string().min(20, "Message trop court (min. 20 caractères)"),
+  phone:     z.string().min(8, "Numéro de téléphone requis (min. 8 chiffres)"),
+  subject:   z.string().optional(),
+  message:   z.string().optional(),
 })
 
 type ContactFormValues = z.infer<typeof contactSchema>
@@ -125,37 +124,24 @@ function ContactForm() {
         </div>
       </div>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <div>
-          <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-            Email <span className="text-cecj-red">*</span>
-          </label>
-          <input
-            {...register("email")}
-            type="email"
-            placeholder="jean.dupont@email.com"
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-cecj-green focus:bg-white focus:ring-2 focus:ring-cecj-green/15"
-          />
-          {errors.email && (
-            <p className="mt-1 text-xs text-red-500">{errors.email.message}</p>
-          )}
-        </div>
-        <div>
-          <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-            Téléphone <span className="text-gray-400 font-normal">(optionnel)</span>
-          </label>
-          <input
-            {...register("phone")}
-            type="tel"
-            placeholder="+243 81 000 0000"
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-cecj-green focus:bg-white focus:ring-2 focus:ring-cecj-green/15"
-          />
-        </div>
+      <div>
+        <label className="mb-1.5 block text-sm font-semibold text-gray-700">
+          Téléphone <span className="text-cecj-red">*</span>
+        </label>
+        <input
+          {...register("phone")}
+          type="tel"
+          placeholder="+243 81 000 0000"
+          className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-cecj-green focus:bg-white focus:ring-2 focus:ring-cecj-green/15"
+        />
+        {errors.phone && (
+          <p className="mt-1 text-xs text-red-500">{errors.phone.message}</p>
+        )}
       </div>
 
       <div>
         <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-          Sujet <span className="text-cecj-red">*</span>
+          Sujet <span className="text-gray-400 font-normal">(optionnel)</span>
         </label>
         <input
           {...register("subject")}
@@ -169,7 +155,7 @@ function ContactForm() {
 
       <div>
         <label className="mb-1.5 block text-sm font-semibold text-gray-700">
-          Message <span className="text-cecj-red">*</span>
+          Message <span className="text-gray-400 font-normal">(optionnel)</span>
         </label>
         <textarea
           {...register("message")}

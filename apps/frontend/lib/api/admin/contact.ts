@@ -6,10 +6,10 @@ export interface ContactMessage {
   id: string
   firstName: string
   lastName: string
-  email: string
+  email?: string | null
   phone?: string | null
-  subject: string
-  message: string
+  subject?: string | null
+  message?: string | null
   status: ContactStatus
   createdAt: string
 }

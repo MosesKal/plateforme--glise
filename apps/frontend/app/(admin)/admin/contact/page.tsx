@@ -70,13 +70,17 @@ function MessageRow({
             <span className="font-semibold text-gray-900">
               {msg.firstName} {msg.lastName}
             </span>
-            <span className="text-xs text-gray-400">{msg.email}</span>
+            {msg.email && (
+              <span className="text-xs text-gray-400">{msg.email}</span>
+            )}
             {msg.phone && (
               <span className="text-xs text-gray-400">{msg.phone}</span>
             )}
             <StatusBadge status={msg.status} />
           </div>
-          <p className="mt-0.5 text-sm font-medium text-gray-700 truncate">{msg.subject}</p>
+          <p className="mt-0.5 text-sm font-medium text-gray-700 truncate">
+            {msg.subject || <span className="italic text-gray-400">Sans sujet</span>}
+          </p>
           <p className="mt-0.5 text-xs text-gray-400">
             {new Date(msg.createdAt).toLocaleDateString("fr-FR", {
               day: "numeric", month: "long", year: "numeric",
@@ -94,7 +98,9 @@ function MessageRow({
 
       {expanded && (
         <div className="border-t border-gray-100 px-5 pb-5 pt-4">
-          <p className="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">{msg.message}</p>
+          <p className="text-sm leading-relaxed text-gray-700 whitespace-pre-wrap">
+            {msg.message || <span className="italic text-gray-400">Aucun message</span>}
+          </p>
           <div className="mt-4 flex items-center justify-between gap-3">
             {confirming ? (
               <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2">
