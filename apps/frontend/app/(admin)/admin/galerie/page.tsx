@@ -5,19 +5,21 @@ import { PageHeader } from "@/components/shared/PageHeader"
 import { Button } from "@/components/ui/Button"
 import { GalleryGrid } from "@/components/features/admin/gallery/GalleryGrid"
 import { GalleryItemFormModal, type GalleryItemPayload } from "@/components/features/admin/gallery/GalleryItemFormModal"
+import { BulkUploadModal } from "@/components/features/admin/gallery/BulkUploadModal"
 import { AlbumFormModal } from "@/components/features/admin/gallery/AlbumFormModal"
 import { AlbumsPanel } from "@/components/features/admin/gallery/AlbumsPanel"
 import {
   useAdminGalleryItems,
   useAdminAlbums,
   useCreateGalleryItem,
+  useCreateGalleryItems,
   useUpdateGalleryItem,
   useDeleteGalleryItem,
   useCreateAlbum,
   useUpdateAlbum,
   useDeleteAlbum,
 } from "@/hooks/admin/useAdminGallery"
-import type { GalleryAlbum, GalleryItem } from "@/lib/api/admin/gallery"
+import type { GalleryAlbum, GalleryItem, CreateGalleryItemPayload } from "@/lib/api/admin/gallery"
 
 export default function AdminGaleriePage() {
   const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null)
@@ -30,16 +32,18 @@ export default function AdminGaleriePage() {
   const items = itemsData?.items ?? []
 
   const createItem  = useCreateGalleryItem()
+  const createItems = useCreateGalleryItems()
   const updateItem  = useUpdateGalleryItem()
   const deleteItem  = useDeleteGalleryItem()
   const createAlbum = useCreateAlbum()
   const updateAlbum = useUpdateAlbum()
   const deleteAlbum = useDeleteAlbum()
 
-  const [itemModalOpen, setItemModalOpen]   = useState(false)
-  const [editItem, setEditItem]             = useState<GalleryItem | null>(null)
-  const [albumModalOpen, setAlbumModalOpen] = useState(false)
-  const [editAlbum, setEditAlbum]           = useState<GalleryAlbum | null>(null)
+  const [itemModalOpen, setItemModalOpen]     = useState(false)
+  const [editItem, setEditItem]               = useState<GalleryItem | null>(null)
+  const [bulkModalOpen, setBulkModalOpen]     = useState(false)
+  const [albumModalOpen, setAlbumModalOpen]   = useState(false)
+  const [editAlbum, setEditAlbum]             = useState<GalleryAlbum | null>(null)
 
   const openAddItem  = () => { setEditItem(null); setItemModalOpen(true) }
   const openEditItem = (item: GalleryItem) => { setEditItem(item); setItemModalOpen(true) }
@@ -83,6 +87,10 @@ export default function AdminGaleriePage() {
     await deleteItem.mutateAsync(id)
   }
 
+  const handleBulkUploadComplete = async (items: CreateGalleryItemPayload[]) => {
+    await createItems.mutateAsync(items)
+  }
+
   const handleDeleteAlbum = async (id: string) => {
     const album = albums.find((a) => a.id === id)
     if (album && album._count.items > 0) {
@@ -105,6 +113,12 @@ export default function AdminGaleriePage() {
         initialData={editItem}
         albums={albums}
       />
+      <BulkUploadModal
+        open={bulkModalOpen}
+        onClose={() => setBulkModalOpen(false)}
+        onComplete={handleBulkUploadComplete}
+        albums={albums}
+      />
       <AlbumFormModal
         open={albumModalOpen}
         onClose={closeAlbum}
@@ -120,6 +134,9 @@ export default function AdminGaleriePage() {
             <div className="flex gap-2">
               <Button variant="secondary" onClick={openAddAlbum}>
                 + Album
+              </Button>
+              <Button variant="secondary" onClick={() => setBulkModalOpen(true)}>
+                + Import multiple
               </Button>
               <Button onClick={openAddItem} className="bg-cecj-green hover:bg-cecj-green/90">
                 + Ajouter un média

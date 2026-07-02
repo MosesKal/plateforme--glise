@@ -35,6 +35,14 @@ export function useCreateGalleryItem() {
   })
 }
 
+export function useCreateGalleryItems() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (items: CreateGalleryItemPayload[]) => adminGalleryApi.createItems(items),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ITEMS_KEY }),
+  })
+}
+
 export function useUpdateGalleryItem() {
   const qc = useQueryClient()
   return useMutation({

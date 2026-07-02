@@ -12,6 +12,7 @@ import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { CreateGalleryItemDto } from './dto/create-gallery-item.dto';
 import { UpdateGalleryItemDto } from './dto/update-gallery-item.dto';
+import { BulkCreateGalleryItemsDto } from './dto/bulk-create-gallery-items.dto';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { GalleryQueryDto } from './dto/gallery-query.dto';
@@ -43,6 +44,12 @@ export class GalleryController {
   @Post()
   createItem(@Body() dto: CreateGalleryItemDto) {
     return this.galleryService.createItem(dto);
+  }
+
+  @Roles('Super Admin', 'Administrateur Général', 'Responsable Communication')
+  @Post('bulk')
+  createItems(@Body() dto: BulkCreateGalleryItemsDto) {
+    return this.galleryService.createItems(dto.items);
   }
 
   @Roles('Super Admin', 'Administrateur Général', 'Responsable Communication')

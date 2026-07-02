@@ -68,6 +68,12 @@ export class GalleryService {
     return this.prisma.galleryItem.create({ data: dto });
   }
 
+  async createItems(items: CreateGalleryItemDto[]) {
+    return this.prisma.$transaction(
+      items.map((item) => this.prisma.galleryItem.create({ data: item })),
+    );
+  }
+
   async updateItem(id: string, dto: UpdateGalleryItemDto) {
     const item = await this.prisma.galleryItem.findUnique({ where: { id } });
     if (!item) throw new NotFoundException('Gallery item not found');

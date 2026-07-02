@@ -60,6 +60,9 @@ export const adminGalleryApi = {
   createItem: (payload: CreateGalleryItemPayload) =>
     api.post<GalleryItem>("/gallery", payload).then((r) => r.data),
 
+  createItems: (items: CreateGalleryItemPayload[]) =>
+    api.post<GalleryItem[]>("/gallery/bulk", { items }).then((r) => r.data),
+
   updateItem: (id: string, payload: UpdateGalleryItemPayload) =>
     api.patch<GalleryItem>(`/gallery/${id}`, payload).then((r) => r.data),
 
