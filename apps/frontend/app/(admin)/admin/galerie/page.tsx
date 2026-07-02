@@ -4,8 +4,7 @@ import { useState } from "react"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { Button } from "@/components/ui/Button"
 import { GalleryGrid } from "@/components/features/admin/gallery/GalleryGrid"
-import { GalleryItemFormModal, type GalleryItemPayload } from "@/components/features/admin/gallery/GalleryItemFormModal"
-import { BulkUploadModal } from "@/components/features/admin/gallery/BulkUploadModal"
+import { GalleryItemFormModal } from "@/components/features/admin/gallery/GalleryItemFormModal"
 import { AlbumFormModal } from "@/components/features/admin/gallery/AlbumFormModal"
 import { AlbumsPanel } from "@/components/features/admin/gallery/AlbumsPanel"
 import {
@@ -19,7 +18,7 @@ import {
   useUpdateAlbum,
   useDeleteAlbum,
 } from "@/hooks/admin/useAdminGallery"
-import type { GalleryAlbum, GalleryItem, CreateGalleryItemPayload } from "@/lib/api/admin/gallery"
+import type { GalleryAlbum, GalleryItem, CreateGalleryItemPayload, UpdateGalleryItemPayload } from "@/lib/api/admin/gallery"
 
 export default function AdminGaleriePage() {
   const [selectedAlbumId, setSelectedAlbumId] = useState<string | null>(null)
@@ -41,7 +40,6 @@ export default function AdminGaleriePage() {
 
   const [itemModalOpen, setItemModalOpen]     = useState(false)
   const [editItem, setEditItem]               = useState<GalleryItem | null>(null)
-  const [bulkModalOpen, setBulkModalOpen]     = useState(false)
   const [albumModalOpen, setAlbumModalOpen]   = useState(false)
   const [editAlbum, setEditAlbum]             = useState<GalleryAlbum | null>(null)
 
@@ -53,20 +51,16 @@ export default function AdminGaleriePage() {
   const openEditAlbum = (album: GalleryAlbum) => { setEditAlbum(album); setAlbumModalOpen(true) }
   const closeAlbum    = () => { setAlbumModalOpen(false); setEditAlbum(null) }
 
-  const handleItemSubmit = async (values: GalleryItemPayload) => {
-    const payload = {
-      mediaUrl:  values.mediaUrl,
-      title:     values.title || undefined,
-      mediaType: values.mediaType,
-      albumId:   values.albumId || undefined,
-      order:     values.order ?? 0,
-    }
-    if (editItem) {
-      await updateItem.mutateAsync({ id: editItem.id, payload })
+  const handleCreateItems = async (newItems: CreateGalleryItemPayload[]) => {
+    if (newItems.length === 1) {
+      await createItem.mutateAsync(newItems[0])
     } else {
-      await createItem.mutateAsync(payload)
+      await createItems.mutateAsync(newItems)
     }
-    closeItem()
+  }
+
+  const handleUpdateItem = async (id: string, payload: UpdateGalleryItemPayload) => {
+    await updateItem.mutateAsync({ id, payload })
   }
 
   const handleAlbumSubmit = async (values: { title: string; description?: string; coverUrl?: string }) => {
@@ -87,10 +81,6 @@ export default function AdminGaleriePage() {
     await deleteItem.mutateAsync(id)
   }
 
-  const handleBulkUploadComplete = async (items: CreateGalleryItemPayload[]) => {
-    await createItems.mutateAsync(items)
-  }
-
   const handleDeleteAlbum = async (id: string) => {
     const album = albums.find((a) => a.id === id)
     if (album && album._count.items > 0) {
@@ -109,14 +99,9 @@ export default function AdminGaleriePage() {
       <GalleryItemFormModal
         open={itemModalOpen}
         onClose={closeItem}
-        onSubmit={handleItemSubmit}
+        onCreate={handleCreateItems}
+        onUpdate={handleUpdateItem}
         initialData={editItem}
-        albums={albums}
-      />
-      <BulkUploadModal
-        open={bulkModalOpen}
-        onClose={() => setBulkModalOpen(false)}
-        onComplete={handleBulkUploadComplete}
         albums={albums}
       />
       <AlbumFormModal
@@ -134,9 +119,6 @@ export default function AdminGaleriePage() {
             <div className="flex gap-2">
               <Button variant="secondary" onClick={openAddAlbum}>
                 + Album
-              </Button>
-              <Button variant="secondary" onClick={() => setBulkModalOpen(true)}>
-                + Import multiple
               </Button>
               <Button onClick={openAddItem} className="bg-cecj-green hover:bg-cecj-green/90">
                 + Ajouter un média
