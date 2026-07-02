@@ -73,13 +73,22 @@ export class AuthService {
 
     if (!stored || stored.expiresAt < new Date()) {
       if (stored) {
-        await this.prisma.refreshToken.delete({ where: { id: stored.id } });
+        // deleteMany is idempotent: won't throw if already removed
+        await this.prisma.refreshToken.deleteMany({ where: { id: stored.id } });
       }
       throw new UnauthorizedException('Refresh token invalid or expired');
     }
 
-    // Token rotation: delete old, issue new pair
-    await this.prisma.refreshToken.delete({ where: { id: stored.id } });
+    // Token rotation: atomically consume the old token. Under concurrent
+    // refresh calls the count guards against a double-issue race — only the
+    // request that actually deletes the row proceeds to mint a new pair.
+    const { count } = await this.prisma.refreshToken.deleteMany({
+      where: { id: stored.id },
+    });
+    if (count === 0) {
+      throw new UnauthorizedException('Refresh token invalid or expired');
+    }
+
     const tokens = await this.generateTokens(
       stored.user.id,
       stored.user.email,
