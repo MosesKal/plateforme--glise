@@ -6,7 +6,15 @@ import { mkdirSync } from 'fs';
 import { extname } from 'path';
 import { getUploadTmpDir } from '../../storage/storage.config';
 
-export const AUDIO_ALLOWED_EXTENSIONS = /\.(mp3|m4a|aac|wav|ogg|opus|flac)$/i;
+export const AUDIO_ALLOWED_EXTENSIONS =
+  /\.(mp3|mpeg|mpga|m4a|aac|wav|ogg|oga|opus|flac)$/i;
+
+/**
+ * Filet de sécurité : certains fichiers audio valides arrivent avec une
+ * extension atypique (ex. « .mpeg » pour du MPEG audio) mais un type MIME
+ * correct remonté par le navigateur. On accepte alors sur la base du MIME.
+ */
+export const AUDIO_ALLOWED_MIMETYPES = /^audio\//i;
 
 /** 500 Mo — largement au-dessus d'une prédication de 2 h en MP3 192 kbps. */
 export const AUDIO_MAX_FILE_SIZE = 500 * 1024 * 1024;
@@ -30,12 +38,14 @@ export const audioUploadOptions: MulterOptions = {
   }),
   limits: { fileSize: AUDIO_MAX_FILE_SIZE },
   fileFilter: (_req, file, cb) => {
-    if (AUDIO_ALLOWED_EXTENSIONS.test(extname(file.originalname))) {
+    const extOk = AUDIO_ALLOWED_EXTENSIONS.test(extname(file.originalname));
+    const mimeOk = AUDIO_ALLOWED_MIMETYPES.test(file.mimetype);
+    if (extOk || mimeOk) {
       cb(null, true);
     } else {
       cb(
         new BadRequestException(
-          'Format audio non supporté (mp3, m4a, aac, wav, ogg, opus, flac)',
+          'Format audio non supporté (mp3, mpeg, m4a, aac, wav, ogg, opus, flac)',
         ),
         false,
       );

@@ -172,7 +172,7 @@ export function AudioTeachingFormModal({
             <input
               ref={fileInputRef}
               type="file"
-              accept=".mp3,.m4a,.aac,.wav,.ogg,.opus,.flac,audio/*"
+              accept=".mp3,.mpeg,.mpga,.m4a,.aac,.wav,.ogg,.oga,.opus,.flac,audio/*"
               onChange={(e) => setAudioFile(e.target.files?.[0] ?? null)}
               className="block w-full text-sm text-gray-500 file:mr-3 file:rounded-lg file:border-0 file:bg-cecj-green/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-cecj-green hover:file:bg-cecj-green/20"
             />
