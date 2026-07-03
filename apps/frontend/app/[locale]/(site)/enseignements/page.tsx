@@ -1,9 +1,10 @@
 import type { Metadata } from "next"
-import { EnseignementsContent } from "@/components/features/enseignements/EnseignementsContent"
+import { EnseignementsContent } from "@/components/features/teachings/EnseignementsContent"
 
 export const metadata: Metadata = {
   title: "Enseignements",
-  description: "Sermons, messages et enseignements bibliques de l'Église Camp de Jésus Bel-air.",
+  description:
+    "Écoutez les enseignements audio de la C.E.C.J., organisés par thèmes : foi, prière, vie chrétienne et plus encore.",
 }
 
 export default function EnseignementsPage() {

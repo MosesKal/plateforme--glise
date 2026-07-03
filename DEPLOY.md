@@ -181,6 +181,72 @@ curl -I http://localhost:3000
 | `feat(upload)` — Multer + fichiers statiques | Le dossier `apps/backend/uploads/` doit être accessible. S'assurer que le répertoire existe et que le processus a les droits d'écriture. |
 | `feat(cms)` — Gestion des pages | Migration `add_site_pages` sera appliquée par `prisma migrate deploy`. |
 | `feat(gallery)` — Upload image couverture album | Même dossier `uploads/` que ci-dessus. |
+| `feat(teachings)` — Module Enseignements audio | Voir la section dédiée ci-dessous (MEDIA_ROOT, ffmpeg, Nginx `/media/`). |
+
+---
+
+## Module Enseignements audio
+
+### 1. Prérequis serveur
+
+```bash
+# ffprobe/ffmpeg : extraction de la durée à l'upload (phase 2 : transcodage)
+sudo apt install -y ffmpeg
+
+# Répertoire des médias HORS de l'arborescence applicative
+# (survit aux redéploiements ; servi directement par Nginx)
+sudo mkdir -p /var/lib/cecj/media
+sudo chown <user_pm2>:<user_pm2> /var/lib/cecj/media
+```
+
+### 2. Variables d'environnement backend (`apps/backend/.env`)
+
+```env
+# Racine du stockage des médias (défaut si absent : ./media dans le cwd)
+MEDIA_ROOT=/var/lib/cecj/media
+
+# Optionnel : origine publique des URLs médias (défaut : domaine public backend)
+# MEDIA_BASE_URL=https://dev.impactgroup.cd
+
+# Optionnel : chemin de ffprobe s'il n'est pas dans le PATH
+# FFPROBE_PATH=/usr/bin/ffprobe
+```
+
+### 3. Nginx — servir l'audio SANS passer par Node (critique pour la lecture)
+
+Ajouter dans le bloc `server` du domaine backend, AVANT le `location /` qui
+proxifie vers Node :
+
+```nginx
+location /media/ {
+    alias /var/lib/cecj/media/;
+    add_header Cache-Control "public, max-age=31536000, immutable";
+    access_log off;
+}
+```
+
+Nginx gère nativement les requêtes Range (seek instantané) et `sendfile`.
+Sans ce bloc, le fallback Express de main.ts sert quand même les fichiers
+(fonctionnel mais moins performant).
+
+Pour les uploads volumineux (fichiers audio jusqu'à 500 Mo), dans le même bloc
+`server` :
+
+```nginx
+client_max_body_size 512m;
+proxy_request_buffering off;
+```
+
+### 4. Vérification
+
+```bash
+# L'API du module répond
+curl https://<domaine>/api/v1/teachings/themes
+
+# Après un premier upload : le fichier est servi avec support Range
+curl -I -H "Range: bytes=0-99" https://<domaine>/media/audio/<annee>/<fichier>
+# → HTTP/1.1 206 Partial Content
+```
 
 ---
 

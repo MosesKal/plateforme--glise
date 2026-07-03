@@ -22,6 +22,9 @@ prisma/migrations/*.sql.bak
 uploads/*
 !uploads/.gitkeep
 
+# Médias enseignements (en dev : ./media ; en prod : MEDIA_ROOT hors du repo)
+media/
+
 # OS
 .DS_Store
 Thumbs.db

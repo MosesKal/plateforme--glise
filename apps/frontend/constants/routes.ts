@@ -9,6 +9,7 @@ export const SITE_ROUTES = {
   extensions:      "/extensions",
   adhesion:        "/adhesion",
   galerie:         "/galerie",
+  enseignements:   "/enseignements",
   evenements:      "/evenements",
   temoignages:     "/temoignages",
   departements:    "/departements",

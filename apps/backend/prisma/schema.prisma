@@ -263,6 +263,104 @@ model Sermon {
   @@map("sermons")
 }
 
+// ─── ENSEIGNEMENTS — Taxonomies partagées ─────────────────────────────────────
+
+model Speaker {
+  id             String          @id @default(cuid())
+  slug           String          @unique
+  fullName       String
+  title          String?
+  bio            String?         @db.Text
+  photoUrl       String?
+  isActive       Boolean         @default(true)
+  audioTeachings AudioTeaching[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@map("speakers")
+}
+
+model TeachingTheme {
+  id             String          @id @default(cuid())
+  slug           String          @unique
+  nameFr         String
+  nameEn         String?
+  descriptionFr  String?         @db.Text
+  coverImage     String?
+  position       Int             @default(0)
+  isActive       Boolean         @default(true)
+  audioTeachings AudioTeaching[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@map("teaching_themes")
+}
+
+model TeachingTag {
+  id             String             @id @default(cuid())
+  slug           String             @unique
+  name           String             @unique
+  audioTeachings AudioTeachingTag[]
+
+  @@map("teaching_tags")
+}
+
+// ─── ENSEIGNEMENTS AUDIO ──────────────────────────────────────────────────────
+
+enum TeachingStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum AudioProcessingStatus {
+  PENDING
+  PROCESSING
+  READY
+  FAILED
+}
+
+model AudioTeaching {
+  id          String                @id @default(cuid())
+  slug        String                @unique
+  title       String
+  description String?               @db.Text
+  preachedAt  DateTime?
+  durationSec Int                   @default(0)
+  fileKey     String? // clé de stockage (jamais une URL) — résolue par StorageProvider
+  fileSize    Int                   @default(0)
+  mimeType    String                @default("audio/mpeg")
+  coverImage  String?
+  status      TeachingStatus        @default(DRAFT)
+  processing  AudioProcessingStatus @default(PENDING)
+  position    Int                   @default(0)
+  playCount   Int                   @default(0)
+
+  themeId   String
+  theme     TeachingTheme      @relation(fields: [themeId], references: [id], onDelete: Restrict)
+  speakerId String
+  speaker   Speaker            @relation(fields: [speakerId], references: [id], onDelete: Restrict)
+  tags      AudioTeachingTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([themeId, position])
+  @@index([status, preachedAt(sort: Desc)])
+  @@index([speakerId])
+  @@map("audio_teachings")
+}
+
+model AudioTeachingTag {
+  audioTeachingId String
+  tagId           String
+  audioTeaching   AudioTeaching @relation(fields: [audioTeachingId], references: [id], onDelete: Cascade)
+  tag             TeachingTag   @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([audioTeachingId, tagId])
+  @@map("audio_teaching_tags")
+}
+
 // ─── DEPARTMENTS ──────────────────────────────────────────────────────────────
 
 model Department {

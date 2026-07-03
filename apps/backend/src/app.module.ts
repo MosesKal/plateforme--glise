@@ -16,6 +16,8 @@ import { DepartmentsModule } from './departments/departments.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { UploadModule } from './upload/upload.module';
 import { PagesModule } from './pages/pages.module';
+import { StorageModule } from './storage/storage.module';
+import { TeachingsModule } from './teachings/teachings.module';
 import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
@@ -39,6 +41,8 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
     ScheduleModule,
     UploadModule,
     PagesModule,
+    StorageModule,
+    TeachingsModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

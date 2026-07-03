@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { join } from 'path';
 import { AppModule } from './app.module';
 import { API_PREFIX } from './common/config/app-url';
+import { getMediaRoot } from './storage/storage.config';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -35,6 +36,17 @@ async function bootstrap() {
   // (useStaticAssets ignores setGlobalPrefix, so the prefix is set explicitly.)
   app.useStaticAssets(join(process.cwd(), 'uploads'), {
     prefix: `/${API_PREFIX}/uploads/`,
+  });
+
+  // Médias (enseignements audio…) sous /media/ : fallback Express avec support
+  // des requêtes Range. En production, Nginx doit intercepter /media/ AVANT
+  // Node (location /media/ { alias <MEDIA_ROOT>; }) — sendfile + Range natif.
+  app.useStaticAssets(getMediaRoot(), {
+    prefix: '/media/',
+    setHeaders: (res) => {
+      // Les clés de fichiers sont immuables (jamais réécrites) → cache long.
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    },
   });
 
   const port = process.env.PORT ?? 3001;
