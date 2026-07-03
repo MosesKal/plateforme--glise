@@ -197,12 +197,14 @@ export function EnseignementsContent() {
           {/* Reprendre l'écoute (localStorage, propre à l'appareil) */}
           <ResumeListening />
 
-          {/* Thèmes */}
+          {/* Thèmes — contenu principal de la page. Révélé au MONTAGE
+              (initial/animate) et non au scroll (whileInView) : les données
+              étant chargées côté client, l'IntersectionObserver ajoutait un
+              délai qui rendait l'apparition lente et saccadée. Chaque carte
+              est animée individuellement (stagger) pour un rendu fluide. */}
           <section className="mx-auto max-w-6xl px-4 pt-14 lg:px-8">
-            <motion.div {...inView()} variants={stagger} className="space-y-8">
-              <motion.div variants={fadeUp}>
-                <SectionTitle>Parcourir par thème</SectionTitle>
-              </motion.div>
+            <div className="space-y-8">
+              <SectionTitle>Parcourir par thème</SectionTitle>
 
               {themesLoading ? (
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -215,17 +217,23 @@ export function EnseignementsContent() {
                   Les enseignements arrivent bientôt.
                 </p>
               ) : (
-                <motion.div variants={fadeUp} className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  variants={stagger}
+                  className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                >
                   {visibleThemes.map((theme) => (
-                    <ThemeCard
-                      key={theme.id}
-                      theme={theme}
-                      href={`/${locale}/enseignements/audio/${theme.slug}`}
-                    />
+                    <motion.div key={theme.id} variants={fadeUp}>
+                      <ThemeCard
+                        theme={theme}
+                        href={`/${locale}/enseignements/audio/${theme.slug}`}
+                      />
+                    </motion.div>
                   ))}
                 </motion.div>
               )}
-            </motion.div>
+            </div>
           </section>
 
           {/* Derniers + plus écoutés */}
