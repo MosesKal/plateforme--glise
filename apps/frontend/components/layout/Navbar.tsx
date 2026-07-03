@@ -27,6 +27,11 @@ export function Navbar() {
 
   const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
 
+  // Actif sur la page exacte ET ses sous-pages (ex. /enseignements/audio/...),
+  // sauf pour l'accueil qui ne matche que lui-meme.
+  const isLinkActive = (href: string) =>
+    pathname === href || (href !== lp("/") && pathname.startsWith(`${href}/`))
+
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -53,7 +58,7 @@ export function Navbar() {
     { label: t("nav.contact"),     href: lp(SITE_ROUTES.contact) },
   ]
 
-  const isExploreActive = exploreLinks.some((l) => pathname === l.href)
+  const isExploreActive = exploreLinks.some((l) => isLinkActive(l.href))
 
   return (
     <header className="sticky top-0 z-50 bg-cecj-green shadow-md">
@@ -81,7 +86,7 @@ export function Navbar() {
                 href={link.href}
                 className={cn(
                   "rounded px-3 py-1.5 text-sm font-medium transition-colors",
-                  pathname === link.href
+                  isLinkActive(link.href)
                     ? "bg-white/20 text-white"
                     : "text-white/80 hover:text-white hover:bg-white/10",
                 )}
@@ -115,7 +120,7 @@ export function Navbar() {
                     onClick={() => setDropdownOpen(false)}
                     className={cn(
                       "block px-4 py-2.5 text-sm transition-colors",
-                      pathname === link.href
+                      isLinkActive(link.href)
                         ? "bg-cecj-green/8 font-semibold text-cecj-green"
                         : "text-gray-700 hover:bg-cecj-green/5 hover:text-cecj-green",
                     )}
@@ -154,7 +159,7 @@ export function Navbar() {
                   onClick={() => setMenuOpen(false)}
                   className={cn(
                     "block rounded px-3 py-3 text-sm font-medium",
-                    pathname === link.href
+                    isLinkActive(link.href)
                       ? "bg-white/20 text-white"
                       : "text-white/80 hover:text-white",
                   )}
@@ -186,7 +191,7 @@ export function Navbar() {
                         onClick={() => { setMenuOpen(false); setMobileExploreOpen(false) }}
                         className={cn(
                           "block rounded px-3 py-2.5 text-sm",
-                          pathname === link.href
+                          isLinkActive(link.href)
                             ? "font-semibold text-white"
                             : "text-white/65 hover:text-white",
                         )}

@@ -119,7 +119,34 @@ export class AudioTeachingsService {
     if (!teaching || teaching.status !== 'PUBLISHED') {
       throw new NotFoundException('Enseignement introuvable');
     }
-    return this.toPublic(teaching);
+
+    // Similaires : même thème ou au moins un tag commun. À cette échelle, la
+    // taxonomie éditoriale bat n'importe quel algorithme de recommandation.
+    const tagIds = teaching.tags.map(({ tagId }) => tagId);
+    const related = await this.prisma.audioTeaching.findMany({
+      where: {
+        status: 'PUBLISHED',
+        fileKey: { not: null },
+        id: { not: teaching.id },
+        OR: [
+          { themeId: teaching.themeId },
+          ...(tagIds.length > 0
+            ? [{ tags: { some: { tagId: { in: tagIds } } } }]
+            : []),
+        ],
+      },
+      orderBy: [
+        { preachedAt: { sort: 'desc', nulls: 'last' } },
+        { createdAt: 'desc' },
+      ],
+      take: 5,
+      include: PUBLIC_INCLUDE,
+    });
+
+    return {
+      ...this.toPublic(teaching),
+      related: related.map((t) => this.toPublic(t)),
+    };
   }
 
   /** Beacon envoyé par le player après 30 s d'écoute réelle (compteur approximatif assumé). */
@@ -137,6 +164,46 @@ export class AudioTeachingsService {
   }
 
   // ─── Backoffice ─────────────────────────────────────────────────────────────
+
+  /**
+   * Statistiques du module pour le tableau de bord : volumétrie, écoutes,
+   * top des enseignements et consommation du budget de stockage.
+   */
+  async stats() {
+    const [byStatus, aggregates, topTeachings] = await Promise.all([
+      this.prisma.audioTeaching.groupBy({
+        by: ['status'],
+        _count: { _all: true },
+      }),
+      this.prisma.audioTeaching.aggregate({
+        _count: { _all: true },
+        _sum: { fileSize: true, playCount: true, durationSec: true },
+      }),
+      this.prisma.audioTeaching.findMany({
+        where: { status: 'PUBLISHED', playCount: { gt: 0 } },
+        orderBy: [{ playCount: 'desc' }, { createdAt: 'desc' }],
+        take: 5,
+        include: PUBLIC_INCLUDE,
+      }),
+    ]);
+
+    const countFor = (status: string) =>
+      byStatus.find((s) => s.status === status)?._count._all ?? 0;
+
+    const budgetGb = Number(process.env.MEDIA_BUDGET_GB) || 100;
+
+    return {
+      total: aggregates._count._all,
+      published: countFor('PUBLISHED'),
+      draft: countFor('DRAFT'),
+      archived: countFor('ARCHIVED'),
+      totalPlays: aggregates._sum.playCount ?? 0,
+      totalDurationSec: aggregates._sum.durationSec ?? 0,
+      storageUsedBytes: aggregates._sum.fileSize ?? 0,
+      storageBudgetBytes: budgetGb * 1024 ** 3,
+      topTeachings: topTeachings.map((t) => this.toPublic(t)),
+    };
+  }
 
   async findAllAdmin(query: AdminAudioQueryDto) {
     const { page = 1, limit = 50, themeId, status, search } = query;

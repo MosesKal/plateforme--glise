@@ -4,7 +4,7 @@ import { EnseignementsContent } from "@/components/features/teachings/Enseigneme
 export const metadata: Metadata = {
   title: "Enseignements",
   description:
-    "Écoutez les enseignements audio de la C.E.C.J., organisés par thèmes : foi, prière, vie chrétienne et plus encore.",
+    "Écoutez les enseignements audio de l'église, organisés par thèmes : foi, prière, vie chrétienne et plus encore.",
 }
 
 export default function EnseignementsPage() {

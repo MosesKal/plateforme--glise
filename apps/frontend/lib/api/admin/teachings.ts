@@ -50,6 +50,24 @@ export interface AudioUploadResult {
   durationSec: number
 }
 
+export interface UploadProgress {
+  percent: number
+  loadedBytes: number
+  totalBytes: number
+}
+
+export interface TeachingsStats {
+  total: number
+  published: number
+  draft: number
+  archived: number
+  totalPlays: number
+  totalDurationSec: number
+  storageUsedBytes: number
+  storageBudgetBytes: number
+  topTeachings: AudioTeaching[]
+}
+
 export interface ThemePayload {
   nameFr: string
   nameEn?: string
@@ -131,12 +149,15 @@ export const adminTeachingsApi = {
   reorderAudio: (items: { id: string; position: number }[]) =>
     api.patch("/teachings/audio/reorder", { items }).then((r) => r.data),
 
+  stats: () =>
+    api.get<TeachingsStats>("/teachings/audio/stats").then((r) => r.data),
+
   /**
    * Upload du fichier audio. `timeout: 0` désactive le timeout global de 10 s
    * du client — un fichier de 100 Mo sur une connexion lente prend plusieurs
-   * minutes, la progression est remontée via onProgress (0–100).
+   * minutes, la progression détaillée (%, octets) est remontée via onProgress.
    */
-  uploadAudio: (file: File, onProgress?: (percent: number) => void) => {
+  uploadAudio: (file: File, onProgress?: (progress: UploadProgress) => void) => {
     const form = new FormData()
     form.append("file", file)
     return api
@@ -145,7 +166,11 @@ export const adminTeachingsApi = {
         timeout: 0,
         onUploadProgress: (e) => {
           if (onProgress && e.total) {
-            onProgress(Math.round((e.loaded / e.total) * 100))
+            onProgress({
+              percent: Math.round((e.loaded / e.total) * 100),
+              loadedBytes: e.loaded,
+              totalBytes: e.total,
+            })
           }
         },
       })

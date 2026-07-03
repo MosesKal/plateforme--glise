@@ -37,6 +37,18 @@ export interface AudioTeaching {
   tags: TeachingTagRef[]
 }
 
+/** Détail public : l'enseignement + ses similaires (même thème ou tags communs). */
+export interface AudioTeachingDetail extends AudioTeaching {
+  related: AudioTeaching[]
+}
+
+export interface PublicTag {
+  id: string
+  slug: string
+  name: string
+  count: number
+}
+
 export interface PaginatedAudioTeachings {
   items: AudioTeaching[]
   total: number
@@ -70,7 +82,10 @@ export const teachingsApi = {
       .then((r) => r.data),
 
   getAudio: (slug: string) =>
-    api.get<AudioTeaching>(`/teachings/audio/${slug}`).then((r) => r.data),
+    api.get<AudioTeachingDetail>(`/teachings/audio/${slug}`).then((r) => r.data),
+
+  listTags: () =>
+    api.get<PublicTag[]>("/teachings/tags").then((r) => r.data),
 
   /** Beacon d'écoute (déclenché après ~30 s de lecture réelle). */
   registerPlay: (id: string) =>

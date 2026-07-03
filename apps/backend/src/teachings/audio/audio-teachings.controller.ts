@@ -44,6 +44,12 @@ export class AudioTeachingsController {
   }
 
   @Roles('Super Admin', 'Administrateur Général', 'Responsable Communication')
+  @Get('stats')
+  stats() {
+    return this.audioTeachingsService.stats();
+  }
+
+  @Roles('Super Admin', 'Administrateur Général', 'Responsable Communication')
   @Post('upload')
   @UseInterceptors(FileInterceptor('file', audioUploadOptions))
   upload(@UploadedFile() file: Express.Multer.File) {

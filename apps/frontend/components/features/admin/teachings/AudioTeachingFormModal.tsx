@@ -13,6 +13,7 @@ import type {
   AdminTheme,
   AudioTeachingPayload,
   Speaker,
+  UploadProgress,
 } from "@/lib/api/admin/teachings"
 import { formatDuration, formatFileSize } from "@/components/features/teachings/format"
 
@@ -66,7 +67,7 @@ export function AudioTeachingFormModal({
 
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [audioFile, setAudioFile] = useState<File | null>(null)
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null)
+  const [uploadProgress, setUploadProgress] = useState<UploadProgress | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -120,7 +121,7 @@ export function AudioTeachingFormModal({
     // Upload du fichier d'abord ; la création n'a lieu que s'il aboutit.
     if (audioFile) {
       try {
-        setUploadProgress(0)
+        setUploadProgress({ percent: 0, loadedBytes: 0, totalBytes: audioFile.size })
         const uploaded = await adminTeachingsApi.uploadAudio(audioFile, setUploadProgress)
         payload.fileKey = uploaded.fileKey
         payload.fileSize = uploaded.fileSize
@@ -133,10 +134,19 @@ export function AudioTeachingFormModal({
       }
     }
 
-    await onSubmit(payload)
+    try {
+      await onSubmit(payload)
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string | string[] } } })?.response?.data?.message
+      setUploadProgress(null)
+      setUploadError(
+        Array.isArray(message) ? message.join(" · ") : message || "Enregistrement impossible. Réessayez.",
+      )
+    }
   }
 
-  const uploading = uploadProgress !== null && uploadProgress < 100 && isSubmitting
+  const uploading = uploadProgress !== null && isSubmitting
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 px-4 py-8 backdrop-blur-sm">
@@ -145,7 +155,11 @@ export function AudioTeachingFormModal({
           <h2 className="text-base font-semibold text-gray-900">
             {isEdit ? "Modifier l'enseignement" : "Ajouter un enseignement"}
           </h2>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
+          <button
+            onClick={onClose}
+            disabled={uploading}
+            className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 disabled:pointer-events-none disabled:opacity-30"
+          >
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -173,15 +187,30 @@ export function AudioTeachingFormModal({
               </p>
             ) : null}
             {uploadProgress !== null && (
-              <div className="mt-1.5">
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+              <div className="mt-2 rounded-xl border border-cecj-green/20 bg-cecj-green/5 p-3.5">
+                <div className="flex items-baseline justify-between">
+                  <p className="text-sm font-semibold text-cecj-green">
+                    {uploadProgress.percent < 100 ? (
+                      <>Envoi du fichier… {uploadProgress.percent}&nbsp;%</>
+                    ) : (
+                      <span className="inline-flex items-center gap-2">
+                        <span className="h-3 w-3 animate-spin rounded-full border-2 border-cecj-green/30 border-t-cecj-green" />
+                        Traitement du fichier (durée, métadonnées)…
+                      </span>
+                    )}
+                  </p>
+                  <p className="text-xs tabular-nums text-gray-400">
+                    {formatFileSize(uploadProgress.loadedBytes)} / {formatFileSize(uploadProgress.totalBytes)}
+                  </p>
+                </div>
+                <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-white">
                   <div
-                    className="h-full rounded-full bg-cecj-green transition-all"
-                    style={{ width: `${uploadProgress}%` }}
+                    className="h-full rounded-full bg-cecj-green transition-[width] duration-200"
+                    style={{ width: `${uploadProgress.percent}%` }}
                   />
                 </div>
-                <p className="mt-1 text-xs text-gray-400">
-                  {uploadProgress < 100 ? `Envoi… ${uploadProgress}%` : "Traitement…"}
+                <p className="mt-1.5 text-[11px] text-gray-400">
+                  Ne fermez pas cette fenêtre pendant l&apos;envoi.
                 </p>
               </div>
             )}
@@ -206,6 +235,11 @@ export function AudioTeachingFormModal({
                   <option key={s.id} value={s.id}>{s.fullName}</option>
                 ))}
               </select>
+              {speakers.length === 0 && (
+                <p className="text-xs text-amber-600">
+                  Aucun orateur — créez-en un d&apos;abord via «&nbsp;Thèmes &amp; orateurs&nbsp;».
+                </p>
+              )}
             </Field>
           </div>
 

@@ -15,6 +15,7 @@ import {
   useCreateAudioTeaching,
   useDeleteAudioTeaching,
   useReorderAudioTeachings,
+  useTeachingsStats,
   useUpdateAudioTeaching,
 } from "@/hooks/admin/useAdminTeachings"
 import type {
@@ -27,6 +28,14 @@ const STATUS_LABELS: Record<TeachingStatus, { label: string; cls: string }> = {
   PUBLISHED: { label: "Publié",    cls: "bg-green-100 text-green-700" },
   DRAFT:     { label: "Brouillon", cls: "bg-amber-100 text-amber-700" },
   ARCHIVED:  { label: "Archivé",   cls: "bg-gray-100 text-gray-500"   },
+}
+
+/** "3 h 24 min" à partir de secondes (durée cumulée de la bibliothèque). */
+function formatTotalDuration(totalSec: number): string {
+  if (!totalSec) return "0 min"
+  const h = Math.floor(totalSec / 3600)
+  const m = Math.round((totalSec % 3600) / 60)
+  return h > 0 ? `${h} h ${String(m).padStart(2, "0")} min` : `${m} min`
 }
 
 export default function AdminEnseignementsPage() {
@@ -44,6 +53,8 @@ export default function AdminEnseignementsPage() {
     limit: 100,
   })
 
+  const { data: stats } = useTeachingsStats()
+
   const create = useCreateAudioTeaching()
   const update = useUpdateAudioTeaching()
   const remove = useDeleteAudioTeaching()
@@ -54,8 +65,13 @@ export default function AdminEnseignementsPage() {
   const [deleteTarget, setDeleteTarget] = useState<AdminAudioTeaching | null>(null)
 
   const items = useMemo(() => data?.items ?? [], [data])
-  const published = items.filter((t) => t.status === "PUBLISHED").length
-  const drafts = items.filter((t) => t.status === "DRAFT").length
+
+  const storagePercent = stats
+    ? Math.min((stats.storageUsedBytes / stats.storageBudgetBytes) * 100, 100)
+    : 0
+  const storageBudgetGb = stats
+    ? Math.round(stats.storageBudgetBytes / 1024 ** 3)
+    : 100
 
   // Le réordonnancement n'a de sens qu'à l'intérieur d'un thème.
   const canReorder = Boolean(themeId) && !debouncedSearch && !status
@@ -112,12 +128,14 @@ export default function AdminEnseignementsPage() {
           }
         />
 
-        {/* Stats */}
-        <div className="flex gap-4">
+        {/* Stats globales du module */}
+        <div className="flex flex-wrap gap-4">
           {[
-            { label: "Affichés",   value: items.length, color: "text-gray-900"  },
-            { label: "Publiés",    value: published,    color: "text-green-600" },
-            { label: "Brouillons", value: drafts,       color: "text-amber-600" },
+            { label: "Enseignements", value: stats?.total ?? "…",      color: "text-gray-900"   },
+            { label: "Publiés",       value: stats?.published ?? "…",  color: "text-green-600"  },
+            { label: "Brouillons",    value: stats?.draft ?? "…",      color: "text-amber-600"  },
+            { label: "Écoutes",       value: stats?.totalPlays ?? "…", color: "text-cecj-green" },
+            { label: "Durée totale",  value: stats ? formatTotalDuration(stats.totalDurationSec) : "…", color: "text-gray-900" },
           ].map(({ label, value, color }) => (
             <div key={label} className="rounded-xl border border-gray-200 bg-white px-5 py-3">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{label}</p>
@@ -125,6 +143,64 @@ export default function AdminEnseignementsPage() {
             </div>
           ))}
         </div>
+
+        {/* Stockage + top écoutes */}
+        {stats && (
+          <div className={`grid gap-4 ${stats.topTeachings.length > 0 ? "lg:grid-cols-2" : ""}`}>
+            <div className="rounded-xl border border-gray-200 bg-white p-5">
+              <div className="flex items-baseline justify-between">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                  Stockage audio
+                </p>
+                <p className="text-sm font-bold text-gray-900">
+                  {formatFileSize(stats.storageUsedBytes)}
+                  <span className="font-normal text-gray-400"> / {storageBudgetGb} Go</span>
+                </p>
+              </div>
+              <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-gray-100">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    storagePercent > 85
+                      ? "bg-red-500"
+                      : storagePercent > 65
+                        ? "bg-amber-400"
+                        : "bg-cecj-green"
+                  }`}
+                  style={{ width: `${Math.max(storagePercent, 0.5)}%` }}
+                />
+              </div>
+              <p className="mt-2 text-xs text-gray-400">
+                {storagePercent < 0.1
+                  ? "Moins de 0,1 % du budget utilisé"
+                  : `${storagePercent.toFixed(1).replace(".", ",")} % du budget utilisé`}
+                {storagePercent > 85 && " — envisagez la migration vers un stockage objet (R2)"}
+              </p>
+            </div>
+
+            {stats.topTeachings.length > 0 && (
+              <div className="rounded-xl border border-gray-200 bg-white p-5">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                  Les plus écoutés
+                </p>
+                <div className="mt-3 space-y-2">
+                  {stats.topTeachings.map((t, i) => (
+                    <div key={t.id} className="flex items-center gap-3">
+                      <span className="w-4 shrink-0 text-center text-xs font-bold text-gray-300">
+                        {i + 1}
+                      </span>
+                      <p className="min-w-0 flex-1 truncate text-sm font-medium text-gray-700">
+                        {t.title}
+                      </p>
+                      <span className="shrink-0 text-xs tabular-nums text-gray-400">
+                        {t.playCount} écoute{t.playCount > 1 ? "s" : ""}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Filtres */}
         <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3">
@@ -178,8 +254,8 @@ export default function AdminEnseignementsPage() {
         ) : items.length === 0 ? (
           <div className="rounded-xl border border-dashed border-gray-200 py-16 text-center">
             <p className="text-sm text-gray-400">
-              {themes.length === 0
-                ? "Commencez par créer un thème (bouton « Thèmes & orateurs »)."
+              {themes.length === 0 || speakers.length === 0
+                ? "Commencez par créer un thème et un orateur (bouton « Thèmes & orateurs »)."
                 : "Aucun enseignement. Ajoutez le premier."}
             </p>
           </div>

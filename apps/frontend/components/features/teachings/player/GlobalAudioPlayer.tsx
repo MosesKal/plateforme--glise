@@ -4,19 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { usePlayerStore } from "@/store/player.store"
 import { teachingsApi } from "@/lib/api/teachings"
 import { formatDuration } from "@/components/features/teachings/format"
+import { readSavedPosition, recordRecentPlay } from "@/lib/recent-plays"
 
-const POSITION_KEY_PREFIX = "cecj-audio-pos:"
 const PLAY_BEACON_AFTER_SEC = 30
+const SPEEDS = [1, 1.25, 1.5, 2] as const
+const SPEED_KEY = "cecj-audio-speed"
 
 function savedPositionKey(trackId: string) {
-  return `${POSITION_KEY_PREFIX}${trackId}`
-}
-
-function readSavedPosition(trackId: string): number {
-  if (typeof window === "undefined") return 0
-  const raw = window.localStorage.getItem(savedPositionKey(trackId))
-  const value = raw ? Number(raw) : 0
-  return Number.isFinite(value) ? value : 0
+  return `cecj-audio-pos:${trackId}`
 }
 
 /**
@@ -38,6 +33,25 @@ export function GlobalAudioPlayer() {
 
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
+  const [speed, setSpeed] = useState(1)
+  const [audioError, setAudioError] = useState(false)
+
+  // Vitesse persistée (préférence d'écoute, appliquée à chaque piste).
+  useEffect(() => {
+    const saved = Number(window.localStorage.getItem(SPEED_KEY))
+    if (SPEEDS.includes(saved as (typeof SPEEDS)[number])) setSpeed(saved)
+  }, [])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (audio) audio.playbackRate = speed
+  }, [speed, track?.id])
+
+  const cycleSpeed = () => {
+    const nextSpeed = SPEEDS[(SPEEDS.indexOf(speed as (typeof SPEEDS)[number]) + 1) % SPEEDS.length]
+    setSpeed(nextSpeed)
+    window.localStorage.setItem(SPEED_KEY, String(nextSpeed))
+  }
 
   const trackIndex = track ? queue.findIndex((t) => t.id === track.id) : -1
   const hasPrevious = trackIndex > 0
@@ -54,6 +68,7 @@ export function GlobalAudioPlayer() {
     lastTimeRef.current = 0
     setCurrentTime(0)
     setDuration(track.durationSec || 0)
+    setAudioError(false)
 
     audio.src = track.fileUrl
     // preload=metadata : seuls les en-têtes sont lus, le flux démarre au play.
@@ -65,6 +80,7 @@ export function GlobalAudioPlayer() {
       setCurrentTime(resumeAt)
     }
 
+    recordRecentPlay(track)
     audio.play().catch(() => setPlaying(false))
   }, [track?.id, track?.fileUrl, track?.durationSec, setPlaying, track])
 
@@ -143,7 +159,12 @@ export function GlobalAudioPlayer() {
   if (!track) return null
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-cecj-green text-white shadow-[0_-4px_20px_rgba(0,0,0,0.25)]">
+    <>
+      {/* Spacer en flux : compense la hauteur de la barre fixe pour que le
+          bas de page (footer inclus) reste atteignable au scroll. */}
+      <div aria-hidden className="h-20" />
+
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-cecj-green text-white shadow-[0_-4px_20px_rgba(0,0,0,0.25)]">
       <audio
         ref={audioRef}
         preload="metadata"
@@ -152,6 +173,13 @@ export function GlobalAudioPlayer() {
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onEnded={handleEnded}
+        onError={() => {
+          // Fichier introuvable/corrompu : arrêt propre plutôt qu'un player figé.
+          if (audioRef.current?.src) {
+            setAudioError(true)
+            setPlaying(false)
+          }
+        }}
       />
 
       {/* Barre de progression pleine largeur */}
@@ -182,7 +210,11 @@ export function GlobalAudioPlayer() {
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-semibold">{track.title}</p>
           <p className="truncate text-xs text-white/60">
-            {track.speaker.fullName} · {track.theme.nameFr}
+            {audioError ? (
+              <span className="text-red-300">Fichier audio indisponible</span>
+            ) : (
+              <>{track.speaker.fullName} · {track.theme.nameFr}</>
+            )}
           </p>
         </div>
 
@@ -193,6 +225,14 @@ export function GlobalAudioPlayer() {
 
         {/* Contrôles */}
         <div className="flex shrink-0 items-center gap-1.5">
+          <button
+            onClick={cycleSpeed}
+            aria-label={`Vitesse de lecture : ${speed}×`}
+            className="hidden h-8 min-w-11 items-center justify-center rounded-full border border-white/20 px-2 text-xs font-bold tabular-nums text-white/80 transition hover:bg-white/10 sm:flex"
+          >
+            {speed}×
+          </button>
+
           <button
             onClick={previous}
             disabled={!hasPrevious}
@@ -242,6 +282,7 @@ export function GlobalAudioPlayer() {
           </button>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   )
 }

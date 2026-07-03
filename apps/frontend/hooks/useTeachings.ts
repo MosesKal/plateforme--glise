@@ -25,10 +25,28 @@ export function useTeachingTheme(slug: string) {
   })
 }
 
-export function useAudioTeachings(params?: PublicAudioParams) {
+export function useAudioTeachings(params?: PublicAudioParams, enabled = true) {
   return useQuery({
     queryKey: ["teachings", "audio", params],
     queryFn: () => teachingsApi.listAudio(params),
+    staleTime: STALE_TIME,
+    enabled,
+  })
+}
+
+export function useAudioTeachingDetail(slug: string) {
+  return useQuery({
+    queryKey: ["teachings", "audio", "detail", slug],
+    queryFn: () => teachingsApi.getAudio(slug),
+    staleTime: STALE_TIME,
+    enabled: Boolean(slug),
+  })
+}
+
+export function useTeachingTags() {
+  return useQuery({
+    queryKey: ["teachings", "tags"],
+    queryFn: () => teachingsApi.listTags(),
     staleTime: STALE_TIME,
   })
 }

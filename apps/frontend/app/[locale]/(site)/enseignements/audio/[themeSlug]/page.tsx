@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         title: `${data.nameFr} — Enseignements`,
         description:
           data.descriptionFr ??
-          `Les enseignements audio de la C.E.C.J. sur le thème ${data.nameFr}.`,
+          `Les enseignements audio de l'église sur le thème ${data.nameFr}.`,
       }
     }
   } catch {

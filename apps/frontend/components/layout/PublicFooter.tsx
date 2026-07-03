@@ -28,9 +28,10 @@ export function PublicFooter() {
     {
       title: t("footer.community_title"),
       links: [
-        { label: t("nav.extensions"),   href: lp(SITE_ROUTES.extensions) },
-        { label: t("nav.evenements"),   href: lp(SITE_ROUTES.evenements) },
-        { label: t("nav.galerie"),      href: lp(SITE_ROUTES.galerie) },
+        { label: t("nav.extensions"),    href: lp(SITE_ROUTES.extensions) },
+        { label: t("nav.enseignements"), href: lp(SITE_ROUTES.enseignements) },
+        { label: t("nav.evenements"),    href: lp(SITE_ROUTES.evenements) },
+        { label: t("nav.galerie"),       href: lp(SITE_ROUTES.galerie) },
       ],
     },
   ]

@@ -125,6 +125,13 @@ export function useDeleteAudioTeaching() {
   })
 }
 
+export function useTeachingsStats() {
+  return useQuery({
+    queryKey: [...AUDIO_KEY, "stats"],
+    queryFn: adminTeachingsApi.stats,
+  })
+}
+
 export function useReorderAudioTeachings() {
   const qc = useQueryClient()
   return useMutation({

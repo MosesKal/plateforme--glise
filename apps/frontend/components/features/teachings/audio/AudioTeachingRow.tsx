@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { usePlayerStore } from "@/store/player.store"
 import { formatDuration } from "@/components/features/teachings/format"
 import type { AudioTeaching } from "@/lib/api/teachings"
@@ -17,6 +19,10 @@ export function AudioTeachingRow({
   queue: AudioTeaching[]
   index: number
 }) {
+  const pathname = usePathname()
+  const locale = pathname.split("/")[1] || "fr"
+  const detailHref = `/${locale}/enseignements/audio/${teaching.theme.slug}/${teaching.slug}`
+
   const { track, isPlaying, play, toggle } = usePlayerStore()
   const isCurrent = track?.id === teaching.id
   const isActive = isCurrent && isPlaying
@@ -64,9 +70,14 @@ export function AudioTeachingRow({
       </span>
 
       <div className="min-w-0 flex-1">
-        <p className={`truncate text-sm font-semibold ${isCurrent ? "text-cecj-green" : "text-gray-900"}`}>
+        <Link
+          href={detailHref}
+          className={`block truncate text-sm font-semibold hover:underline underline-offset-2 ${
+            isCurrent ? "text-cecj-green" : "text-gray-900"
+          }`}
+        >
           {teaching.title}
-        </p>
+        </Link>
         <p className="mt-0.5 truncate text-xs text-gray-400">
           {teaching.speaker.fullName}
           {teaching.preachedAt && (
