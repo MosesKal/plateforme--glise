@@ -10,6 +10,7 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { STORAGE_PROVIDER } from '../../storage/storage-provider.interface';
 import type { StorageProvider } from '../../storage/storage-provider.interface';
 import { ensureUniqueSlug, slugify } from '../common/slug.util';
+import { AudioTranscodeService } from './audio-transcode.service';
 import { MediaProbeService } from './media-probe.service';
 import {
   AdminAudioQueryDto,
@@ -34,6 +35,7 @@ export class AudioTeachingsService {
   constructor(
     private prisma: PrismaService,
     private mediaProbe: MediaProbeService,
+    private transcode: AudioTranscodeService,
     @Inject(STORAGE_PROVIDER) private storage: StorageProvider,
   ) {}
 
@@ -260,11 +262,15 @@ export class AudioTeachingsService {
         fileKey,
         preachedAt: preachedAt ? new Date(preachedAt) : undefined,
         position: (last?.position ?? -1) + 1,
-        processing: fileKey ? 'READY' : 'PENDING',
+        // PENDING : l'original est servi tel quel en attendant le transcodage.
+        processing: 'PENDING',
         tags: this.buildTagsCreate(tags),
       },
       include: PUBLIC_INCLUDE,
     });
+
+    if (created.fileKey) this.transcode.enqueue(created.id);
+
     return this.toAdmin(created);
   }
 
@@ -290,7 +296,7 @@ export class AudioTeachingsService {
       where: { id },
       data: {
         ...rest,
-        ...(fileKey !== undefined && { fileKey, processing: 'READY' as const }),
+        ...(fileKey !== undefined && { fileKey, processing: 'PENDING' as const }),
         ...(preachedAt !== undefined && {
           preachedAt: preachedAt ? new Date(preachedAt) : null,
         }),
@@ -300,6 +306,9 @@ export class AudioTeachingsService {
       },
       include: PUBLIC_INCLUDE,
     });
+
+    if (fileKey) this.transcode.enqueue(updated.id);
+
     return this.toAdmin(updated);
   }
 

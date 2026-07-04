@@ -190,7 +190,10 @@ curl -I http://localhost:3000
 ### 1. Prérequis serveur
 
 ```bash
-# ffprobe/ffmpeg : extraction de la durée à l'upload (phase 2 : transcodage)
+# ffprobe : extraction de la durée à l'upload
+# ffmpeg  : transcodage async AAC-LC 96 kbps (+faststart) après chaque upload.
+#           S'il est absent, les fichiers sont servis tels quels (aucun blocage),
+#           mais on perd la compression et le démarrage rapide de la lecture.
 sudo apt install -y ffmpeg
 
 # Répertoire des médias HORS de l'arborescence applicative
@@ -208,9 +211,15 @@ MEDIA_ROOT=/var/lib/cecj/media
 # Optionnel : origine publique des URLs médias (défaut : domaine public backend)
 # MEDIA_BASE_URL=https://dev.impactgroup.cd
 
-# Optionnel : chemin de ffprobe s'il n'est pas dans le PATH
+# Optionnel : chemins de ffprobe/ffmpeg s'ils ne sont pas dans le PATH
 # FFPROBE_PATH=/usr/bin/ffprobe
+# FFMPEG_PATH=/usr/bin/ffmpeg
 ```
+
+Le transcodage tourne dans le processus Node (file en mémoire, un fichier à la
+fois) : au redémarrage de l'app, les jobs interrompus reprennent automatiquement
+via la colonne `processing` (PENDING/PROCESSING). Un échec de transcodage passe
+l'enseignement en `FAILED` mais conserve le fichier original, qui reste écoutable.
 
 ### 3. Nginx — servir l'audio SANS passer par Node (critique pour la lecture)
 

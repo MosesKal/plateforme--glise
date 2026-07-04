@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AudioTeachingsController } from './audio/audio-teachings.controller';
 import { AudioTeachingsService } from './audio/audio-teachings.service';
+import { AudioTranscodeService } from './audio/audio-transcode.service';
 import { MediaProbeService } from './audio/media-probe.service';
 import { SpeakersController } from './speakers/speakers.controller';
 import { SpeakersService } from './speakers/speakers.service';
@@ -25,6 +26,7 @@ import { ThemesService } from './themes/themes.service';
     SpeakersService,
     TagsService,
     AudioTeachingsService,
+    AudioTranscodeService,
     MediaProbeService,
   ],
 })
