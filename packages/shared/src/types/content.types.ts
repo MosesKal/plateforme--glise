@@ -2,20 +2,6 @@ export type MediaType = 'video' | 'audio' | 'image' | 'document';
 
 export type TestimonyStatus = 'pending' | 'approved' | 'rejected';
 
-export interface Sermon {
-  id: string;
-  title: string;
-  speaker: string;
-  description?: string;
-  videoUrl?: string;
-  audioUrl?: string;
-  pdfUrl?: string;
-  thumbnailUrl?: string;
-  publishedAt?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 export interface Department {
   id: string;
   name: string;

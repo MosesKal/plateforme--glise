@@ -7,6 +7,7 @@ export const SITE_ROUTES = {
   EXTENSIONS: '/extensions',
   GALLERY: '/galerie',
   EVENTS: '/evenements',
+  TEACHINGS: '/enseignements',
   CONTACT: '/contact',
 } as const;
 
@@ -25,7 +26,7 @@ export const ADMIN_ROUTES = {
   GALLERY: '/admin/galerie',
   EXTENSIONS: '/admin/extensions',
   PAGES: '/admin/pages',
-  SERMONS: '/admin/enseignements',
+  TEACHINGS: '/admin/enseignements',
   DEPARTMENTS: '/admin/departements',
 } as const;
 
@@ -41,7 +42,7 @@ export const API_ROUTES = {
   ROLES: '/roles',
   EXTENSIONS: '/extensions',
   EVENTS: '/events',
-  SERMONS: '/sermons',
+  TEACHINGS: '/teachings',
   GALLERY: '/gallery',
   TESTIMONIES: '/testimonies',
   DEPARTMENTS: '/departments',

@@ -40,7 +40,7 @@ Objectifs :
 | Export | Contenu |
 |---|---|
 | `@cecj/shared` | Tous les types + constantes |
-| `@cecj/shared/types` | Interfaces TypeScript (User, Event, Extension, Sermon…) |
+| `@cecj/shared/types` | Interfaces TypeScript (User, Event, Extension…) |
 | `@cecj/shared/constants` | Routes (SITE_ROUTES, AUTH_ROUTES, ADMIN_ROUTES, API_ROUTES) |
 
 ### Backend — `apps/backend/` (port 3001)
@@ -252,7 +252,8 @@ User          id, firstName, lastName, email, password, roleId, status
 Role          id, name, permissions
 Extension     id, name, country, city, address, phone, email, pastor, latitude, longitude
 Event         id, title, description, startDate, endDate, location, coverImage
-Sermon        id, title, speaker, description, videoUrl, audioUrl, pdfUrl
+AudioTeaching id, title, slug, fileKey, durationSec, processing, themeId, speakerId, status
+VideoTeaching id, youtubeId, title, thumbnailUrl, isAvailable, themeId, speakerId, status
 Department    id, name, description, leader
 Gallery       id, title, type, mediaUrl
 Testimony     id, fullname, content, status

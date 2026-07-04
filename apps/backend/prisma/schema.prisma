@@ -234,35 +234,6 @@ model GalleryItem {
   @@map("gallery_items")
 }
 
-// ─── SERMONS ──────────────────────────────────────────────────────────────────
-
-model SermonCategory {
-  id      String   @id @default(cuid())
-  name    String   @unique
-  sermons Sermon[]
-
-  @@map("sermon_categories")
-}
-
-model Sermon {
-  id          String          @id @default(cuid())
-  title       String
-  speaker     String
-  description String?         @db.Text
-  videoUrl    String?
-  audioUrl    String?
-  pdfUrl      String?
-  coverImage  String?
-  categoryId  String?
-  category    SermonCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  publishedAt DateTime?
-  isPublished Boolean         @default(false)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-
-  @@map("sermons")
-}
-
 // ─── ENSEIGNEMENTS — Taxonomies partagées ─────────────────────────────────────
 
 model Speaker {
