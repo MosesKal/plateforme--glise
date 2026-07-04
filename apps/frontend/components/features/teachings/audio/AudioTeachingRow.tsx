@@ -9,15 +9,20 @@ import type { AudioTeaching } from "@/lib/api/teachings"
 /**
  * Ligne d'enseignement audio : lance la lecture dans le player global avec la
  * liste courante comme file d'attente (enchaînement automatique du thème).
+ *
+ * `variant="flush"` : sans bordure ni fond propre, pour vivre dans un panneau
+ * parent à séparateurs (ex : section Enseignements de l'accueil).
  */
 export function AudioTeachingRow({
   teaching,
   queue,
   index,
+  variant = "card",
 }: {
   teaching: AudioTeaching
   queue: AudioTeaching[]
   index: number
+  variant?: "card" | "flush"
 }) {
   const pathname = usePathname()
   const locale = pathname.split("/")[1] || "fr"
@@ -35,13 +40,18 @@ export function AudioTeachingRow({
     }
   }
 
+  const containerClasses =
+    variant === "flush"
+      ? `flex-1 px-4 sm:px-5 ${isCurrent ? "bg-cecj-green/5" : "hover:bg-cecj-green/[0.04]"}`
+      : `rounded-xl border px-4 sm:px-5 ${
+          isCurrent
+            ? "border-cecj-green/30 bg-cecj-green/5"
+            : "border-gray-100 bg-white hover:border-cecj-green/20 hover:bg-gray-50/60"
+        }`
+
   return (
     <div
-      className={`group flex items-center gap-4 rounded-xl border px-4 py-3.5 transition-colors sm:px-5 ${
-        isCurrent
-          ? "border-cecj-green/30 bg-cecj-green/5"
-          : "border-gray-100 bg-white hover:border-cecj-green/20 hover:bg-gray-50/60"
-      }`}
+      className={`group flex items-center gap-4 py-3.5 transition-colors ${containerClasses}`}
     >
       {/* Bouton lecture */}
       <button
@@ -65,7 +75,11 @@ export function AudioTeachingRow({
       </button>
 
       {/* Numéro + infos */}
-      <span className="hidden w-6 shrink-0 text-center text-sm tabular-nums text-gray-300 sm:block">
+      <span
+        className={`hidden w-6 shrink-0 text-center text-sm tabular-nums sm:block ${
+          variant === "flush" ? "text-cecj-ink-dim/60" : "text-gray-300"
+        }`}
+      >
         {index + 1}
       </span>
 
@@ -73,12 +87,20 @@ export function AudioTeachingRow({
         <Link
           href={detailHref}
           className={`block truncate text-sm font-semibold hover:underline underline-offset-2 ${
-            isCurrent ? "text-cecj-green" : "text-gray-900"
+            isCurrent
+              ? "text-cecj-green"
+              : variant === "flush"
+                ? "text-cecj-ink"
+                : "text-gray-900"
           }`}
         >
           {teaching.title}
         </Link>
-        <p className="mt-0.5 truncate text-xs text-gray-400">
+        <p
+          className={`mt-0.5 truncate text-xs ${
+            variant === "flush" ? "text-cecj-ink-dim" : "text-gray-400"
+          }`}
+        >
           {teaching.speaker.fullName}
           {teaching.preachedAt && (
             <>
@@ -94,7 +116,11 @@ export function AudioTeachingRow({
       </div>
 
       {/* Durée */}
-      <span className="shrink-0 text-xs tabular-nums text-gray-400">
+      <span
+        className={`shrink-0 text-xs tabular-nums ${
+          variant === "flush" ? "text-cecj-ink-dim" : "text-gray-400"
+        }`}
+      >
         {formatDuration(teaching.durationSec)}
       </span>
     </div>

@@ -19,7 +19,7 @@ import { formatDate } from "@/lib/utils"
 export function TeachingsSection() {
   const { t, locale } = useI18n()
 
-  const { data: audio, isLoading: audioLoading } = useAudioTeachings({ sort: "recent", limit: 3 })
+  const { data: audio, isLoading: audioLoading } = useAudioTeachings({ sort: "recent", limit: 5 })
   const { data: videos, isLoading: videosLoading } = useVideoTeachings({ limit: 1 })
 
   const audioItems = audio?.items ?? []
@@ -60,30 +60,32 @@ export function TeachingsSection() {
         </motion.div>
 
         {isLoading ? (
-          <div className="grid gap-8 lg:grid-cols-5">
-            <div className="aspect-video animate-pulse rounded-2xl bg-cecj-green/10 lg:col-span-3" />
-            <div className="space-y-3 lg:col-span-2">
-              {Array.from({ length: 3 }).map((_, i) => (
-                <div key={i} className="h-[74px] animate-pulse rounded-xl bg-cecj-green/10" />
-              ))}
+          <div className="grid gap-6 lg:grid-cols-5 lg:gap-8">
+            <div className="animate-pulse space-y-4 lg:col-span-3">
+              <div className="h-4 w-48 rounded bg-cecj-green/10" />
+              <div className="aspect-video rounded-2xl bg-cecj-green/10" />
+            </div>
+            <div className="animate-pulse space-y-4 lg:col-span-2">
+              <div className="h-4 w-40 rounded bg-cecj-green/10" />
+              <div className="h-64 rounded-2xl bg-cecj-green/10 lg:h-[calc(100%-2rem)]" />
             </div>
           </div>
         ) : (
           <motion.div
             className={
               latestVideo && audioItems.length > 0
-                ? "grid gap-8 lg:grid-cols-5"
+                ? "grid items-stretch gap-6 lg:grid-cols-5 lg:gap-8"
                 : "mx-auto max-w-3xl"
             }
             variants={stagger}
             {...inView("-40px")}
           >
             {latestVideo && (
-              <motion.div variants={fadeUp} className="lg:col-span-3">
-                <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-cecj-green/60">
+              <motion.div variants={fadeUp} className="flex flex-col lg:col-span-3">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-cecj-green/60 sm:mb-4 sm:text-sm">
                   {t("teachingsSection.latestVideo")}
                 </p>
-                <article className="overflow-hidden rounded-2xl border border-cecj-rule bg-cecj-panel shadow-sm">
+                <article className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-cecj-rule bg-cecj-panel shadow-sm">
                   <div className="relative aspect-video bg-gray-900">
                     <LiteYouTubeEmbed
                       youtubeId={latestVideo.youtubeId}
@@ -96,7 +98,7 @@ export function TeachingsSection() {
                       </span>
                     )}
                   </div>
-                  <div className="space-y-1.5 p-5">
+                  <div className="flex-1 space-y-1.5 p-4 sm:p-5">
                     <h3 className="line-clamp-2 font-bold leading-snug text-cecj-green">
                       {latestVideo.title}
                     </h3>
@@ -110,51 +112,60 @@ export function TeachingsSection() {
                       </span>
                     )}
                   </div>
+                  <Link
+                    href={`/${locale}${SITE_ROUTES.enseignements}/videos`}
+                    className="group flex items-center justify-between border-t border-cecj-rule px-4 py-3 text-sm font-semibold text-cecj-green transition-colors hover:bg-cecj-green/5 sm:px-5"
+                  >
+                    {t("teachingsSection.browseVideos")}
+                    <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
+                  </Link>
                 </article>
               </motion.div>
             )}
 
             {audioItems.length > 0 && (
-              <motion.div variants={fadeUp} className="lg:col-span-2">
-                <p className="mb-4 text-sm font-semibold uppercase tracking-widest text-cecj-green/60">
+              <motion.div variants={fadeUp} className="flex flex-col lg:col-span-2">
+                <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-cecj-green/60 sm:mb-4 sm:text-sm">
                   {t("teachingsSection.latestAudio")}
                 </p>
-                <div className="space-y-3">
-                  {audioItems.map((teaching, index) => (
-                    <AudioTeachingRow
-                      key={teaching.id}
-                      teaching={teaching}
-                      queue={audioItems}
-                      index={index}
-                    />
-                  ))}
+                <div className="flex flex-1 flex-col overflow-hidden rounded-2xl border border-cecj-rule bg-cecj-panel shadow-sm">
+                  <div className="flex flex-1 flex-col divide-y divide-cecj-rule">
+                    {audioItems.map((teaching, index) => (
+                      <AudioTeachingRow
+                        key={teaching.id}
+                        teaching={teaching}
+                        queue={audioItems}
+                        index={index}
+                        variant="flush"
+                      />
+                    ))}
+                  </div>
+                  <Link
+                    href={`/${locale}${SITE_ROUTES.enseignements}`}
+                    className="group flex items-center justify-between border-t border-cecj-rule px-4 py-3 text-sm font-semibold text-cecj-green transition-colors hover:bg-cecj-green/5 sm:px-5"
+                  >
+                    {t("teachingsSection.browseAudio")}
+                    <span aria-hidden className="transition-transform group-hover:translate-x-1">
+                      →
+                    </span>
+                  </Link>
                 </div>
-                <p className="mt-4 text-xs italic text-cecj-ink-faint">
-                  {t("teachingsSection.listenHint")}
-                </p>
               </motion.div>
             )}
           </motion.div>
         )}
 
-        <motion.div
-          variants={fadeUp}
-          {...inView()}
-          className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
-        >
-          <Link
-            href={`/${locale}${SITE_ROUTES.enseignements}`}
-            className="inline-block w-full rounded-md bg-cecj-green px-8 py-3 text-center text-sm font-semibold text-white transition-all hover:opacity-90 hover:scale-[1.02] sm:w-auto"
+        {!isLoading && audioItems.length > 0 && (
+          <motion.p
+            variants={fadeUp}
+            {...inView()}
+            className="mt-5 text-center text-xs italic text-cecj-ink-faint"
           >
-            {t("teachingsSection.browseAudio")}
-          </Link>
-          <Link
-            href={`/${locale}${SITE_ROUTES.enseignements}/videos`}
-            className="inline-block w-full rounded-md border border-cecj-green px-8 py-3 text-center text-sm font-semibold text-cecj-green transition-all hover:bg-cecj-green hover:text-white hover:scale-[1.02] sm:w-auto"
-          >
-            {t("teachingsSection.browseVideos")}
-          </Link>
-        </motion.div>
+            {t("teachingsSection.listenHint")}
+          </motion.p>
+        )}
       </div>
     </section>
   )
