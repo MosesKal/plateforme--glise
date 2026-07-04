@@ -172,14 +172,15 @@ async function main(): Promise<void> {
     let speaker = await prisma.speaker.findUnique({
       where: { slug: speakerSlug },
     });
+    const speakerExisted = Boolean(speaker);
     if (!speaker && !options.dryRun) {
       speaker = await prisma.speaker.create({
         data: { slug: speakerSlug, fullName: options.speaker.trim() },
       });
     }
     console.log(
-      speaker
-        ? `Orateur : ${speaker.fullName} (existant)`
+      speakerExisted
+        ? `Orateur : ${speaker!.fullName} (existant)`
         : `Orateur : ${options.speaker} (${options.dryRun ? 'sera créé' : 'créé'})`,
     );
 
