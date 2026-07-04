@@ -60,7 +60,7 @@ export function TeachingsSection() {
         </motion.div>
 
         {isLoading ? (
-          <div className="grid gap-6 lg:grid-cols-5 lg:gap-8">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-8">
             <div className="animate-pulse space-y-4 lg:col-span-3">
               <div className="h-4 w-48 rounded bg-cecj-green/10" />
               <div className="aspect-video rounded-2xl bg-cecj-green/10" />
@@ -74,7 +74,7 @@ export function TeachingsSection() {
           <motion.div
             className={
               latestVideo && audioItems.length > 0
-                ? "grid items-stretch gap-6 lg:grid-cols-5 lg:gap-8"
+                ? "grid grid-cols-1 items-stretch gap-6 lg:grid-cols-5 lg:gap-8"
                 : "mx-auto max-w-3xl"
             }
             variants={stagger}
