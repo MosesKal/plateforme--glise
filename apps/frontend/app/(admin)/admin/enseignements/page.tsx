@@ -20,6 +20,7 @@ import {
 } from "@/hooks/admin/useAdminTeachings"
 import type {
   AdminAudioTeaching,
+  AudioProcessingStatus,
   AudioTeachingPayload,
   TeachingStatus,
 } from "@/lib/api/admin/teachings"
@@ -28,6 +29,29 @@ const STATUS_LABELS: Record<TeachingStatus, { label: string; cls: string }> = {
   PUBLISHED: { label: "Publié",    cls: "bg-green-100 text-green-700" },
   DRAFT:     { label: "Brouillon", cls: "bg-amber-100 text-amber-700" },
   ARCHIVED:  { label: "Archivé",   cls: "bg-gray-100 text-gray-500"   },
+}
+
+/** READY est l'état nominal : pas de badge. FAILED sert quand même l'original. */
+const PROCESSING_LABELS: Record<
+  AudioProcessingStatus,
+  { label: string; title: string; cls: string } | null
+> = {
+  READY: null,
+  PENDING: {
+    label: "Optimisation en attente",
+    title: "Le fichier sera compressé en AAC 96 kbps ; il est déjà écoutable.",
+    cls: "bg-blue-50 text-blue-600",
+  },
+  PROCESSING: {
+    label: "Optimisation en cours…",
+    title: "Compression AAC 96 kbps en cours ; le fichier reste écoutable.",
+    cls: "bg-blue-50 text-blue-600 animate-pulse",
+  },
+  FAILED: {
+    label: "Non optimisé",
+    title: "Le transcodage a échoué : le fichier original est conservé et reste écoutable. Ré-uploadez le fichier pour réessayer.",
+    cls: "bg-orange-50 text-orange-600",
+  },
 }
 
 /** "3 h 24 min" à partir de secondes (durée cumulée de la bibliothèque). */
@@ -112,6 +136,12 @@ export default function AdminEnseignementsPage() {
           subtitle="Bibliothèque des enseignements de la C.E.C.J.C."
           action={
             <div className="flex gap-2">
+              <Link
+                href={`${ADMIN_ROUTES.enseignements}/videos`}
+                className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:border-cecj-green hover:text-cecj-green"
+              >
+                Vidéos
+              </Link>
               <Link
                 href={`${ADMIN_ROUTES.enseignements}/themes`}
                 className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:border-cecj-green hover:text-cecj-green"
@@ -263,6 +293,9 @@ export default function AdminEnseignementsPage() {
           <div className="space-y-3">
             {items.map((teaching, index) => {
               const statusInfo = STATUS_LABELS[teaching.status]
+              const processingInfo = teaching.fileKey
+                ? PROCESSING_LABELS[teaching.processing]
+                : null
               return (
                 <div
                   key={teaching.id}
@@ -299,6 +332,14 @@ export default function AdminEnseignementsPage() {
                       <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${statusInfo.cls}`}>
                         {statusInfo.label}
                       </span>
+                      {processingInfo && (
+                        <span
+                          title={processingInfo.title}
+                          className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${processingInfo.cls}`}
+                        >
+                          {processingInfo.label}
+                        </span>
+                      )}
                     </div>
                     <p className="mt-0.5 text-xs text-gray-400">
                       {teaching.theme.nameFr} · {teaching.speaker.fullName}

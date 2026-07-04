@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 import { motion } from "framer-motion"
 import { usePathname } from "next/navigation"
 import { stagger, fadeUp, inView } from "@/lib/motion"
@@ -9,10 +10,12 @@ import {
   useAudioTeachings,
   useTeachingTags,
   useTeachingThemes,
+  useVideoTeachings,
 } from "@/hooks/useTeachings"
 import { ThemeCard } from "@/components/features/teachings/audio/ThemeCard"
 import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
 import { ResumeListening } from "@/components/features/teachings/audio/ResumeListening"
+import { VideoCard } from "@/components/features/teachings/video/VideoCard"
 import type { AudioTeaching, PublicTag } from "@/lib/api/teachings"
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
@@ -68,6 +71,7 @@ export function EnseignementsContent() {
 
   const { data: recent } = useAudioTeachings({ sort: "recent", limit: 5 }, isBrowsing)
   const { data: popular } = useAudioTeachings({ sort: "popular", limit: 5 }, isBrowsing)
+  const { data: videos } = useVideoTeachings({ limit: 3 }, isBrowsing)
 
   const visibleThemes = themes.filter((t) => t._count.audioTeachings > 0)
   const showPopular =
@@ -255,6 +259,33 @@ export function EnseignementsContent() {
                     <RowList items={popular!.items} />
                   </motion.div>
                 )}
+              </motion.div>
+            </section>
+          )}
+
+          {/* Teaser vidéos — visible seulement si la chaîne a été synchronisée */}
+          {(videos?.items.length ?? 0) > 0 && (
+            <section className="mx-auto max-w-6xl px-4 pt-16 lg:px-8">
+              <motion.div {...inView()} variants={stagger} className="space-y-6">
+                <motion.div
+                  variants={fadeUp}
+                  className="flex flex-wrap items-baseline justify-between gap-2"
+                >
+                  <SectionTitle>Dernières vidéos</SectionTitle>
+                  <Link
+                    href={`/${locale}/enseignements/videos`}
+                    className="text-sm font-semibold text-cecj-green transition hover:underline"
+                  >
+                    Toutes les vidéos →
+                  </Link>
+                </motion.div>
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                  {videos!.items.map((video) => (
+                    <motion.div key={video.id} variants={fadeUp}>
+                      <VideoCard video={video} />
+                    </motion.div>
+                  ))}
+                </div>
               </motion.div>
             </section>
           )}

@@ -214,6 +214,13 @@ MEDIA_ROOT=/var/lib/cecj/media
 # Optionnel : chemins de ffprobe/ffmpeg s'ils ne sont pas dans le PATH
 # FFPROBE_PATH=/usr/bin/ffprobe
 # FFMPEG_PATH=/usr/bin/ffmpeg
+
+# Sync YouTube (enseignements vidéo) — clé API « YouTube Data API v3 »
+# créée sur console.cloud.google.com, et ID de la chaîne (commence par UC…,
+# visible dans YouTube Studio > Paramètres > Chaîne > Informations avancées).
+# Sans ces variables, le module vidéo reste inactif (cron silencieux).
+YOUTUBE_API_KEY=
+YOUTUBE_CHANNEL_ID=
 ```
 
 Le transcodage tourne dans le processus Node (file en mémoire, un fichier à la

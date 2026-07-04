@@ -7,11 +7,13 @@ import {
   type SpeakerPayload,
   type TeachingStatus,
   type ThemePayload,
+  type VideoTeachingPayload,
 } from "@/lib/api/admin/teachings"
 
 const THEMES_KEY = ["admin", "teachings", "themes"] as const
 const SPEAKERS_KEY = ["admin", "teachings", "speakers"] as const
 const AUDIO_KEY = ["admin", "teachings", "audio"] as const
+const VIDEOS_KEY = ["admin", "teachings", "videos"] as const
 
 // ─── Thèmes ───────────────────────────────────────────────────────────────────
 
@@ -87,6 +89,14 @@ export function useAdminAudioTeachings(params?: {
   return useQuery({
     queryKey: [...AUDIO_KEY, params],
     queryFn: () => adminTeachingsApi.listAudio(params),
+    // Tant qu'un transcodage est en cours côté serveur, on rafraîchit la liste
+    // pour voir les fichiers passer en READY sans recharger la page.
+    refetchInterval: (query) =>
+      query.state.data?.items.some(
+        (t) => t.fileKey && (t.processing === "PENDING" || t.processing === "PROCESSING"),
+      )
+        ? 5000
+        : false,
   })
 }
 
@@ -129,6 +139,56 @@ export function useTeachingsStats() {
   return useQuery({
     queryKey: [...AUDIO_KEY, "stats"],
     queryFn: adminTeachingsApi.stats,
+  })
+}
+
+// ─── Enseignements vidéo (miroir YouTube) ─────────────────────────────────────
+
+export function useAdminVideoTeachings(params?: {
+  themeId?: string
+  status?: TeachingStatus
+  search?: string
+  page?: number
+  limit?: number
+}) {
+  return useQuery({
+    queryKey: [...VIDEOS_KEY, params],
+    queryFn: () => adminTeachingsApi.listVideos(params),
+  })
+}
+
+export function useUpdateVideoTeaching() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, payload }: { id: string; payload: VideoTeachingPayload }) =>
+      adminTeachingsApi.updateVideo(id, payload),
+    onSuccess: () => qc.invalidateQueries({ queryKey: VIDEOS_KEY }),
+  })
+}
+
+export function useDeleteVideoTeaching() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: (id: string) => adminTeachingsApi.deleteVideo(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: VIDEOS_KEY }),
+  })
+}
+
+export function useSyncVideos() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: () => adminTeachingsApi.syncVideos(),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: VIDEOS_KEY })
+      qc.invalidateQueries({ queryKey: [...VIDEOS_KEY, "sync-status"] })
+    },
+  })
+}
+
+export function useVideoSyncStatus() {
+  return useQuery({
+    queryKey: [...VIDEOS_KEY, "sync-status"],
+    queryFn: adminTeachingsApi.videoSyncStatus,
   })
 }
 

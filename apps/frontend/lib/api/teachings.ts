@@ -67,6 +67,36 @@ export interface PublicAudioParams {
   limit?: number
 }
 
+// ─── Types publics vidéos (miroir YouTube) ────────────────────────────────────
+
+export interface VideoTeaching {
+  id: string
+  youtubeId: string
+  title: string
+  description?: string | null
+  thumbnailUrl?: string | null
+  durationSec: number
+  publishedAt: string
+  theme?: { id: string; slug: string; nameFr: string } | null
+  speaker?: { id: string; slug: string; fullName: string; title?: string | null } | null
+}
+
+export interface PaginatedVideoTeachings {
+  items: VideoTeaching[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+export interface PublicVideoParams {
+  themeSlug?: string
+  speakerSlug?: string
+  search?: string
+  page?: number
+  limit?: number
+}
+
 // ─── Endpoints publics ────────────────────────────────────────────────────────
 
 export const teachingsApi = {
@@ -86,6 +116,11 @@ export const teachingsApi = {
 
   listTags: () =>
     api.get<PublicTag[]>("/teachings/tags").then((r) => r.data),
+
+  listVideos: (params?: PublicVideoParams) =>
+    api
+      .get<PaginatedVideoTeachings>("/teachings/videos", { params })
+      .then((r) => r.data),
 
   /** Beacon d'écoute (déclenché après ~30 s de lecture réelle). */
   registerPlay: (id: string) =>

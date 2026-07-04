@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import {
   teachingsApi,
   type PublicAudioParams,
+  type PublicVideoParams,
 } from "@/lib/api/teachings"
 
 const STALE_TIME = 5 * 60 * 1000 // contenu éditorial : 5 min de fraîcheur suffisent
@@ -40,6 +41,15 @@ export function useAudioTeachingDetail(slug: string) {
     queryFn: () => teachingsApi.getAudio(slug),
     staleTime: STALE_TIME,
     enabled: Boolean(slug),
+  })
+}
+
+export function useVideoTeachings(params?: PublicVideoParams, enabled = true) {
+  return useQuery({
+    queryKey: ["teachings", "videos", params],
+    queryFn: () => teachingsApi.listVideos(params),
+    staleTime: STALE_TIME,
+    enabled,
   })
 }
 

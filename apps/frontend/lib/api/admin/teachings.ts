@@ -2,6 +2,7 @@ import { api } from "@/lib/api/client"
 import type {
   AudioTeaching,
   TeachingTheme,
+  VideoTeaching,
 } from "@/lib/api/teachings"
 
 // ─── Types backoffice ─────────────────────────────────────────────────────────
@@ -66,6 +67,43 @@ export interface TeachingsStats {
   storageUsedBytes: number
   storageBudgetBytes: number
   topTeachings: AudioTeaching[]
+}
+
+export interface AdminVideoTeaching extends VideoTeaching {
+  status: TeachingStatus
+  isAvailable: boolean
+  position: number
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PaginatedAdminVideos {
+  items: AdminVideoTeaching[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
+/** Champs éditoriaux uniquement — les métadonnées YouTube sont pilotées par la sync. */
+export interface VideoTeachingPayload {
+  status?: TeachingStatus
+  themeId?: string | null
+  speakerId?: string | null
+  position?: number
+}
+
+export interface VideoSyncResult {
+  created: number
+  updated: number
+  unavailable: number
+  total: number
+  syncedAt: string
+}
+
+export interface VideoSyncStatus {
+  configured: boolean
+  lastSync: VideoSyncResult | null
 }
 
 export interface ThemePayload {
@@ -151,6 +189,35 @@ export const adminTeachingsApi = {
 
   stats: () =>
     api.get<TeachingsStats>("/teachings/audio/stats").then((r) => r.data),
+
+  // Enseignements vidéo (miroir YouTube)
+  listVideos: (params?: {
+    themeId?: string
+    status?: TeachingStatus
+    search?: string
+    page?: number
+    limit?: number
+  }) =>
+    api
+      .get<PaginatedAdminVideos>("/teachings/videos/admin", { params })
+      .then((r) => r.data),
+
+  updateVideo: (id: string, payload: VideoTeachingPayload) =>
+    api
+      .patch<AdminVideoTeaching>(`/teachings/videos/${id}`, payload)
+      .then((r) => r.data),
+
+  deleteVideo: (id: string) =>
+    api.delete(`/teachings/videos/${id}`).then((r) => r.data),
+
+  /** Lance une sync YouTube complète (timeout désactivé : peut durer > 10 s). */
+  syncVideos: () =>
+    api
+      .post<VideoSyncResult>("/teachings/videos/sync", undefined, { timeout: 0 })
+      .then((r) => r.data),
+
+  videoSyncStatus: () =>
+    api.get<VideoSyncStatus>("/teachings/videos/sync/status").then((r) => r.data),
 
   /**
    * Upload du fichier audio. `timeout: 0` désactive le timeout global de 10 s

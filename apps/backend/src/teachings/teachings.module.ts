@@ -9,10 +9,13 @@ import { TagsController } from './tags/tags.controller';
 import { TagsService } from './tags/tags.service';
 import { ThemesController } from './themes/themes.controller';
 import { ThemesService } from './themes/themes.service';
+import { VideoTeachingsController } from './videos/video-teachings.controller';
+import { VideoTeachingsService } from './videos/video-teachings.service';
+import { YouTubeSyncService } from './videos/youtube-sync.service';
 
 /**
- * Module Enseignements — partie audio (bibliothèque gérée en interne).
- * La partie vidéo (sync YouTube) rejoindra ce module en phase 3 sous ./videos.
+ * Module Enseignements — audio (bibliothèque interne) + vidéo (miroir YouTube),
+ * avec taxonomies partagées (thèmes, orateurs, tags).
  */
 @Module({
   controllers: [
@@ -20,6 +23,7 @@ import { ThemesService } from './themes/themes.service';
     SpeakersController,
     TagsController,
     AudioTeachingsController,
+    VideoTeachingsController,
   ],
   providers: [
     ThemesService,
@@ -28,6 +32,8 @@ import { ThemesService } from './themes/themes.service';
     AudioTeachingsService,
     AudioTranscodeService,
     MediaProbeService,
+    VideoTeachingsService,
+    YouTubeSyncService,
   ],
 })
 export class TeachingsModule {}
