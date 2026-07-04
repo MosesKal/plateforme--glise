@@ -19,6 +19,7 @@ export interface ChurchInfo {
     youtube?: string
     whatsappChannel?: string
     whatsappContact?: string
+    radioUrl?: string
   }
 }
 
@@ -43,5 +44,6 @@ export const CHURCH_INFO: ChurchInfo = {
     youtube: "https://www.youtube.com/@EgliseleCampdeJésusBel-air",
     whatsappChannel: "https://whatsapp.com/channel/0029VanHIZF3QxRtb86lI61n",
     whatsappContact: "https://wa.me/243898700596",
+    radioUrl: "https://citelecampdejesus.radio12345.com/",
   },
 }

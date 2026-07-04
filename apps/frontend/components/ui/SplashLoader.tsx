@@ -68,7 +68,7 @@ export function SplashLoader() {
             >
               <Image
                 src="/Logo C.E.C.j-BLANC.png"
-                alt="C.E.C.J."
+                alt="C.E.C.J.C."
                 width={128}
                 height={128}
                 className="h-28 w-auto object-contain drop-shadow-[0_0_32px_rgba(255,203,50,0.25)]"

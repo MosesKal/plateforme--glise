@@ -104,7 +104,7 @@ export function ExtensionFormModal({ open, onClose, onSubmit, initialData }: Pro
           <div className="grid grid-cols-3 gap-4">
             <div className="col-span-3">
               <Field label="Nom de l'extension *" error={errors.name?.message}>
-                <input {...register("name")} className={inputCls} placeholder="Église CECJ — Bruxelles" />
+                <input {...register("name")} className={inputCls} placeholder="Église CECJC — Bruxelles" />
               </Field>
             </div>
             <Field label="Pays *" error={errors.country?.message}>

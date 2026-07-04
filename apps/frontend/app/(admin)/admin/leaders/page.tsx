@@ -77,7 +77,7 @@ export default function AdminLeadersPage() {
       <div className="space-y-6">
         <PageHeader
           title="Leadership"
-          subtitle="Équipe de direction et ministres de la C.E.C.J."
+          subtitle="Équipe de direction et ministres de la C.E.C.J.C."
           action={
             <Button onClick={openCreate} className="bg-cecj-green hover:bg-cecj-green/90">
               + Ajouter un leader

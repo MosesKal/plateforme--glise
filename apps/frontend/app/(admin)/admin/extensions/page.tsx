@@ -68,7 +68,7 @@ export default function AdminExtensionsPage() {
       <div className="space-y-6">
         <PageHeader
           title="Extensions"
-          subtitle="Gestion des extensions et implantations de la C.E.C.J."
+          subtitle="Gestion des extensions et implantations de la C.E.C.J.C."
           action={
             <Button onClick={openCreate} className="bg-cecj-green hover:bg-cecj-green/90">
               + Ajouter une extension

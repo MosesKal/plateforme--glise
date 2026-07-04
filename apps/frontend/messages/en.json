@@ -188,7 +188,7 @@
   "extensions": {
     "badge": "International presence",
     "title": "Our Churches",
-    "body": "Discover the different extensions of C.E.C.J. around the world and find the assembly closest to you.",
+    "body": "Discover the different extensions of C.E.C.J.C. around the world and find the assembly closest to you.",
     "mapCaption": "Map progressively enriched as extensions grow — click a marker for more information.",
     "link": "View all churches →"
   },
@@ -279,6 +279,7 @@
     "ariaTiktok": "Our TikTok account",
     "ariaYoutube": "Our YouTube channel",
     "ariaWhatsapp": "Our WhatsApp channel",
+    "ariaRadio": "Our online radio",
     "facebookComingSoon": "Link coming soon"
   },
   "lang": {
@@ -325,11 +326,11 @@
     "cta_whatsapp": "Message on WhatsApp"
   },
   "extensionsPage": {
-    "meta_title": "Our Churches — C.E.C.J.",
+    "meta_title": "Our Churches — C.E.C.J.C.",
     "meta_desc": "Find a Camp de Jésus-Christ church near you. Presence in DR Congo, Africa and Europe.",
     "hero_badge": "International presence",
     "hero_title": "Our Churches",
-    "hero_subtitle": "C.E.C.J. is growing all over the world. Find the assembly closest to you.",
+    "hero_subtitle": "C.E.C.J.C. is growing all over the world. Find the assembly closest to you.",
     "stat_extensions": "Churches",
     "stat_countries": "Countries",
     "stat_continents": "Continents",
@@ -348,12 +349,12 @@
     "status_establishing": "Being established",
     "no_results": "No church found for this search.",
     "cta_title": "Are you planting a church?",
-    "cta_subtitle": "Join the C.E.C.J. network and benefit from pastoral support, training and fellowship.",
+    "cta_subtitle": "Join the C.E.C.J.C. network and benefit from pastoral support, training and fellowship.",
     "cta_whatsapp": "Contact the network",
     "geoloc_error": "Unable to access your location."
   },
   "evenementsPage": {
-    "meta_title": "Events — C.E.C.J.",
+    "meta_title": "Events — C.E.C.J.C.",
     "meta_desc": "Discover upcoming and past events of the Community of the Church Camps of Jesus Christ.",
     "hero_badge": "Events",
     "hero_title": "Our Events",

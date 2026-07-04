@@ -188,7 +188,7 @@
   "extensions": {
     "badge": "Présence internationale",
     "title": "Nos Extensions",
-    "body": "Découvrez les différentes extensions de la C.E.C.J. à travers le monde et trouvez l'assemblée la plus proche de chez vous.",
+    "body": "Découvrez les différentes extensions de la C.E.C.J.C. à travers le monde et trouvez l'assemblée la plus proche de chez vous.",
     "mapCaption": "Carte enrichie progressivement au fil des extensions — cliquez sur un marqueur pour plus d'informations.",
     "link": "Voir toutes les extensions →"
   },
@@ -279,6 +279,7 @@
     "ariaTiktok": "Notre compte TikTok",
     "ariaYoutube": "Notre chaîne YouTube",
     "ariaWhatsapp": "Notre chaîne WhatsApp",
+    "ariaRadio": "Notre radio en ligne",
     "facebookComingSoon": "Lien à venir"
   },
   "lang": {
@@ -325,11 +326,11 @@
     "cta_whatsapp": "Écrire sur WhatsApp"
   },
   "extensionsPage": {
-    "meta_title": "Nos Églises — C.E.C.J.",
+    "meta_title": "Nos Églises — C.E.C.J.C.",
     "meta_desc": "Trouvez une église Camp de Jésus-Christ près de chez vous. Présence en RD Congo, en Afrique et en Europe.",
     "hero_badge": "Présence internationale",
     "hero_title": "Nos Églises",
-    "hero_subtitle": "La C.E.C.J. grandit partout dans le monde. Trouvez l'assemblée la plus proche de chez vous.",
+    "hero_subtitle": "La C.E.C.J.C. grandit partout dans le monde. Trouvez l'assemblée la plus proche de chez vous.",
     "stat_extensions": "Églises",
     "stat_countries": "Pays",
     "stat_continents": "Continents",
@@ -348,12 +349,12 @@
     "status_establishing": "En établissement",
     "no_results": "Aucune église trouvée pour cette recherche.",
     "cta_title": "Vous plantez une église ?",
-    "cta_subtitle": "Rejoignez le réseau C.E.C.J. et bénéficiez de l'accompagnement pastoral, de la formation et de la communion fraternelle.",
+    "cta_subtitle": "Rejoignez le réseau C.E.C.J.C. et bénéficiez de l'accompagnement pastoral, de la formation et de la communion fraternelle.",
     "cta_whatsapp": "Contacter le réseau",
     "geoloc_error": "Impossible d'accéder à votre position."
   },
   "evenementsPage": {
-    "meta_title": "Événements — C.E.C.J.",
+    "meta_title": "Événements — C.E.C.J.C.",
     "meta_desc": "Découvrez les événements à venir et passés de la Communauté des Églises Le Camp de Jésus-Christ.",
     "hero_badge": "Événements",
     "hero_title": "Nos Événements",

@@ -67,14 +67,14 @@ export function Navbar() {
         <Link href={lp("/")} className="flex items-center gap-3">
           <Image
             src="/Logo C.E.C.j-BLANC.png"
-            alt="Logo C.E.C.J."
+            alt="Logo C.E.C.J.C."
             width={48}
             height={48}
             className="h-12 w-auto object-contain"
             priority
           />
           <span className="hidden text-sm font-semibold uppercase tracking-widest text-white sm:block">
-            C.E.C.J.
+            C.E.C.J.C.
           </span>
         </Link>
 

@@ -3,7 +3,7 @@ import { SitePageContent } from "@/components/features/site-pages/SitePageConten
 
 export const metadata: Metadata = {
   title: "Présentation",
-  description: "Découvrez l'histoire et l'identité de la C.E.C.J.",
+  description: "Découvrez l'histoire et l'identité de la C.E.C.J.C.",
 }
 
 export default function PresentationPage() {

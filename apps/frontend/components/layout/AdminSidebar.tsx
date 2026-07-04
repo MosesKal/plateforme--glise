@@ -36,12 +36,12 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
       <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
         <Image
           src="/Logo C.E.C.j-BLANC.png"
-          alt="C.E.C.J."
+          alt="C.E.C.J.C."
           width={40}
           height={40}
           className="h-10 w-auto object-contain"
         />
-        <span className="text-sm font-semibold uppercase tracking-widest">C.E.C.J.</span>
+        <span className="text-sm font-semibold uppercase tracking-widest">C.E.C.J.C.</span>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">

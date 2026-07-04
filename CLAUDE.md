@@ -6,9 +6,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Projet
 
-**CECJ Platform — Communauté des Eglise Camps de Jésus-Christ**
+**CECJC Platform — Communauté des Eglise Camps de Jésus-Christ**
 
-Plateforme web officielle de la C.E.C.J. Monorepo pnpm + Turborepo avec `apps/backend/` (NestJS), `apps/frontend/` (Next.js) et `packages/shared/` (types partagés).
+Plateforme web officielle de la C.E.C.J.C. Monorepo pnpm + Turborepo avec `apps/backend/` (NestJS), `apps/frontend/` (Next.js) et `packages/shared/` (types partagés).
 
 Objectifs :
 - Présentation de l'église et de ses extensions
@@ -148,7 +148,7 @@ import { SITE_ROUTES, API_ROUTES } from '@cecj/shared';
 app/
   page.tsx          → / (Accueil — homepage publique avec Navbar + Footer intégrés)
   layout.tsx        → Root layout : Montserrat, html/body
-  globals.css       → Palette CECJ (--color-cecj-green, --color-cecj-gold, --color-cecj-red)
+  globals.css       → Palette CECJC (--color-cecj-green, --color-cecj-gold, --color-cecj-red)
 
   (site)/           → Site public (layout : Navbar + PublicFooter)
     presentation/   → /presentation
@@ -174,7 +174,7 @@ app/
 components/
   ui/               → Button, Input, Badge, Card (primitives sans logique métier)
   layout/
-    Navbar.tsx      → navigation publique sticky (vert CECJ + logo blanc)
+    Navbar.tsx      → navigation publique sticky (vert CECJC + logo blanc)
     AdminSidebar.tsx→ sidebar backoffice (logo + nav admin)
     Header.tsx      → header backoffice (profil utilisateur + déconnexion)
     PublicFooter.tsx→ footer du site public

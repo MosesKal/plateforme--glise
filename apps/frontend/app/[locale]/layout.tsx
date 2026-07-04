@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   description:
     "Bienvenue à l'Église Camp de Jésus Bel-air, fondée sur la saine doctrine du Seigneur Jésus-Christ.",
   openGraph: {
-    siteName: "C.E.C.J.",
+    siteName: "C.E.C.J.C.",
     type: "website",
   },
 }

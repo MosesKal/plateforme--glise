@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 const EDGE_FADE =
   "linear-gradient(to right, transparent, black 8%, black 92%, transparent)"
 
-// Sélection curatée — ambiance des cultes C.E.C.J. (indépendant de la galerie DB)
+// Sélection curatée — ambiance des cultes C.E.C.J.C. (indépendant de la galerie DB)
 const CULTE_PHOTOS = [
   // Louange & adoration
   "/img_prg_1.jpg",

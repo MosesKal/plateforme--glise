@@ -181,7 +181,7 @@ export function HomePageContent() {
           <motion.div variants={fadeIn}>
             <Image
               src="/Logo C.E.C.j-BLANC.png"
-              alt="Logo C.E.C.J."
+              alt="Logo C.E.C.J.C."
               width={160}
               height={160}
               className="h-24 w-auto object-contain drop-shadow-2xl sm:h-32"

@@ -40,7 +40,7 @@ export function GuideSection() {
             >
               <Image
                 src="/guide de lecture.png"
-                alt="Guide de lecture biblique CECJ"
+                alt="Guide de lecture biblique CECJC"
                 width={900}
                 height={640}
                 className="w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]"
@@ -80,7 +80,7 @@ export function GuideSection() {
             >
               <Image
                 src="/guide de lecture.png"
-                alt="Guide de lecture biblique CECJ — agrandi"
+                alt="Guide de lecture biblique CECJC — agrandi"
                 width={1400}
                 height={1000}
                 className="w-full rounded-xl object-contain"

@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { SITE_ROUTES } from "@/constants/routes"
 import { CHURCH_INFO } from "@/constants/church"
-import { MapPinIcon, PhoneIcon, FacebookIcon, InstagramIcon, TikTokIcon, YouTubeIcon, WhatsAppIcon } from "@/components/ui/icons"
+import { MapPinIcon, PhoneIcon, FacebookIcon, InstagramIcon, TikTokIcon, YouTubeIcon, WhatsAppIcon, RadioIcon } from "@/components/ui/icons"
 import { SocialLink } from "@/components/ui/SocialLink"
 import { useI18n } from "@/components/providers/I18nProvider"
 
@@ -44,7 +44,7 @@ export function PublicFooter() {
           <div className="col-span-1">
             <Image
               src="/Logo C.E.C.j-BLANC.png"
-              alt="Logo C.E.C.J."
+              alt="Logo C.E.C.J.C."
               width={64}
               height={64}
               className="h-16 w-auto object-contain"
@@ -111,7 +111,7 @@ export function PublicFooter() {
         </div>
 
         <div className="mt-10 flex flex-col items-center gap-6 border-t border-white/10 pt-6 sm:flex-row sm:justify-between">
-          <span className="text-xs text-white/40">© {new Date().getFullYear()} C.E.C.J. — {t("footer.rights")}</span>
+          <span className="text-xs text-white/40">© {new Date().getFullYear()} C.E.C.J.C. — {t("footer.rights")}</span>
 
           <div className="flex items-center gap-3">
             <span className="sr-only">{t("footer.followUs")}</span>
@@ -125,6 +125,7 @@ export function PublicFooter() {
             <SocialLink href={CHURCH_INFO.socials.tiktok} label={t("footer.ariaTiktok")} icon={TikTokIcon} />
             <SocialLink href={CHURCH_INFO.socials.youtube} label={t("footer.ariaYoutube")} icon={YouTubeIcon} />
             <SocialLink href={CHURCH_INFO.socials.whatsappChannel} label={t("footer.ariaWhatsapp")} icon={WhatsAppIcon} />
+            <SocialLink href={CHURCH_INFO.socials.radioUrl} label={t("footer.ariaRadio")} icon={RadioIcon} />
           </div>
         </div>
       </div>

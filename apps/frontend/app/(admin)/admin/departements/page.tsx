@@ -61,7 +61,7 @@ export default function AdminDepartementsPage() {
       <div className="space-y-6">
         <PageHeader
           title="Départements"
-          subtitle="Structure et ministères de la C.E.C.J."
+          subtitle="Structure et ministères de la C.E.C.J.C."
           action={
             <Button onClick={openCreate} className="bg-cecj-green hover:bg-cecj-green/90">
               + Ajouter un département

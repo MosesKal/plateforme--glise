@@ -67,6 +67,17 @@ export function YouTubeIcon({ className }: { className?: string }) {
   )
 }
 
+export function RadioIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6}>
+      <circle cx="12" cy="14.5" r="1.6" fill="currentColor" stroke="none" />
+      <path strokeLinecap="round" d="M8.5 11a5 5 0 0 1 7 0M6 8.5a8.5 8.5 0 0 1 12 0" />
+      <rect x="4" y="14" width="16" height="7" rx="1.8" />
+      <path strokeLinecap="round" d="M8 17.5h.01" />
+    </svg>
+  )
+}
+
 export function ChevronLeftIcon({ className }: { className?: string }) {
   return (
     <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -259,7 +259,7 @@ async function main() {
       },
       {
         titleFr: "Je Connais Ma Bible - 2eme seance",
-        descriptionFr: "Deuxieme seance du concours biblique de la C.E.C.J.",
+        descriptionFr: "Deuxieme seance du concours biblique de la C.E.C.J.C.",
         category:  "Concours Biblique",
         organizer: "Communaute des Eglises Le Camp de Jesus-Christ",
         startDate: new Date("2026-03-22T13:30:00"),

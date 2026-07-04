@@ -223,7 +223,7 @@ export function GaleriePageContent() {
                   <PhotoCard
                     key={item.id}
                     src={item.mediaUrl}
-                    alt={item.title ?? "Photo C.E.C.J."}
+                    alt={item.title ?? "Photo C.E.C.J.C."}
                     onClick={() => setLightboxIndex(i)}
                   />
                 ))}

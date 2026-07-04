@@ -107,7 +107,7 @@ export function LeaderFormModal({ open, onClose, onSubmit, initialData }: Props)
           </div>
 
           <Field label="Titre / fonction" error={errors.title?.message}>
-            <input {...register("title")} className={inputCls} placeholder="Pasteur fondateur de la C.E.C.J." />
+            <input {...register("title")} className={inputCls} placeholder="Pasteur fondateur de la C.E.C.J.C." />
           </Field>
 
           <div className="grid grid-cols-2 gap-4">

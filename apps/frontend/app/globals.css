@@ -45,7 +45,7 @@
   --cecj-ink-dim:   #9ca3af;
 }
 
-/* ── Mode sombre — palette verte CECJ ────────────────────────────────── */
+/* ── Mode sombre — palette verte CECJC ────────────────────────────────── */
 /*    Dérivée de #024339, chaque niveau est légèrement plus clair         */
 .dark {
   --cecj-page:      #060f0d;   /* bg page principal */

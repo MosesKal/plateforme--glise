@@ -1,6 +1,6 @@
-# Guide de déploiement — CECJ Platform
+# Guide de déploiement — CECJC Platform
 
-Ce fichier est destiné à **Claude Code sur le serveur**. Il décrit comment déployer la plateforme CECJ de zéro ou mettre à jour une installation existante.
+Ce fichier est destiné à **Claude Code sur le serveur**. Il décrit comment déployer la plateforme CECJC de zéro ou mettre à jour une installation existante.
 
 ---
 

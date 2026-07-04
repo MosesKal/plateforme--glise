@@ -109,7 +109,7 @@ export default function AdminEnseignementsPage() {
       <div className="space-y-6">
         <PageHeader
           title="Enseignements audio"
-          subtitle="Bibliothèque des enseignements de la C.E.C.J."
+          subtitle="Bibliothèque des enseignements de la C.E.C.J.C."
           action={
             <div className="flex gap-2">
               <Link
