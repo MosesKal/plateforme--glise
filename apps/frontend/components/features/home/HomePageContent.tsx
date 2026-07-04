@@ -7,15 +7,13 @@ import { motion, useInView, AnimatePresence } from "framer-motion"
 import { Navbar } from "@/components/layout/Navbar"
 import { PublicFooter } from "@/components/layout/PublicFooter"
 import { SITE_ROUTES } from "@/constants/routes"
-import { CHURCH_INFO } from "@/constants/church"
-import { cn } from "@/lib/utils"
-import { fadeUp, fadeIn, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
+import { fadeUp, fadeIn, stagger, scaleUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { useQuery } from "@tanstack/react-query"
 import { adminTestimoniesApi } from "@/lib/api/admin/testimonies"
 import { TestimonySpotlight } from "./TestimonySpotlight"
 import { WeeklyProgramSection } from "./WeeklyProgramSection"
-import { AmbianceCultesSection } from "./AmbianceCultesSection"
+import { TeachingsSection } from "./TeachingsSection"
 import { EventsSection } from "./EventsSection"
 
 // ── Static data (placeholder — à remplacer par API) ───────────────────────────
@@ -392,8 +390,8 @@ export function HomePageContent() {
         </motion.div>
       </section>
 
-      {/* ── Ambiance de nos cultes ───────────────────────────────────────── */}
-      <AmbianceCultesSection />
+      {/* ── Enseignements ────────────────────────────────────────────────── */}
+      <TeachingsSection />
 
       {/* ── Événements ───────────────────────────────────────────────────── */}
       <EventsSection />
@@ -437,7 +435,7 @@ export function HomePageContent() {
               </h2>
               <p className="text-base text-white/70 leading-relaxed">
                 Vos témoignages encouragent d&apos;autres croyants et glorifient Dieu.
-                Rejoignez l'Église Camp de Jésus Bel-air et partagez ce que le Seigneur a accompli dans votre vie.
+                Rejoignez l&apos;Église Camp de Jésus Bel-air et partagez ce que le Seigneur a accompli dans votre vie.
               </p>
               <AnimatedVerse />
             </motion.div>

@@ -170,9 +170,19 @@
     "liveOnYoutube": "En direct sur YouTube",
     "videoAvailable": "Vidéo disponible sur YouTube",
     "upcomingLive": "Le direct sera sur YouTube",
-    "facebookPhotosNote": "Photos disponibles après le culte sur la page Facebook",
-    "marqueeTitle": "L'ambiance de nos cultes",
-    "marqueeCta": "Trouver une extension →"
+    "facebookPhotosNote": "Photos disponibles après le culte sur la page Facebook"
+  },
+  "teachingsSection": {
+    "badge": "Enseignements",
+    "title": "Nourrissez votre foi par la Parole",
+    "subtitle": "Prédications et enseignements de l'église, en audio et en vidéo — où que vous soyez.",
+    "audioCountLabel": "enseignements audio",
+    "videoCountLabel": "vidéos",
+    "latestVideo": "Dernière prédication en vidéo",
+    "latestAudio": "Derniers enseignements audio",
+    "listenHint": "Lancez l'écoute ici — le lecteur vous accompagne sur tout le site.",
+    "browseAudio": "Explorer la bibliothèque audio",
+    "browseVideos": "Toutes les vidéos →"
   },
   "events": {
     "badge": "Événements",

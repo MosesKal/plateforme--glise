@@ -15,7 +15,8 @@ function savedPositionKey(trackId: string) {
 }
 
 /**
- * Player audio global, monté une seule fois dans le layout du site public.
+ * Player audio global, monté une seule fois dans le layout [locale]
+ * (il couvre donc l'accueil et tout le site ; invisible sans piste active).
  *
  * L'élément <audio> est la source de vérité du temps de lecture : le store
  * Zustand ne porte que l'intention (piste, file, lecture/pause), ce composant

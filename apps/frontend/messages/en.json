@@ -170,9 +170,19 @@
     "liveOnYoutube": "Live on YouTube",
     "videoAvailable": "Video available on YouTube",
     "upcomingLive": "Live stream coming on YouTube",
-    "facebookPhotosNote": "Photos available after the service on the Facebook page",
-    "marqueeTitle": "The atmosphere of our services",
-    "marqueeCta": "Find an extension →"
+    "facebookPhotosNote": "Photos available after the service on the Facebook page"
+  },
+  "teachingsSection": {
+    "badge": "Teachings",
+    "title": "Feed your faith with the Word",
+    "subtitle": "Sermons and teachings from the church, in audio and video — wherever you are.",
+    "audioCountLabel": "audio teachings",
+    "videoCountLabel": "videos",
+    "latestVideo": "Latest video sermon",
+    "latestAudio": "Latest audio teachings",
+    "listenHint": "Start listening here — the player follows you across the site.",
+    "browseAudio": "Explore the audio library",
+    "browseVideos": "All videos →"
   },
   "events": {
     "badge": "Events",

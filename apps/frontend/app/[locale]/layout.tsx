@@ -7,6 +7,7 @@ import { I18nProvider } from "@/components/providers/I18nProvider"
 import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider"
 import { AuthInitializer } from "@/components/auth/AuthInitializer"
 import { SplashLoader } from "@/components/ui/SplashLoader"
+import { GlobalAudioPlayer } from "@/components/features/teachings/player/GlobalAudioPlayer"
 import "../globals.css"
 
 const montserrat = Montserrat({
@@ -61,6 +62,9 @@ export default async function LocaleLayout({
           <AuthInitializer />
           <I18nProvider locale={locale} dict={dict}>
             {children}
+            {/* Player global : monté au niveau locale pour couvrir aussi
+                l'accueil — la lecture survit à toute la navigation publique */}
+            <GlobalAudioPlayer />
           </I18nProvider>
         </ReactQueryProvider>
       </body>
