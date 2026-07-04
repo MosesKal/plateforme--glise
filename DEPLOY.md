@@ -264,6 +264,33 @@ curl -I -H "Range: bytes=0-99" https://<domaine>/media/audio/<annee>/<fichier>
 # → HTTP/1.1 206 Partial Content
 ```
 
+### 5. Import de masse de la bibliothèque audio existante
+
+Structure attendue : un dossier par thème, les fichiers audio dedans.
+L'orateur (unique) est assigné à tout l'import. Le script copie les fichiers
+(la bibliothèque source reste intacte), crée les thèmes manquants et lance le
+transcodage AAC 96k — il est relançable sans créer de doublons.
+
+```bash
+# 1. Copier la bibliothèque sur le serveur
+scp -r ./bibliotheque user@vps:/tmp/bibliotheque-audio
+
+# 2. Prévisualiser le plan d'import (aucune écriture)
+cd apps/backend
+node dist/scripts/import-audio.js --dir /tmp/bibliotheque-audio \
+  --speaker "Nom de l'orateur" --dry-run
+
+# 3. Importer (retirer --dry-run) — attend la fin des transcodages avant de sortir
+node dist/scripts/import-audio.js --dir /tmp/bibliotheque-audio \
+  --speaker "Nom de l'orateur"
+
+# En développement (depuis la racine du monorepo) :
+pnpm --filter @cecj/backend import:audio -- --dir <chemin> --speaker "Nom" --dry-run
+```
+
+Options : `--status DRAFT` pour importer en brouillon (défaut : `PUBLISHED`),
+`--dry-run` pour afficher le plan sans rien écrire.
+
 ---
 
 ## En cas de problème
