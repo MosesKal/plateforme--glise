@@ -118,14 +118,14 @@ export default function AdminEnseignementsPage() {
   // Le réordonnancement n'a de sens qu'à l'intérieur d'un thème.
   const canReorder = Boolean(themeId) && !debouncedSearch && !status
 
+  // Le modal se ferme lui-même via onClose quand tout a réussi — en sélection
+  // multiple il reste ouvert tant que des fichiers sont en échec.
   const handleSubmit = async (payload: AudioTeachingPayload) => {
     if (editTarget) {
       await update.mutateAsync({ id: editTarget.id, payload })
     } else {
       await create.mutateAsync(payload)
     }
-    setModalOpen(false)
-    setEditTarget(null)
   }
 
   const moveItem = (index: number, direction: -1 | 1) => {
