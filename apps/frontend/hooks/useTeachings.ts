@@ -1,6 +1,6 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import {
   teachingsApi,
   type PublicAudioParams,
@@ -35,6 +35,25 @@ export function useAudioTeachings(params?: PublicAudioParams, enabled = true) {
   })
 }
 
+/**
+ * Liste audio en chargement progressif (« Charger plus ») : chaque page est
+ * requêtée une seule fois — contrairement à une limite croissante qui
+ * retéléchargerait tout à chaque clic. Un thème peut dépasser 200 audios.
+ */
+export function useInfiniteAudioTeachings(
+  params?: Omit<PublicAudioParams, "page">,
+  enabled = true,
+) {
+  return useInfiniteQuery({
+    queryKey: ["teachings", "audio", "infinite", params],
+    queryFn: ({ pageParam }) => teachingsApi.listAudio({ ...params, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (last) => (last.page < last.totalPages ? last.page + 1 : undefined),
+    staleTime: STALE_TIME,
+    enabled,
+  })
+}
+
 export function useAudioTeachingDetail(slug: string) {
   return useQuery({
     queryKey: ["teachings", "audio", "detail", slug],
@@ -48,6 +67,21 @@ export function useVideoTeachings(params?: PublicVideoParams, enabled = true) {
   return useQuery({
     queryKey: ["teachings", "videos", params],
     queryFn: () => teachingsApi.listVideos(params),
+    staleTime: STALE_TIME,
+    enabled,
+  })
+}
+
+/** Équivalent vidéo de useInfiniteAudioTeachings (page vidéos publique). */
+export function useInfiniteVideoTeachings(
+  params?: Omit<PublicVideoParams, "page">,
+  enabled = true,
+) {
+  return useInfiniteQuery({
+    queryKey: ["teachings", "videos", "infinite", params],
+    queryFn: ({ pageParam }) => teachingsApi.listVideos({ ...params, page: pageParam }),
+    initialPageParam: 1,
+    getNextPageParam: (last) => (last.page < last.totalPages ? last.page + 1 : undefined),
     staleTime: STALE_TIME,
     enabled,
   })

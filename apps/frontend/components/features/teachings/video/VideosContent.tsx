@@ -1,12 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { usePathname } from "next/navigation"
 import { stagger, fadeUp, inView } from "@/lib/motion"
 import { useDebounce } from "@/hooks/useDebounce"
-import { useTeachingThemes, useVideoTeachings } from "@/hooks/useTeachings"
+import { useInfiniteVideoTeachings, useTeachingThemes } from "@/hooks/useTeachings"
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
 import { VideoCard } from "./VideoCard"
 
 const PAGE_SIZE = 12
@@ -30,25 +31,20 @@ export function VideosContent() {
 
   const [search, setSearch] = useState("")
   const [themeSlug, setThemeSlug] = useState("")
-  // « Charger plus » : la limite grandit, React Query met les pages en cache.
-  const [limit, setLimit] = useState(PAGE_SIZE)
   const debouncedSearch = useDebounce(search.trim(), 300)
 
   const { data: themes = [] } = useTeachingThemes()
-  const { data, isLoading } = useVideoTeachings({
+  // Chargement progressif : chaque page n'est requêtée qu'une fois (un
+  // changement de filtre repart naturellement de la première page).
+  const { data, isLoading, fetchNextPage, isFetchingNextPage } = useInfiniteVideoTeachings({
     search: debouncedSearch.length >= 2 ? debouncedSearch : undefined,
     themeSlug: themeSlug || undefined,
-    limit,
+    limit: PAGE_SIZE,
   })
 
-  const items = data?.items ?? []
-  const hasMore = (data?.total ?? 0) > items.length
+  const items = useMemo(() => data?.pages.flatMap((p) => p.items) ?? [], [data])
+  const total = data?.pages[0]?.total ?? 0
   const themesWithVideos = themes.filter((t) => t.isActive)
-
-  const changeFilter = (fn: () => void) => {
-    setLimit(PAGE_SIZE)
-    fn()
-  }
 
   return (
     <div className="bg-white pb-24">
@@ -87,13 +83,13 @@ export function VideosContent() {
                 </svg>
                 <input
                   value={search}
-                  onChange={(e) => changeFilter(() => setSearch(e.target.value))}
+                  onChange={(e) => setSearch(e.target.value)}
                   placeholder="Rechercher une vidéo…"
                   className="w-full rounded-full border border-white/15 bg-white/10 py-3.5 pl-12 pr-12 text-base text-white placeholder:text-white/40 outline-none backdrop-blur transition focus:border-cecj-gold/60 focus:bg-white/15 sm:text-sm"
                 />
                 {search && (
                   <button
-                    onClick={() => changeFilter(() => setSearch(""))}
+                    onClick={() => setSearch("")}
                     aria-label="Effacer la recherche"
                     className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-white/50 transition hover:bg-white/10 hover:text-white"
                   >
@@ -120,9 +116,7 @@ export function VideosContent() {
               <button
                 key={theme.id}
                 onClick={() =>
-                  changeFilter(() =>
-                    setThemeSlug((current) => (current === theme.slug ? "" : theme.slug)),
-                  )
+                  setThemeSlug((current) => (current === theme.slug ? "" : theme.slug))
                 }
                 className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
                   themeSlug === theme.slug
@@ -170,16 +164,11 @@ export function VideosContent() {
           </motion.div>
         )}
 
-        {hasMore && (
-          <div className="pt-10 text-center">
-            <button
-              onClick={() => setLimit((l) => l + PAGE_SIZE)}
-              className="rounded-full border border-cecj-green px-6 py-2.5 text-sm font-semibold text-cecj-green transition hover:bg-cecj-green hover:text-white"
-            >
-              Charger plus de vidéos
-            </button>
-          </div>
-        )}
+        <LoadMoreButton
+          remaining={total - items.length}
+          loading={isFetchingNextPage}
+          onClick={() => fetchNextPage()}
+        />
       </section>
     </div>
   )

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { usePathname } from "next/navigation"
@@ -8,10 +8,12 @@ import { stagger, fadeUp, inView } from "@/lib/motion"
 import { useDebounce } from "@/hooks/useDebounce"
 import {
   useAudioTeachings,
+  useInfiniteAudioTeachings,
   useTeachingTags,
   useTeachingThemes,
   useVideoTeachings,
 } from "@/hooks/useTeachings"
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
 import { ThemeCard } from "@/components/features/teachings/audio/ThemeCard"
 import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
 import { ResumeListening } from "@/components/features/teachings/audio/ResumeListening"
@@ -61,13 +63,25 @@ export function EnseignementsContent() {
   const { data: themes = [], isLoading: themesLoading } = useTeachingThemes()
   const { data: tags = [] } = useTeachingTags()
 
-  // Résultats (recherche OU tag) — une seule requête active à la fois.
-  const { data: results, isLoading: resultsLoading } = useAudioTeachings(
+  // Résultats (recherche OU tag) — une seule requête active à la fois,
+  // en chargement progressif (un tag peut couvrir un thème de 200+ audios).
+  const {
+    data: results,
+    isLoading: resultsLoading,
+    fetchNextPage: fetchMoreResults,
+    isFetchingNextPage: isFetchingMoreResults,
+  } = useInfiniteAudioTeachings(
     isSearching
-      ? { search: debouncedSearch, limit: 30 }
-      : { tag: activeTag?.slug, limit: 30 },
+      ? { search: debouncedSearch, limit: 25 }
+      : { tag: activeTag?.slug, limit: 25 },
     isSearching || Boolean(activeTag),
   )
+
+  const resultItems = useMemo(
+    () => results?.pages.flatMap((p) => p.items) ?? [],
+    [results],
+  )
+  const resultsTotal = results?.pages[0]?.total ?? 0
 
   const { data: recent } = useAudioTeachings({ sort: "recent", limit: 5 }, isBrowsing)
   const { data: popular } = useAudioTeachings({ sort: "popular", limit: 5 }, isBrowsing)
@@ -181,19 +195,26 @@ export function EnseignementsContent() {
               </SectionTitle>
               {!resultsLoading && (
                 <p className="text-sm text-gray-400">
-                  {results?.total ?? 0} enseignement{(results?.total ?? 0) > 1 ? "s" : ""}
+                  {resultsTotal} enseignement{resultsTotal > 1 ? "s" : ""}
                 </p>
               )}
             </div>
 
             {resultsLoading ? (
               <RowSkeleton />
-            ) : (results?.items.length ?? 0) === 0 ? (
+            ) : resultItems.length === 0 ? (
               <p className="rounded-xl border border-dashed border-gray-200 py-16 text-center text-sm text-gray-400">
                 Aucun enseignement trouvé. Essayez un autre mot-clé ou parcourez les thèmes.
               </p>
             ) : (
-              <RowList items={results!.items} />
+              <>
+                <RowList items={resultItems} />
+                <LoadMoreButton
+                  remaining={resultsTotal - resultItems.length}
+                  loading={isFetchingMoreResults}
+                  onClick={() => fetchMoreResults()}
+                />
+              </>
             )}
           </div>
         </section>

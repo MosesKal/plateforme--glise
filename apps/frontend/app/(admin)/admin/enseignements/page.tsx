@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react"
 import Link from "next/link"
 import { PageHeader } from "@/components/shared/PageHeader"
+import { Pagination } from "@/components/shared/Pagination"
 import { Button } from "@/components/ui/Button"
 import { useDebounce } from "@/hooks/useDebounce"
 import { ADMIN_ROUTES } from "@/constants/routes"
@@ -62,11 +63,21 @@ function formatTotalDuration(totalSec: number): string {
   return h > 0 ? `${h} h ${String(m).padStart(2, "0")} min` : `${m} min`
 }
 
+const PAGE_SIZE = 25
+
 export default function AdminEnseignementsPage() {
   const [themeId, setThemeId] = useState("")
   const [status, setStatus] = useState<TeachingStatus | "">("")
   const [search, setSearch] = useState("")
+  const [page, setPage] = useState(1)
   const debouncedSearch = useDebounce(search, 300)
+
+  // Tout changement de filtre repart de la page 1 (la pagination courante
+  // n'a plus de sens sur un jeu de résultats différent).
+  const changeFilter = (fn: () => void) => {
+    setPage(1)
+    fn()
+  }
 
   const { data: themes = [] } = useAdminThemes()
   const { data: speakers = [] } = useAdminSpeakers()
@@ -74,8 +85,15 @@ export default function AdminEnseignementsPage() {
     themeId: themeId || undefined,
     status: status || undefined,
     search: debouncedSearch || undefined,
-    limit: 100,
+    page,
+    limit: PAGE_SIZE,
   })
+
+  // Après une suppression, la dernière page peut disparaître : on se recale
+  // pendant le rendu (pattern React « adjusting state during render »).
+  if (data && page > 1 && page > data.totalPages) {
+    setPage(Math.max(data.totalPages, 1))
+  }
 
   const { data: stats } = useTeachingsStats()
 
@@ -236,7 +254,7 @@ export default function AdminEnseignementsPage() {
         <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3">
           <select
             value={themeId}
-            onChange={(e) => setThemeId(e.target.value)}
+            onChange={(e) => changeFilter(() => setThemeId(e.target.value))}
             className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green"
           >
             <option value="">Tous les thèmes</option>
@@ -247,7 +265,7 @@ export default function AdminEnseignementsPage() {
 
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value as TeachingStatus | "")}
+            onChange={(e) => changeFilter(() => setStatus(e.target.value as TeachingStatus | ""))}
             className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green"
           >
             <option value="">Tous les statuts</option>
@@ -258,7 +276,7 @@ export default function AdminEnseignementsPage() {
 
           <input
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => changeFilter(() => setSearch(e.target.value))}
             placeholder="Rechercher un titre…"
             className="min-w-52 flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green"
           />
@@ -387,6 +405,16 @@ export default function AdminEnseignementsPage() {
               )
             })}
           </div>
+        )}
+
+        {data && (
+          <Pagination
+            page={page}
+            totalPages={data.totalPages}
+            total={data.total}
+            itemLabel="enseignement"
+            onPageChange={setPage}
+          />
         )}
       </div>
     </>

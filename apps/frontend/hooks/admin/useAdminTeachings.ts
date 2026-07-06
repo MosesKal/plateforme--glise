@@ -1,6 +1,6 @@
 "use client"
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 import {
   adminTeachingsApi,
   type AudioTeachingPayload,
@@ -89,6 +89,9 @@ export function useAdminAudioTeachings(params?: {
   return useQuery({
     queryKey: [...AUDIO_KEY, params],
     queryFn: () => adminTeachingsApi.listAudio(params),
+    // Changement de page/filtre : la page précédente reste affichée pendant le
+    // chargement (pas de flash de liste vide).
+    placeholderData: keepPreviousData,
     // Tant qu'un transcodage est en cours côté serveur, on rafraîchit la liste
     // pour voir les fichiers passer en READY sans recharger la page.
     refetchInterval: (query) =>
@@ -154,6 +157,7 @@ export function useAdminVideoTeachings(params?: {
   return useQuery({
     queryKey: [...VIDEOS_KEY, params],
     queryFn: () => adminTeachingsApi.listVideos(params),
+    placeholderData: keepPreviousData,
   })
 }
 

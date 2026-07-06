@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Link from "next/link"
 import { PageHeader } from "@/components/shared/PageHeader"
+import { Pagination } from "@/components/shared/Pagination"
 import { Button } from "@/components/ui/Button"
 import { useDebounce } from "@/hooks/useDebounce"
 import { ADMIN_ROUTES } from "@/constants/routes"
@@ -30,10 +31,18 @@ const STATUS_LABELS: Record<TeachingStatus, { label: string; cls: string }> = {
   ARCHIVED:  { label: "Archivé",   cls: "bg-gray-100 text-gray-500"   },
 }
 
+const PAGE_SIZE = 25
+
 export default function AdminVideosPage() {
   const [status, setStatus] = useState<TeachingStatus | "">("")
   const [search, setSearch] = useState("")
+  const [page, setPage] = useState(1)
   const debouncedSearch = useDebounce(search, 300)
+
+  const changeFilter = (fn: () => void) => {
+    setPage(1)
+    fn()
+  }
 
   const { data: themes = [] } = useAdminThemes()
   const { data: speakers = [] } = useAdminSpeakers()
@@ -41,8 +50,14 @@ export default function AdminVideosPage() {
   const { data, isLoading, isError } = useAdminVideoTeachings({
     status: status || undefined,
     search: debouncedSearch || undefined,
-    limit: 100,
+    page,
+    limit: PAGE_SIZE,
   })
+
+  // Recalage si la page courante disparaît (ex. vidéo retirée en fin de liste).
+  if (data && page > 1 && page > data.totalPages) {
+    setPage(Math.max(data.totalPages, 1))
+  }
 
   const sync = useSyncVideos()
   const update = useUpdateVideoTeaching()
@@ -134,13 +149,13 @@ export default function AdminVideosPage() {
         <div className="flex flex-wrap gap-3">
           <input
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => changeFilter(() => setSearch(e.target.value))}
             placeholder="Rechercher un titre…"
             className="w-64 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
           />
           <select
             value={status}
-            onChange={(e) => setStatus(e.target.value as TeachingStatus | "")}
+            onChange={(e) => changeFilter(() => setStatus(e.target.value as TeachingStatus | ""))}
             className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green"
           >
             <option value="">Tous les statuts</option>
@@ -225,6 +240,16 @@ export default function AdminVideosPage() {
               )
             })}
           </div>
+        )}
+
+        {data && (
+          <Pagination
+            page={page}
+            totalPages={data.totalPages}
+            total={data.total}
+            itemLabel="vidéo"
+            onPageChange={setPage}
+          />
         )}
       </div>
     </>

@@ -5,27 +5,37 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { usePathname } from "next/navigation"
 import { stagger, fadeUp, inView } from "@/lib/motion"
-import { useAudioTeachings, useTeachingTheme } from "@/hooks/useTeachings"
+import { useDebounce } from "@/hooks/useDebounce"
+import { useInfiniteAudioTeachings, useTeachingTheme } from "@/hooks/useTeachings"
 import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
+
+const PAGE_SIZE = 25
 
 export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
   const pathname = usePathname()
   const locale = pathname.split("/")[1] || "fr"
 
   const { data: theme, isLoading: themeLoading, isError } = useTeachingTheme(themeSlug)
-  const { data: audio, isLoading: audioLoading } = useAudioTeachings({
-    themeSlug,
-    limit: 100,
-  })
 
   const [filter, setFilter] = useState("")
+  const debouncedFilter = useDebounce(filter.trim(), 300)
 
-  const teachings = useMemo(() => {
-    const items = audio?.items ?? []
-    if (!filter.trim()) return items
-    const needle = filter.trim().toLowerCase()
-    return items.filter((t) => t.title.toLowerCase().includes(needle))
-  }, [audio, filter])
+  // Recherche côté serveur : un thème peut dépasser 200 audios, un filtre
+  // client sur la page chargée raterait tout ce qui n'est pas encore chargé.
+  const {
+    data: audio,
+    isLoading: audioLoading,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useInfiniteAudioTeachings({
+    themeSlug,
+    search: debouncedFilter.length >= 2 ? debouncedFilter : undefined,
+    limit: PAGE_SIZE,
+  })
+
+  const teachings = useMemo(() => audio?.pages.flatMap((p) => p.items) ?? [], [audio])
+  const total = audio?.pages[0]?.total ?? 0
 
   if (isError) {
     return (
@@ -86,7 +96,7 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
 
       {/* Liste */}
       <section className="mx-auto max-w-4xl px-4 py-10 lg:px-8">
-        {(audio?.items.length ?? 0) > 8 && (
+        {((theme?._count.audioTeachings ?? 0) > 8 || filter) && (
           <div className="mb-6">
             <input
               value={filter}
@@ -110,16 +120,23 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
               : "Aucun enseignement dans ce thème pour le moment."}
           </p>
         ) : (
-          <div className="space-y-3">
-            {teachings.map((teaching, index) => (
-              <AudioTeachingRow
-                key={teaching.id}
-                teaching={teaching}
-                queue={teachings}
-                index={index}
-              />
-            ))}
-          </div>
+          <>
+            <div className="space-y-3">
+              {teachings.map((teaching, index) => (
+                <AudioTeachingRow
+                  key={teaching.id}
+                  teaching={teaching}
+                  queue={teachings}
+                  index={index}
+                />
+              ))}
+            </div>
+            <LoadMoreButton
+              remaining={total - teachings.length}
+              loading={isFetchingNextPage}
+              onClick={() => fetchNextPage()}
+            />
+          </>
         )}
       </section>
     </div>
