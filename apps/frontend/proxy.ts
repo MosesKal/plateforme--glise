@@ -32,8 +32,11 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // `og$` : l'image Open Graph par défaut (/og) est servie hors locale —
-  // sans exclusion, le proxy la redirigerait vers /fr/og (404) et les
-  // crawlers WhatsApp/Facebook n'afficheraient aucun aperçu.
-  matcher: ["/((?!_next|_vercel|api|admin|og$|.*\\..*).*)", "/"],
+  // Routes de métadonnées servies hors locale (og, icônes PWA, favicon /icon,
+  // apple-touch-icon) : sans exclusion, le proxy les redirige vers /fr/...
+  // (404) et crawlers, manifest ou navigateurs ne voient aucune image.
+  matcher: [
+    "/((?!_next|_vercel|api|admin|og$|pwa-icon|icon$|apple-icon$|.*\\..*).*)",
+    "/",
+  ],
 }
