@@ -90,6 +90,7 @@ export function TeachingsSection() {
                       youtubeId={latestVideo.youtubeId}
                       title={latestVideo.title}
                       thumbnailUrl={latestVideo.thumbnailUrl}
+                      sizes="(min-width: 1024px) 60vw, 100vw"
                     />
                     {latestVideo.durationSec > 0 && (
                       <span className="pointer-events-none absolute bottom-2 right-2 rounded bg-black/75 px-1.5 py-0.5 text-[11px] font-semibold tabular-nums text-white">

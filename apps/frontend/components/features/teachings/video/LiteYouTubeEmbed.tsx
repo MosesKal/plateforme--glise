@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { useI18n } from "@/components/providers/I18nProvider"
 
 interface Props {
@@ -8,6 +9,8 @@ interface Props {
   title: string
   /** Vignette YouTube déjà connue (sinon dérivée de l'ID). */
   thumbnailUrl?: string | null
+  /** Attribut `sizes` next/image — à ajuster selon la largeur du slot parent. */
+  sizes?: string
 }
 
 /**
@@ -17,7 +20,12 @@ interface Props {
  * directement la lecture. Domaine youtube-nocookie : pas de cookies de
  * tracking avant interaction.
  */
-export function LiteYouTubeEmbed({ youtubeId, title, thumbnailUrl }: Props) {
+export function LiteYouTubeEmbed({
+  youtubeId,
+  title,
+  thumbnailUrl,
+  sizes = "(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw",
+}: Props) {
   const { t } = useI18n()
   const [activated, setActivated] = useState(false)
 
@@ -39,12 +47,12 @@ export function LiteYouTubeEmbed({ youtubeId, title, thumbnailUrl }: Props) {
       aria-label={`${t("teachings.videos.playVideo")} ${title}`}
       className="group absolute inset-0 h-full w-full cursor-pointer"
     >
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
+      <Image
         src={thumbnailUrl || `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}
         alt={title}
-        loading="lazy"
-        className="h-full w-full object-cover"
+        fill
+        sizes={sizes}
+        className="object-cover"
       />
       <span className="absolute inset-0 bg-black/20 transition group-hover:bg-black/30" />
       {/* Bouton play */}

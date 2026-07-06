@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { useI18n } from "@/components/providers/I18nProvider"
 import type { TeachingTheme } from "@/lib/api/teachings"
@@ -15,11 +16,12 @@ export function ThemeCard({ theme, href }: { theme: TeachingTheme; href: string 
     >
       {theme.coverImage ? (
         <>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={theme.coverImage}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            fill
+            sizes="(min-width: 1024px) 33vw, 50vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-cecj-green/95 via-cecj-green/40 to-transparent" />
         </>

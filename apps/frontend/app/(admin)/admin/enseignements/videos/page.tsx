@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { Pagination } from "@/components/shared/Pagination"
@@ -189,11 +190,11 @@ export default function AdminVideosPage() {
                   key={video.id}
                   className="flex items-center gap-4 rounded-xl border border-gray-100 bg-white px-5 py-4"
                 >
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
+                  <Image
                     src={video.thumbnailUrl || `https://i.ytimg.com/vi/${video.youtubeId}/mqdefault.jpg`}
                     alt=""
-                    loading="lazy"
+                    width={112}
+                    height={64}
                     className={`h-16 w-28 shrink-0 rounded-lg object-cover ${!video.isAvailable ? "opacity-40 grayscale" : ""}`}
                   />
 
