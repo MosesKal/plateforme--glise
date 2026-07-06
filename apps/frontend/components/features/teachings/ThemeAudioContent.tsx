@@ -10,7 +10,7 @@ import { useInfiniteAudioTeachings, useTeachingTheme } from "@/hooks/useTeaching
 import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
 
-const PAGE_SIZE = 25
+const PAGE_SIZE = 10
 
 export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
   const pathname = usePathname()

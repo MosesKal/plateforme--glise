@@ -10,6 +10,7 @@ import { useInfiniteVideoTeachings, useTeachingThemes } from "@/hooks/useTeachin
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
 import { VideoCard } from "./VideoCard"
 
+// 12 : divisible par 2 et 3 — la grille (2 ou 3 colonnes) reste complète.
 const PAGE_SIZE = 12
 
 function CardSkeleton({ count = 6 }: { count?: number }) {

@@ -72,8 +72,8 @@ export function EnseignementsContent() {
     isFetchingNextPage: isFetchingMoreResults,
   } = useInfiniteAudioTeachings(
     isSearching
-      ? { search: debouncedSearch, limit: 25 }
-      : { tag: activeTag?.slug, limit: 25 },
+      ? { search: debouncedSearch, limit: 10 }
+      : { tag: activeTag?.slug, limit: 10 },
     isSearching || Boolean(activeTag),
   )
 
