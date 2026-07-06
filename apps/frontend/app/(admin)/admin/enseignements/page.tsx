@@ -63,7 +63,7 @@ function formatTotalDuration(totalSec: number): string {
   return h > 0 ? `${h} h ${String(m).padStart(2, "0")} min` : `${m} min`
 }
 
-const PAGE_SIZE = 25
+const PAGE_SIZE = 10
 
 export default function AdminEnseignementsPage() {
   const [themeId, setThemeId] = useState("")

@@ -31,7 +31,7 @@ const STATUS_LABELS: Record<TeachingStatus, { label: string; cls: string }> = {
   ARCHIVED:  { label: "Archivé",   cls: "bg-gray-100 text-gray-500"   },
 }
 
-const PAGE_SIZE = 25
+const PAGE_SIZE = 10
 
 export default function AdminVideosPage() {
   const [status, setStatus] = useState<TeachingStatus | "">("")
