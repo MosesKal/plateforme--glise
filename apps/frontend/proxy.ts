@@ -32,5 +32,8 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|_vercel|api|admin|.*\\..*).*)", "/"],
+  // `og$` : l'image Open Graph par défaut (/og) est servie hors locale —
+  // sans exclusion, le proxy la redirigerait vers /fr/og (404) et les
+  // crawlers WhatsApp/Facebook n'afficheraient aucun aperçu.
+  matcher: ["/((?!_next|_vercel|api|admin|og$|.*\\..*).*)", "/"],
 }

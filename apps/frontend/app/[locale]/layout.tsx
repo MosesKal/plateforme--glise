@@ -3,6 +3,7 @@ import { Montserrat, Great_Vibes } from "next/font/google"
 import { notFound } from "next/navigation"
 import NextTopLoader from "nextjs-toploader"
 import { getDictionary, hasLocale } from "@/lib/i18n"
+import { OG_DEFAULTS } from "@/lib/seo"
 import { I18nProvider } from "@/components/providers/I18nProvider"
 import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider"
 import { AuthInitializer } from "@/components/auth/AuthInitializer"
@@ -23,7 +24,19 @@ const greatVibes = Great_Vibes({
   display: "swap",
 })
 
+/**
+ * Origine publique du frontend — indispensable pour résoudre en URLs absolues
+ * l'image Open Graph par défaut et les og:url (WhatsApp/Facebook exigent de
+ * l'absolu). Même logique de fallback que le backend (app-url.ts).
+ */
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  (process.env.NODE_ENV === "production"
+    ? "https://dev.impactgroup.cd"
+    : "http://localhost:3000")
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Camps de Jésus-Christ Bel-air Fizi",
     template: "%s | Camps de Jésus-Christ Bel-air Fizi",
@@ -31,8 +44,10 @@ export const metadata: Metadata = {
   description:
     "Bienvenue à l'Église Camp de Jésus Bel-air, fondée sur la saine doctrine du Seigneur Jésus-Christ.",
   openGraph: {
-    siteName: "C.E.C.J.C.",
-    type: "website",
+    ...OG_DEFAULTS,
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 }
 
