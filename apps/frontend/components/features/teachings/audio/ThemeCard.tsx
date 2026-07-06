@@ -1,9 +1,11 @@
 "use client"
 
 import Link from "next/link"
+import { useI18n } from "@/components/providers/I18nProvider"
 import type { TeachingTheme } from "@/lib/api/teachings"
 
 export function ThemeCard({ theme, href }: { theme: TeachingTheme; href: string }) {
+  const { t } = useI18n()
   const count = theme._count.audioTeachings
 
   return (
@@ -28,7 +30,10 @@ export function ThemeCard({ theme, href }: { theme: TeachingTheme; href: string 
       <div className="relative">
         <h3 className="text-base font-bold leading-snug text-white sm:text-lg">{theme.nameFr}</h3>
         <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-cecj-gold sm:text-xs sm:tracking-widest">
-          {count} enseignement{count > 1 ? "s" : ""}
+          {count}{" "}
+          {count > 1
+            ? t("teachings.common.teachingPlural")
+            : t("teachings.common.teachingSingular")}
         </p>
       </div>
     </Link>

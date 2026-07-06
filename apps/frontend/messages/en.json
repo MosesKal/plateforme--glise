@@ -184,6 +184,78 @@
     "browseAudio": "Explore the audio library",
     "browseVideos": "All videos"
   },
+  "teachings": {
+    "common": {
+      "backToTeachings": "← Back to teachings",
+      "teachingSingular": "teaching",
+      "teachingPlural": "teachings",
+      "loadMore": "Load more",
+      "remainingSingular": "remaining",
+      "remainingPlural": "remaining",
+      "loading": "Loading…",
+      "listen": "Listen",
+      "pause": "Pause",
+      "clearSearch": "Clear search"
+    },
+    "hub": {
+      "badge": "The Word at all times",
+      "title": "Teachings",
+      "intro": "Listen to the church's teachings, organised by theme. Start playing and keep browsing — the audio follows you.",
+      "searchPlaceholder": "Search for a teaching…",
+      "topics": "Topics",
+      "resultsFor": "Results for",
+      "topicLabel": "Topic:",
+      "noResults": "No teaching found. Try another keyword or browse the themes.",
+      "browseByTheme": "Browse by theme",
+      "comingSoon": "Teachings are coming soon.",
+      "latest": "Latest teachings",
+      "mostPlayed": "Most played",
+      "latestVideos": "Latest videos",
+      "allVideos": "All videos →"
+    },
+    "theme": {
+      "notFound": "This theme does not exist or is no longer available.",
+      "searchPlaceholder": "Search within this theme…",
+      "noMatch": "No teaching matches this search.",
+      "empty": "No teaching in this theme yet."
+    },
+    "detail": {
+      "notFound": "This teaching does not exist or is no longer available.",
+      "resume": "Resume",
+      "download": "Download",
+      "share": "Share",
+      "linkCopied": "Link copied!",
+      "about": "About this teaching",
+      "upNext": "Up next",
+      "playSingular": "play",
+      "playPlural": "plays"
+    },
+    "videos": {
+      "badge": "The Word in pictures",
+      "title": "Video teachings",
+      "intro": "Watch the church's sermons and teachings from our YouTube channel, right here on the site.",
+      "searchPlaceholder": "Search for a video…",
+      "themes": "Themes",
+      "noMatch": "No video matches your search.",
+      "comingSoon": "Videos are coming soon.",
+      "listenAudio": "Listen to the audio teachings →",
+      "playVideo": "Play video:"
+    },
+    "player": {
+      "speed": "Playback speed",
+      "previous": "Previous teaching",
+      "next": "Next teaching",
+      "play": "Play",
+      "close": "Close player",
+      "seek": "Playback position",
+      "fileUnavailable": "Audio file unavailable",
+      "pauseTrack": "Pause"
+    },
+    "resume": {
+      "title": "Resume listening",
+      "resumedAt": "resumed at"
+    }
+  },
   "events": {
     "badge": "Events",
     "title": "Our Events",

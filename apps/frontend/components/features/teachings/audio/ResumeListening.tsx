@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { useI18n } from "@/components/providers/I18nProvider"
 import {
   readRecentPlays,
   readSavedPosition,
@@ -20,8 +20,7 @@ interface ResumeEntry extends RecentPlay {
  * refetchées — l'historique local n'est jamais une source de vérité.
  */
 export function ResumeListening() {
-  const pathname = usePathname()
-  const locale = pathname.split("/")[1] || "fr"
+  const { t, locale } = useI18n()
 
   // Lu après montage uniquement : localStorage n'existe pas au SSR et un
   // rendu serveur différent du client provoquerait une erreur d'hydratation.
@@ -45,7 +44,7 @@ export function ResumeListening() {
     <section className="mx-auto max-w-6xl px-4 pt-14 lg:px-8">
       <div className="space-y-6">
         <div className="space-y-2">
-          <h2 className="text-2xl font-bold text-gray-900">Reprendre l&apos;écoute</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t("teachings.resume.title")}</h2>
           <div className="h-1 w-10 rounded bg-cecj-gold" />
         </div>
 
@@ -69,7 +68,8 @@ export function ResumeListening() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-semibold text-gray-900">{entry.title}</p>
                     <p className="truncate text-xs text-gray-400">
-                      {entry.themeName} · repris à {formatDuration(entry.positionSec)}
+                      {entry.themeName} · {t("teachings.resume.resumedAt")}{" "}
+                      {formatDuration(entry.positionSec)}
                     </p>
                   </div>
                 </div>

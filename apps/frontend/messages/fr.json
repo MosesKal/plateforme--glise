@@ -184,6 +184,78 @@
     "browseAudio": "Explorer la bibliothèque audio",
     "browseVideos": "Toutes les vidéos"
   },
+  "teachings": {
+    "common": {
+      "backToTeachings": "← Retour aux enseignements",
+      "teachingSingular": "enseignement",
+      "teachingPlural": "enseignements",
+      "loadMore": "Charger plus",
+      "remainingSingular": "restant",
+      "remainingPlural": "restants",
+      "loading": "Chargement…",
+      "listen": "Écouter",
+      "pause": "Pause",
+      "clearSearch": "Effacer la recherche"
+    },
+    "hub": {
+      "badge": "La Parole en tout temps",
+      "title": "Enseignements",
+      "intro": "Écoutez les enseignements de l'église, organisés par thèmes. Lancez la lecture et continuez votre navigation — l'écoute vous suit.",
+      "searchPlaceholder": "Rechercher un enseignement…",
+      "topics": "Sujets",
+      "resultsFor": "Résultats pour",
+      "topicLabel": "Sujet :",
+      "noResults": "Aucun enseignement trouvé. Essayez un autre mot-clé ou parcourez les thèmes.",
+      "browseByTheme": "Parcourir par thème",
+      "comingSoon": "Les enseignements arrivent bientôt.",
+      "latest": "Derniers enseignements",
+      "mostPlayed": "Les plus écoutés",
+      "latestVideos": "Dernières vidéos",
+      "allVideos": "Toutes les vidéos →"
+    },
+    "theme": {
+      "notFound": "Ce thème n'existe pas ou n'est plus disponible.",
+      "searchPlaceholder": "Rechercher dans ce thème…",
+      "noMatch": "Aucun enseignement ne correspond à cette recherche.",
+      "empty": "Aucun enseignement dans ce thème pour le moment."
+    },
+    "detail": {
+      "notFound": "Cet enseignement n'existe pas ou n'est plus disponible.",
+      "resume": "Reprendre",
+      "download": "Télécharger",
+      "share": "Partager",
+      "linkCopied": "Lien copié !",
+      "about": "À propos de cet enseignement",
+      "upNext": "À écouter ensuite",
+      "playSingular": "écoute",
+      "playPlural": "écoutes"
+    },
+    "videos": {
+      "badge": "La Parole en images",
+      "title": "Enseignements vidéo",
+      "intro": "Regardez les prédications et enseignements de la chaîne YouTube de l'église, directement sur le site.",
+      "searchPlaceholder": "Rechercher une vidéo…",
+      "themes": "Thèmes",
+      "noMatch": "Aucune vidéo ne correspond à votre recherche.",
+      "comingSoon": "Les vidéos arrivent bientôt.",
+      "listenAudio": "Écouter les enseignements audio →",
+      "playVideo": "Lire la vidéo :"
+    },
+    "player": {
+      "speed": "Vitesse de lecture",
+      "previous": "Enseignement précédent",
+      "next": "Enseignement suivant",
+      "play": "Lecture",
+      "close": "Fermer le lecteur",
+      "seek": "Position de lecture",
+      "fileUnavailable": "Fichier audio indisponible",
+      "pauseTrack": "Mettre en pause"
+    },
+    "resume": {
+      "title": "Reprendre l'écoute",
+      "resumedAt": "repris à"
+    }
+  },
   "events": {
     "badge": "Événements",
     "title": "Nos Événements",

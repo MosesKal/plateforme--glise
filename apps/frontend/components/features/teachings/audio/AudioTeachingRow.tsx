@@ -1,9 +1,9 @@
 "use client"
 
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { useI18n } from "@/components/providers/I18nProvider"
 import { usePlayerStore } from "@/store/player.store"
-import { formatDuration } from "@/components/features/teachings/format"
+import { formatDuration, formatTeachingDate } from "@/components/features/teachings/format"
 import type { AudioTeaching } from "@/lib/api/teachings"
 
 /**
@@ -24,8 +24,7 @@ export function AudioTeachingRow({
   index: number
   variant?: "card" | "flush"
 }) {
-  const pathname = usePathname()
-  const locale = pathname.split("/")[1] || "fr"
+  const { t, locale } = useI18n()
   const detailHref = `/${locale}/enseignements/audio/${teaching.theme.slug}/${teaching.slug}`
 
   const { track, isPlaying, play, toggle } = usePlayerStore()
@@ -56,7 +55,9 @@ export function AudioTeachingRow({
       {/* Bouton lecture */}
       <button
         onClick={handleClick}
-        aria-label={isActive ? `Mettre en pause ${teaching.title}` : `Écouter ${teaching.title}`}
+        aria-label={`${
+          isActive ? t("teachings.player.pauseTrack") : t("teachings.common.listen")
+        } ${teaching.title}`}
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition ${
           isCurrent
             ? "bg-cecj-green text-white"
@@ -105,11 +106,7 @@ export function AudioTeachingRow({
           {teaching.preachedAt && (
             <>
               {" · "}
-              {new Date(teaching.preachedAt).toLocaleDateString("fr-FR", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
+              {formatTeachingDate(teaching.preachedAt, locale)}
             </>
           )}
         </p>

@@ -3,16 +3,19 @@
 import { useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { usePathname } from "next/navigation"
 import { stagger, fadeUp, inView } from "@/lib/motion"
+import { useI18n } from "@/components/providers/I18nProvider"
 import { useAudioTeachingDetail } from "@/hooks/useTeachings"
 import { usePlayerStore } from "@/store/player.store"
 import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
-import { formatDuration, formatFileSize } from "@/components/features/teachings/format"
+import {
+  formatDuration,
+  formatFileSize,
+  formatTeachingDate,
+} from "@/components/features/teachings/format"
 
 export function AudioTeachingDetailContent({ slug }: { slug: string }) {
-  const pathname = usePathname()
-  const locale = pathname.split("/")[1] || "fr"
+  const { t, locale } = useI18n()
 
   const { data: teaching, isLoading, isError } = useAudioTeachingDetail(slug)
   const { track, isPlaying, play, toggle } = usePlayerStore()
@@ -49,12 +52,12 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
   if (isError) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center">
-        <p className="text-gray-500">Cet enseignement n&apos;existe pas ou n&apos;est plus disponible.</p>
+        <p className="text-gray-500">{t("teachings.detail.notFound")}</p>
         <Link
           href={`/${locale}/enseignements`}
           className="mt-4 inline-block text-sm font-bold text-cecj-green underline underline-offset-4"
         >
-          ← Retour aux enseignements
+          {t("teachings.common.backToTeachings")}
         </Link>
       </div>
     )
@@ -103,14 +106,16 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
                 {teaching.preachedAt && (
                   <>
                     {" · "}
-                    {new Date(teaching.preachedAt).toLocaleDateString("fr-FR", {
-                      day: "numeric", month: "long", year: "numeric",
-                    })}
+                    {formatTeachingDate(teaching.preachedAt, locale)}
                   </>
                 )}
                 {" · "}{formatDuration(teaching.durationSec)}
                 {teaching.playCount > 0 &&
-                  ` · ${teaching.playCount} écoute${teaching.playCount > 1 ? "s" : ""}`}
+                  ` · ${teaching.playCount} ${
+                    teaching.playCount > 1
+                      ? t("teachings.detail.playPlural")
+                      : t("teachings.detail.playSingular")
+                  }`}
               </motion.p>
 
               {/* Actions */}
@@ -124,14 +129,14 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
                       <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
                       </svg>
-                      Pause
+                      {t("teachings.common.pause")}
                     </>
                   ) : (
                     <>
                       <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 5v14l11-7z" />
                       </svg>
-                      {isCurrent ? "Reprendre" : "Écouter"}
+                      {isCurrent ? t("teachings.detail.resume") : t("teachings.common.listen")}
                     </>
                   )}
                 </button>
@@ -147,7 +152,7 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
                     <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M12 4v12m0 0l-4-4m4 4l4-4" />
                     </svg>
-                    Télécharger
+                    {t("teachings.detail.download")}
                     <span className="text-xs text-white/50">{formatFileSize(teaching.fileSize)}</span>
                   </a>
                 )}
@@ -159,7 +164,7 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
                   <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342a3 3 0 100-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684zm0-9.316a3 3 0 105.368-2.684 3 3 0 00-5.368 2.684z" />
                   </svg>
-                  {shareFeedback ? "Lien copié !" : "Partager"}
+                  {shareFeedback ? t("teachings.detail.linkCopied") : t("teachings.detail.share")}
                 </button>
               </motion.div>
             </motion.div>
@@ -173,7 +178,7 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
           <div className="space-y-12">
             {teaching.description && (
               <div className="space-y-4">
-                <h2 className="text-lg font-bold text-gray-900">À propos de cet enseignement</h2>
+                <h2 className="text-lg font-bold text-gray-900">{t("teachings.detail.about")}</h2>
                 <p className="whitespace-pre-line leading-relaxed text-gray-600">
                   {teaching.description}
                 </p>
@@ -196,7 +201,7 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
             {teaching.related.length > 0 && (
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <h2 className="text-2xl font-bold text-gray-900">À écouter ensuite</h2>
+                  <h2 className="text-2xl font-bold text-gray-900">{t("teachings.detail.upNext")}</h2>
                   <div className="h-1 w-10 rounded bg-cecj-gold" />
                 </div>
                 <div className="space-y-3">

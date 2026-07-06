@@ -8,8 +8,7 @@ import { SITE_ROUTES } from "@/constants/routes"
 import { useAudioTeachings, useVideoTeachings } from "@/hooks/useTeachings"
 import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
 import { LiteYouTubeEmbed } from "@/components/features/teachings/video/LiteYouTubeEmbed"
-import { formatDuration } from "@/components/features/teachings/format"
-import { formatDate } from "@/lib/utils"
+import { formatDuration, formatTeachingDate } from "@/components/features/teachings/format"
 
 /**
  * Section Enseignements de la page d'accueil : la dernière prédication vidéo
@@ -104,7 +103,7 @@ export function TeachingsSection() {
                     </h3>
                     <p className="text-xs text-cecj-ink-faint">
                       {latestVideo.speaker && <>{latestVideo.speaker.fullName} · </>}
-                      {formatDate(latestVideo.publishedAt)}
+                      {formatTeachingDate(latestVideo.publishedAt, locale)}
                     </p>
                     {latestVideo.theme && (
                       <span className="inline-block rounded-full bg-cecj-green/10 px-2.5 py-0.5 text-[11px] font-bold text-cecj-green">

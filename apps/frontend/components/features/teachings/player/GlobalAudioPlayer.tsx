@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
+import { useI18n } from "@/components/providers/I18nProvider"
 import { usePlayerStore } from "@/store/player.store"
 import { teachingsApi } from "@/lib/api/teachings"
 import { formatDuration } from "@/components/features/teachings/format"
@@ -24,6 +25,7 @@ function savedPositionKey(trackId: string) {
  * n'est jamais re-rendu par un timeupdate.
  */
 export function GlobalAudioPlayer() {
+  const { t } = useI18n()
   const { track, queue, isPlaying, toggle, setPlaying, next, previous, close } =
     usePlayerStore()
 
@@ -237,7 +239,7 @@ export function GlobalAudioPlayer() {
         step={1}
         value={Math.min(currentTime, duration || 0)}
         onChange={(e) => seekTo(Number(e.target.value))}
-        aria-label="Position de lecture"
+        aria-label={t("teachings.player.seek")}
         className="absolute -top-2.5 left-0 h-5 w-full cursor-pointer touch-none appearance-none bg-transparent sm:-top-1.75 sm:h-3.5
           [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:bg-white/25
           [&::-webkit-slider-thumb]:-mt-1.25 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5
@@ -261,7 +263,7 @@ export function GlobalAudioPlayer() {
           <p className="truncate text-sm font-semibold">{track.title}</p>
           <p className="truncate text-xs text-white/60">
             {audioError ? (
-              <span className="text-red-300">Fichier audio indisponible</span>
+              <span className="text-red-300">{t("teachings.player.fileUnavailable")}</span>
             ) : (
               <>{track.speaker.fullName} · {track.theme.nameFr}</>
             )}
@@ -277,7 +279,7 @@ export function GlobalAudioPlayer() {
         <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
           <button
             onClick={cycleSpeed}
-            aria-label={`Vitesse de lecture : ${speed}×`}
+            aria-label={`${t("teachings.player.speed")} : ${speed}×`}
             className="flex h-9 min-w-11 items-center justify-center rounded-full border border-white/20 px-2 text-xs font-bold tabular-nums text-white/80 transition hover:bg-white/10"
           >
             {speed}×
@@ -286,7 +288,7 @@ export function GlobalAudioPlayer() {
           <button
             onClick={previous}
             disabled={!hasPrevious}
-            aria-label="Enseignement précédent"
+            aria-label={t("teachings.player.previous")}
             className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 disabled:opacity-30"
           >
             <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
@@ -296,7 +298,7 @@ export function GlobalAudioPlayer() {
 
           <button
             onClick={toggle}
-            aria-label={isPlaying ? "Pause" : "Lecture"}
+            aria-label={isPlaying ? t("teachings.common.pause") : t("teachings.player.play")}
             className="flex h-11 w-11 items-center justify-center rounded-full bg-cecj-gold text-cecj-green transition hover:scale-105"
           >
             {isPlaying ? (
@@ -313,7 +315,7 @@ export function GlobalAudioPlayer() {
           <button
             onClick={next}
             disabled={!hasNext}
-            aria-label="Enseignement suivant"
+            aria-label={t("teachings.player.next")}
             className="flex h-9 w-9 items-center justify-center rounded-full text-white/80 transition hover:bg-white/10 disabled:opacity-30"
           >
             <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
@@ -323,7 +325,7 @@ export function GlobalAudioPlayer() {
 
           <button
             onClick={close}
-            aria-label="Fermer le lecteur"
+            aria-label={t("teachings.player.close")}
             className="ml-1 flex h-9 w-9 items-center justify-center rounded-full text-white/60 transition hover:bg-white/10 hover:text-white"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>

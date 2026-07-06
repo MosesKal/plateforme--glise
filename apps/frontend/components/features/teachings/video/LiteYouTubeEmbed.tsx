@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useI18n } from "@/components/providers/I18nProvider"
 
 interface Props {
   youtubeId: string
@@ -17,6 +18,7 @@ interface Props {
  * tracking avant interaction.
  */
 export function LiteYouTubeEmbed({ youtubeId, title, thumbnailUrl }: Props) {
+  const { t } = useI18n()
   const [activated, setActivated] = useState(false)
 
   if (activated) {
@@ -34,7 +36,7 @@ export function LiteYouTubeEmbed({ youtubeId, title, thumbnailUrl }: Props) {
   return (
     <button
       onClick={() => setActivated(true)}
-      aria-label={`Lire la vidéo : ${title}`}
+      aria-label={`${t("teachings.videos.playVideo")} ${title}`}
       className="group absolute inset-0 h-full w-full cursor-pointer"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}

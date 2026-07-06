@@ -1,5 +1,7 @@
 "use client"
 
+import { useI18n } from "@/components/providers/I18nProvider"
+
 interface LoadMoreButtonProps {
   /** Nombre d'éléments encore non chargés. */
   remaining: number
@@ -12,6 +14,8 @@ interface LoadMoreButtonProps {
  * Ne rend rien quand tout est chargé — le parent peut l'inclure sans condition.
  */
 export function LoadMoreButton({ remaining, loading, onClick }: LoadMoreButtonProps) {
+  const { t } = useI18n()
+
   if (remaining <= 0) return null
 
   return (
@@ -24,10 +28,16 @@ export function LoadMoreButton({ remaining, loading, onClick }: LoadMoreButtonPr
         {loading ? (
           <>
             <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-            Chargement…
+            {t("teachings.common.loading")}
           </>
         ) : (
-          <>Charger plus ({remaining} restant{remaining > 1 ? "s" : ""})</>
+          <>
+            {t("teachings.common.loadMore")} ({remaining}{" "}
+            {remaining > 1
+              ? t("teachings.common.remainingPlural")
+              : t("teachings.common.remainingSingular")}
+            )
+          </>
         )}
       </button>
     </div>

@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { usePathname } from "next/navigation"
 import { stagger, fadeUp, inView } from "@/lib/motion"
+import { useI18n } from "@/components/providers/I18nProvider"
 import { useDebounce } from "@/hooks/useDebounce"
 import { useInfiniteVideoTeachings, useTeachingThemes } from "@/hooks/useTeachings"
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
@@ -27,8 +27,7 @@ function CardSkeleton({ count = 6 }: { count?: number }) {
 }
 
 export function VideosContent() {
-  const pathname = usePathname()
-  const locale = pathname.split("/")[1] || "fr"
+  const { t, locale } = useI18n()
 
   const [search, setSearch] = useState("")
   const [themeSlug, setThemeSlug] = useState("")
@@ -61,17 +60,16 @@ export function VideosContent() {
               variants={fadeUp}
               className="inline-block rounded-full border border-cecj-gold/40 bg-cecj-gold/10 px-4 py-1 text-xs font-bold uppercase tracking-widest text-cecj-gold"
             >
-              La Parole en images
+              {t("teachings.videos.badge")}
             </motion.span>
             <motion.h1 variants={fadeUp} className="text-4xl font-bold text-white md:text-5xl">
-              Enseignements vidéo
+              {t("teachings.videos.title")}
             </motion.h1>
             <motion.p
               variants={fadeUp}
               className="mx-auto max-w-xl text-base text-white/70 leading-relaxed md:text-lg"
             >
-              Regardez les prédications et enseignements de la chaîne YouTube de
-              l&apos;église, directement sur le site.
+              {t("teachings.videos.intro")}
             </motion.p>
 
             <motion.div variants={fadeUp} className="mx-auto max-w-xl pt-2">
@@ -85,13 +83,13 @@ export function VideosContent() {
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Rechercher une vidéo…"
+                  placeholder={t("teachings.videos.searchPlaceholder")}
                   className="w-full rounded-full border border-white/15 bg-white/10 py-3.5 pl-12 pr-12 text-base text-white placeholder:text-white/40 outline-none backdrop-blur transition focus:border-cecj-gold/60 focus:bg-white/15 sm:text-sm"
                 />
                 {search && (
                   <button
                     onClick={() => setSearch("")}
-                    aria-label="Effacer la recherche"
+                    aria-label={t("teachings.common.clearSearch")}
                     className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-white/50 transition hover:bg-white/10 hover:text-white"
                   >
                     <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
@@ -111,7 +109,7 @@ export function VideosContent() {
           {/* Rangée défilante en mobile, wrap dès sm (même pattern que les tags). */}
           <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
             <span className="mr-1 shrink-0 text-xs font-bold uppercase tracking-widest text-gray-400">
-              Thèmes
+              {t("teachings.videos.themes")}
             </span>
             {themesWithVideos.map((theme) => (
               <button
@@ -140,14 +138,14 @@ export function VideosContent() {
           <div className="space-y-3 rounded-xl border border-dashed border-gray-200 py-16 text-center">
             <p className="text-sm text-gray-400">
               {debouncedSearch || themeSlug
-                ? "Aucune vidéo ne correspond à votre recherche."
-                : "Les vidéos arrivent bientôt."}
+                ? t("teachings.videos.noMatch")
+                : t("teachings.videos.comingSoon")}
             </p>
             <Link
               href={`/${locale}/enseignements`}
               className="inline-block text-sm font-semibold text-cecj-green hover:underline"
             >
-              Écouter les enseignements audio →
+              {t("teachings.videos.listenAudio")}
             </Link>
           </div>
         ) : (

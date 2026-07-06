@@ -1,12 +1,13 @@
 "use client"
 
+import { useI18n } from "@/components/providers/I18nProvider"
 import type { VideoTeaching } from "@/lib/api/teachings"
-import { formatDuration } from "@/components/features/teachings/format"
-import { formatDate } from "@/lib/utils"
+import { formatDuration, formatTeachingDate } from "@/components/features/teachings/format"
 import { LiteYouTubeEmbed } from "./LiteYouTubeEmbed"
 
 /** Carte vidéo : façade lite-embed 16/9 + métadonnées (la lecture se fait en place). */
 export function VideoCard({ video }: { video: VideoTeaching }) {
+  const { locale } = useI18n()
   return (
     <article className="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:shadow-md">
       <div className="relative aspect-video bg-gray-900">
@@ -28,7 +29,7 @@ export function VideoCard({ video }: { video: VideoTeaching }) {
         </h3>
         <p className="text-xs text-gray-400">
           {video.speaker && <>{video.speaker.fullName} · </>}
-          {formatDate(video.publishedAt)}
+          {formatTeachingDate(video.publishedAt, locale)}
         </p>
         {video.theme && (
           <span className="inline-block rounded-full bg-cecj-green/10 px-2.5 py-0.5 text-[11px] font-bold text-cecj-green">

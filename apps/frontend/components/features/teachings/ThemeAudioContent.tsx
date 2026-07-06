@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { usePathname } from "next/navigation"
 import { stagger, fadeUp, inView } from "@/lib/motion"
+import { useI18n } from "@/components/providers/I18nProvider"
 import { useDebounce } from "@/hooks/useDebounce"
 import { useInfiniteAudioTeachings, useTeachingTheme } from "@/hooks/useTeachings"
 import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
@@ -13,8 +13,7 @@ import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
 const PAGE_SIZE = 10
 
 export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
-  const pathname = usePathname()
-  const locale = pathname.split("/")[1] || "fr"
+  const { t, locale } = useI18n()
 
   const { data: theme, isLoading: themeLoading, isError } = useTeachingTheme(themeSlug)
 
@@ -40,12 +39,12 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
   if (isError) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center">
-        <p className="text-gray-500">Ce thème n&apos;existe pas ou n&apos;est plus disponible.</p>
+        <p className="text-gray-500">{t("teachings.theme.notFound")}</p>
         <Link
           href={`/${locale}/enseignements`}
           className="mt-4 inline-block text-sm font-bold text-cecj-green underline underline-offset-4"
         >
-          ← Retour aux enseignements
+          {t("teachings.common.backToTeachings")}
         </Link>
       </div>
     )
@@ -68,7 +67,7 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
                 <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
                 </svg>
-                Enseignements
+                {t("teachings.hub.title")}
               </Link>
             </motion.div>
 
@@ -85,8 +84,10 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
                   </motion.p>
                 )}
                 <motion.p variants={fadeUp} className="text-sm font-semibold text-cecj-gold">
-                  {theme._count.audioTeachings} enseignement
-                  {theme._count.audioTeachings > 1 ? "s" : ""}
+                  {theme._count.audioTeachings}{" "}
+                  {theme._count.audioTeachings > 1
+                    ? t("teachings.common.teachingPlural")
+                    : t("teachings.common.teachingSingular")}
                 </motion.p>
               </>
             ) : null}
@@ -101,7 +102,7 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
             <input
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              placeholder="Rechercher dans ce thème…"
+              placeholder={t("teachings.theme.searchPlaceholder")}
               className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-base outline-none transition focus:border-cecj-green focus:bg-white focus:ring-2 focus:ring-cecj-green/15 sm:max-w-sm sm:text-sm"
             />
           </div>
@@ -115,9 +116,7 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
           </div>
         ) : teachings.length === 0 ? (
           <p className="rounded-xl border border-dashed border-gray-200 py-16 text-center text-sm text-gray-400">
-            {filter
-              ? "Aucun enseignement ne correspond à cette recherche."
-              : "Aucun enseignement dans ce thème pour le moment."}
+            {filter ? t("teachings.theme.noMatch") : t("teachings.theme.empty")}
           </p>
         ) : (
           <>
