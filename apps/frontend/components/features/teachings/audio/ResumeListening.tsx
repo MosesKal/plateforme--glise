@@ -49,7 +49,7 @@ export function ResumeListening() {
           <div className="h-1 w-10 rounded bg-cecj-gold" />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {entries.map((entry) => {
             const progress = entry.durationSec
               ? Math.min((entry.positionSec / entry.durationSec) * 100, 100)

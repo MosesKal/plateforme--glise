@@ -9,7 +9,7 @@ export function ThemeCard({ theme, href }: { theme: TeachingTheme; href: string 
   return (
     <Link
       href={href}
-      className="group relative flex min-h-40 flex-col justify-end overflow-hidden rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+      className="group relative flex min-h-32 flex-col justify-end overflow-hidden rounded-2xl border border-gray-100 bg-white p-4 shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md sm:min-h-40 sm:p-6"
     >
       {theme.coverImage ? (
         <>
@@ -26,8 +26,8 @@ export function ThemeCard({ theme, href }: { theme: TeachingTheme; href: string 
       )}
 
       <div className="relative">
-        <h3 className="text-lg font-bold text-white">{theme.nameFr}</h3>
-        <p className="mt-1 text-xs font-semibold uppercase tracking-widest text-cecj-gold">
+        <h3 className="text-base font-bold leading-snug text-white sm:text-lg">{theme.nameFr}</h3>
+        <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-cecj-gold sm:text-xs sm:tracking-widest">
           {count} enseignement{count > 1 ? "s" : ""}
         </p>
       </div>

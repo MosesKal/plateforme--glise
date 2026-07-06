@@ -51,7 +51,7 @@ export function AudioTeachingRow({
 
   return (
     <div
-      className={`group flex items-center gap-4 py-3.5 transition-colors ${containerClasses}`}
+      className={`group flex items-center gap-3 py-3.5 transition-colors sm:gap-4 ${containerClasses}`}
     >
       {/* Bouton lecture */}
       <button

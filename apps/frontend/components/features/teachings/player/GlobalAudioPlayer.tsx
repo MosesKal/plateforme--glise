@@ -97,6 +97,44 @@ export function GlobalAudioPlayer() {
     }
   }, [isPlaying, track, setPlaying])
 
+  // ─── Seek ───────────────────────────────────────────────────────────────────
+
+  // Position/durée/vitesse communiquées à l'OS : permet la barre de progression
+  // et le scrubbing depuis l'écran verrouillé (essentiel en écoute mobile).
+  const updatePositionState = useCallback(() => {
+    const audio = audioRef.current
+    if (!audio || !("mediaSession" in navigator)) return
+    if (!("setPositionState" in navigator.mediaSession)) return
+    if (!Number.isFinite(audio.duration) || audio.duration <= 0) return
+    navigator.mediaSession.setPositionState({
+      duration: audio.duration,
+      playbackRate: audio.playbackRate,
+      position: Math.min(audio.currentTime, audio.duration),
+    })
+  }, [])
+
+  const seekTo = useCallback(
+    (value: number) => {
+      const audio = audioRef.current
+      if (!audio) return
+      audio.currentTime = value
+      setCurrentTime(value)
+      lastTimeRef.current = value
+      updatePositionState()
+    },
+    [updatePositionState],
+  )
+
+  const seekBy = useCallback(
+    (delta: number) => {
+      const audio = audioRef.current
+      if (!audio) return
+      const max = Number.isFinite(audio.duration) ? audio.duration : Infinity
+      seekTo(Math.min(Math.max(audio.currentTime + delta, 0), max))
+    },
+    [seekTo],
+  )
+
   // ─── Media Session (contrôles écran verrouillé / casque) ───────────────────
 
   useEffect(() => {
@@ -113,7 +151,16 @@ export function GlobalAudioPlayer() {
     navigator.mediaSession.setActionHandler("pause", () => setPlaying(false))
     navigator.mediaSession.setActionHandler("previoustrack", hasPrevious ? previous : null)
     navigator.mediaSession.setActionHandler("nexttrack", hasNext ? next : null)
-  }, [track, hasPrevious, hasNext, next, previous, setPlaying])
+    navigator.mediaSession.setActionHandler("seekbackward", (details) =>
+      seekBy(-(details.seekOffset ?? 10)),
+    )
+    navigator.mediaSession.setActionHandler("seekforward", (details) =>
+      seekBy(details.seekOffset ?? 30),
+    )
+    navigator.mediaSession.setActionHandler("seekto", (details) => {
+      if (details.seekTime != null) seekTo(details.seekTime)
+    })
+  }, [track, hasPrevious, hasNext, next, previous, setPlaying, seekBy, seekTo])
 
   // ─── Événements de l'élément audio ──────────────────────────────────────────
 
@@ -149,28 +196,27 @@ export function GlobalAudioPlayer() {
     }
   }, [track, hasNext, next, setPlaying])
 
-  const handleSeek = (value: number) => {
-    const audio = audioRef.current
-    if (!audio) return
-    audio.currentTime = value
-    setCurrentTime(value)
-    lastTimeRef.current = value
-  }
-
   if (!track) return null
 
   return (
     <>
-      {/* Spacer en flux : compense la hauteur de la barre fixe pour que le
-          bas de page (footer inclus) reste atteignable au scroll. */}
-      <div aria-hidden className="h-20" />
+      {/* Spacer en flux : compense la hauteur de la barre fixe (2 lignes en
+          mobile + zone sûre iOS) pour que le bas de page reste atteignable. */}
+      <div
+        aria-hidden
+        className="h-[calc(6.5rem+env(safe-area-inset-bottom))] sm:h-[calc(5rem+env(safe-area-inset-bottom))]"
+      />
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-cecj-green text-white shadow-[0_-4px_20px_rgba(0,0,0,0.25)]">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-cecj-green pb-[env(safe-area-inset-bottom)] text-white shadow-[0_-4px_20px_rgba(0,0,0,0.25)]">
       <audio
         ref={audioRef}
         preload="metadata"
         onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || track.durationSec || 0)}
+        onLoadedMetadata={(e) => {
+          setDuration(e.currentTarget.duration || track.durationSec || 0)
+          updatePositionState()
+        }}
+        onRateChange={updatePositionState}
         onPlay={() => setPlaying(true)}
         onPause={() => setPlaying(false)}
         onEnded={handleEnded}
@@ -190,14 +236,14 @@ export function GlobalAudioPlayer() {
         max={duration || 1}
         step={1}
         value={Math.min(currentTime, duration || 0)}
-        onChange={(e) => handleSeek(Number(e.target.value))}
+        onChange={(e) => seekTo(Number(e.target.value))}
         aria-label="Position de lecture"
-        className="absolute -top-[7px] left-0 h-3.5 w-full cursor-pointer appearance-none bg-transparent
+        className="absolute -top-2.5 left-0 h-5 w-full cursor-pointer touch-none appearance-none bg-transparent sm:-top-1.75 sm:h-3.5
           [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:bg-white/25
-          [&::-webkit-slider-thumb]:-mt-1 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3
+          [&::-webkit-slider-thumb]:-mt-1.25 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5
           [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cecj-gold
           [&::-moz-range-track]:h-1 [&::-moz-range-track]:bg-white/25
-          [&::-moz-range-thumb]:h-3 [&::-moz-range-thumb]:w-3 [&::-moz-range-thumb]:rounded-full
+          [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:rounded-full
           [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-cecj-gold"
         style={{
           background: `linear-gradient(to right, var(--color-cecj-gold) ${
@@ -206,9 +252,12 @@ export function GlobalAudioPlayer() {
         }}
       />
 
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2.5 sm:gap-4 lg:px-8">
+      {/* En mobile la barre passe sur deux lignes (flex-wrap) : les infos
+          occupent toute la 1re ligne, temps + contrôles la 2e — le temps et
+          la vitesse restent donc accessibles, là où l'écoute se fait le plus. */}
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 sm:flex-nowrap sm:gap-4 sm:py-2.5 lg:px-8">
         {/* Infos piste */}
-        <div className="min-w-0 flex-1">
+        <div className="w-full min-w-0 sm:w-auto sm:flex-1">
           <p className="truncate text-sm font-semibold">{track.title}</p>
           <p className="truncate text-xs text-white/60">
             {audioError ? (
@@ -219,17 +268,17 @@ export function GlobalAudioPlayer() {
           </p>
         </div>
 
-        {/* Temps */}
-        <span className="hidden shrink-0 text-xs tabular-nums text-white/70 sm:block">
+        {/* Temps — mr-auto pousse les contrôles à droite sur la ligne mobile */}
+        <span className="mr-auto shrink-0 text-[11px] tabular-nums text-white/70 sm:mr-0 sm:text-xs">
           {formatDuration(currentTime)} / {formatDuration(duration)}
         </span>
 
         {/* Contrôles */}
-        <div className="flex shrink-0 items-center gap-1.5">
+        <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
           <button
             onClick={cycleSpeed}
             aria-label={`Vitesse de lecture : ${speed}×`}
-            className="hidden h-8 min-w-11 items-center justify-center rounded-full border border-white/20 px-2 text-xs font-bold tabular-nums text-white/80 transition hover:bg-white/10 sm:flex"
+            className="flex h-9 min-w-11 items-center justify-center rounded-full border border-white/20 px-2 text-xs font-bold tabular-nums text-white/80 transition hover:bg-white/10"
           >
             {speed}×
           </button>

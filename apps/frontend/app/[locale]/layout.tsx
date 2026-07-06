@@ -1,4 +1,4 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Montserrat, Great_Vibes } from "next/font/google"
 import { notFound } from "next/navigation"
 import NextTopLoader from "nextjs-toploader"
@@ -34,6 +34,15 @@ export const metadata: Metadata = {
     siteName: "C.E.C.J.C.",
     type: "website",
   },
+}
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  // viewport-fit=cover : requis pour que env(safe-area-inset-*) fonctionne
+  // sur iOS (le player audio fixe s'appuie dessus).
+  viewportFit: "cover",
+  themeColor: "#024339",
 }
 
 export function generateStaticParams() {

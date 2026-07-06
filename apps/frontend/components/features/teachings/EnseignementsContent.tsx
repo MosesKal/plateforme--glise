@@ -85,7 +85,7 @@ export function EnseignementsContent() {
   return (
     <div className="bg-white pb-24">
       {/* Hero + recherche */}
-      <section className="relative overflow-hidden bg-cecj-green py-20 md:py-24">
+      <section className="relative overflow-hidden bg-cecj-green py-14 md:py-24">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-16 left-0 h-80 w-80 rounded-full bg-cecj-gold/10 blur-3xl" />
@@ -103,7 +103,7 @@ export function EnseignementsContent() {
             </motion.h1>
             <motion.p
               variants={fadeUp}
-              className="mx-auto max-w-xl text-lg text-white/70 leading-relaxed"
+              className="mx-auto max-w-xl text-base text-white/70 leading-relaxed md:text-lg"
             >
               Écoutez les enseignements de l&apos;église, organisés par thèmes.
               Lancez la lecture et continuez votre navigation — l&apos;écoute vous suit.
@@ -122,7 +122,7 @@ export function EnseignementsContent() {
                   value={search}
                   onChange={(e) => { setSearch(e.target.value); setActiveTag(null) }}
                   placeholder="Rechercher un enseignement…"
-                  className="w-full rounded-full border border-white/15 bg-white/10 py-3.5 pl-12 pr-12 text-sm text-white placeholder:text-white/40 outline-none backdrop-blur transition focus:border-cecj-gold/60 focus:bg-white/15"
+                  className="w-full rounded-full border border-white/15 bg-white/10 py-3.5 pl-12 pr-12 text-base text-white placeholder:text-white/40 outline-none backdrop-blur transition focus:border-cecj-gold/60 focus:bg-white/15 sm:text-sm"
                 />
                 {search && (
                   <button
@@ -141,18 +141,19 @@ export function EnseignementsContent() {
         </div>
       </section>
 
-      {/* Tags */}
+      {/* Tags — rangée défilante en mobile (le wrap de ~14 boutons repousse
+          le contenu trop bas), wrap classique dès sm. */}
       {tags.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 pt-8 lg:px-8">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="mr-1 text-xs font-bold uppercase tracking-widest text-gray-400">
+          <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+            <span className="mr-1 shrink-0 text-xs font-bold uppercase tracking-widest text-gray-400">
               Sujets
             </span>
             {tags.slice(0, 14).map((tag) => (
               <button
                 key={tag.id}
                 onClick={() => selectTag(tag)}
-                className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
+                className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
                   activeTag?.id === tag.id
                     ? "border-cecj-green bg-cecj-green text-white"
                     : "border-gray-200 text-gray-600 hover:border-cecj-green hover:text-cecj-green"
@@ -211,9 +212,9 @@ export function EnseignementsContent() {
               <SectionTitle>Parcourir par thème</SectionTitle>
 
               {themesLoading ? (
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="h-40 animate-pulse rounded-2xl bg-gray-100" />
+                    <div key={i} className="h-32 animate-pulse rounded-2xl bg-gray-100 sm:h-40" />
                   ))}
                 </div>
               ) : visibleThemes.length === 0 ? (
@@ -225,7 +226,7 @@ export function EnseignementsContent() {
                   initial="hidden"
                   animate="visible"
                   variants={stagger}
-                  className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+                  className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3"
                 >
                   {visibleThemes.map((theme) => (
                     <motion.div key={theme.id} variants={fadeUp}>
@@ -246,7 +247,7 @@ export function EnseignementsContent() {
               <motion.div
                 {...inView()}
                 variants={stagger}
-                className={`grid gap-12 ${showPopular ? "lg:grid-cols-2" : ""}`}
+                className={`grid grid-cols-1 gap-12 ${showPopular ? "lg:grid-cols-2" : ""}`}
               >
                 <motion.div variants={fadeUp} className="space-y-6">
                   <SectionTitle>Derniers enseignements</SectionTitle>
@@ -279,7 +280,7 @@ export function EnseignementsContent() {
                     Toutes les vidéos →
                   </Link>
                 </motion.div>
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                   {videos!.items.map((video) => (
                     <motion.div key={video.id} variants={fadeUp}>
                       <VideoCard video={video} />

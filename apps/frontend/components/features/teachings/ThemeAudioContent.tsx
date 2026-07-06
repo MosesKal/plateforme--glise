@@ -44,7 +44,7 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
   return (
     <div className="bg-white pb-28">
       {/* En-tête du thème */}
-      <section className="relative overflow-hidden bg-cecj-green py-16 md:py-20">
+      <section className="relative overflow-hidden bg-cecj-green py-10 md:py-20">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
         </div>
@@ -92,7 +92,7 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               placeholder="Rechercher dans ce thème…"
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none transition focus:border-cecj-green focus:bg-white focus:ring-2 focus:ring-cecj-green/15 sm:max-w-sm"
+              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-base outline-none transition focus:border-cecj-green focus:bg-white focus:ring-2 focus:ring-cecj-green/15 sm:max-w-sm sm:text-sm"
             />
           </div>
         )}

@@ -63,7 +63,7 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
   return (
     <div className="bg-white pb-28">
       {/* En-tête */}
-      <section className="relative overflow-hidden bg-cecj-green py-16 md:py-20">
+      <section className="relative overflow-hidden bg-cecj-green py-10 md:py-20">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-16 left-0 h-80 w-80 rounded-full bg-cecj-gold/10 blur-3xl" />
@@ -90,7 +90,10 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
                 </Link>
               </motion.div>
 
-              <motion.h1 variants={fadeUp} className="text-3xl font-bold text-white md:text-4xl">
+              <motion.h1
+                variants={fadeUp}
+                className="text-2xl font-bold leading-snug text-white sm:text-3xl md:text-4xl"
+              >
                 {teaching.title}
               </motion.h1>
 
@@ -114,7 +117,7 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
               <motion.div variants={fadeUp} className="flex flex-wrap items-center gap-3 pt-1">
                 <button
                   onClick={handlePlay}
-                  className="inline-flex items-center gap-2 rounded-full bg-cecj-gold px-6 py-3 text-sm font-bold text-cecj-green transition hover:scale-[1.02]"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-cecj-gold px-6 py-3.5 text-sm font-bold text-cecj-green transition hover:scale-[1.02] sm:w-auto sm:py-3"
                 >
                   {isActive ? (
                     <>

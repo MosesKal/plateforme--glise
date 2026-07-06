@@ -13,7 +13,7 @@ const PAGE_SIZE = 12
 
 function CardSkeleton({ count = 6 }: { count?: number }) {
   return (
-    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: count }).map((_, i) => (
         <div key={i} className="space-y-3">
           <div className="aspect-video animate-pulse rounded-2xl bg-gray-100" />
@@ -53,7 +53,7 @@ export function VideosContent() {
   return (
     <div className="bg-white pb-24">
       {/* Hero + recherche */}
-      <section className="relative overflow-hidden bg-cecj-green py-20 md:py-24">
+      <section className="relative overflow-hidden bg-cecj-green py-14 md:py-24">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-16 left-0 h-80 w-80 rounded-full bg-cecj-gold/10 blur-3xl" />
@@ -71,7 +71,7 @@ export function VideosContent() {
             </motion.h1>
             <motion.p
               variants={fadeUp}
-              className="mx-auto max-w-xl text-lg text-white/70 leading-relaxed"
+              className="mx-auto max-w-xl text-base text-white/70 leading-relaxed md:text-lg"
             >
               Regardez les prédications et enseignements de la chaîne YouTube de
               l&apos;église, directement sur le site.
@@ -89,7 +89,7 @@ export function VideosContent() {
                   value={search}
                   onChange={(e) => changeFilter(() => setSearch(e.target.value))}
                   placeholder="Rechercher une vidéo…"
-                  className="w-full rounded-full border border-white/15 bg-white/10 py-3.5 pl-12 pr-12 text-sm text-white placeholder:text-white/40 outline-none backdrop-blur transition focus:border-cecj-gold/60 focus:bg-white/15"
+                  className="w-full rounded-full border border-white/15 bg-white/10 py-3.5 pl-12 pr-12 text-base text-white placeholder:text-white/40 outline-none backdrop-blur transition focus:border-cecj-gold/60 focus:bg-white/15 sm:text-sm"
                 />
                 {search && (
                   <button
@@ -111,8 +111,9 @@ export function VideosContent() {
       {/* Filtre par thème (seulement si l'équipe a catégorisé des vidéos) */}
       {themesWithVideos.length > 0 && (
         <section className="mx-auto max-w-6xl px-4 pt-8 lg:px-8">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="mr-1 text-xs font-bold uppercase tracking-widest text-gray-400">
+          {/* Rangée défilante en mobile, wrap dès sm (même pattern que les tags). */}
+          <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
+            <span className="mr-1 shrink-0 text-xs font-bold uppercase tracking-widest text-gray-400">
               Thèmes
             </span>
             {themesWithVideos.map((theme) => (
@@ -123,7 +124,7 @@ export function VideosContent() {
                     setThemeSlug((current) => (current === theme.slug ? "" : theme.slug)),
                   )
                 }
-                className={`rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
+                className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
                   themeSlug === theme.slug
                     ? "border-cecj-green bg-cecj-green text-white"
                     : "border-gray-200 text-gray-600 hover:border-cecj-green hover:text-cecj-green"
@@ -159,7 +160,7 @@ export function VideosContent() {
             initial="hidden"
             animate="visible"
             variants={stagger}
-            className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
           >
             {items.map((video) => (
               <motion.div key={video.id} variants={fadeUp}>
