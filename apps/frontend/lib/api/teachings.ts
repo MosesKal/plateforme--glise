@@ -32,6 +32,8 @@ export interface AudioTeaching {
   coverImage?: string | null
   playCount: number
   position: number
+  /** Date d'ajout à la plateforme (badge « Nouveau ») — ≠ preachedAt. */
+  createdAt: string
   theme: { id: string; slug: string; nameFr: string }
   speaker: { id: string; slug: string; fullName: string; title?: string | null }
   tags: TeachingTagRef[]

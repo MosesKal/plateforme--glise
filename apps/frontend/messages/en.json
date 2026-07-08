@@ -194,6 +194,8 @@
       "remainingPlural": "remaining",
       "loading": "Loading…",
       "listen": "Listen",
+      "badgeNew": "New",
+      "badgePopular": "Popular",
       "pause": "Pause",
       "clearSearch": "Clear search"
     },

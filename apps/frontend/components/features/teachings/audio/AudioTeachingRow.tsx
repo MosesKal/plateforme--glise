@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useI18n } from "@/components/providers/I18nProvider"
 import { usePlayerStore } from "@/store/player.store"
+import { TeachingBadge } from "@/components/features/teachings/audio/TeachingBadge"
 import { formatDuration, formatTeachingDate } from "@/components/features/teachings/format"
 import type { AudioTeaching } from "@/lib/api/teachings"
 
@@ -85,18 +86,21 @@ export function AudioTeachingRow({
       </span>
 
       <div className="min-w-0 flex-1">
-        <Link
-          href={detailHref}
-          className={`block truncate text-sm font-semibold hover:underline underline-offset-2 ${
-            isCurrent
-              ? "text-cecj-green"
-              : variant === "flush"
-                ? "text-cecj-ink"
-                : "text-gray-900"
-          }`}
-        >
-          {teaching.title}
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href={detailHref}
+            className={`min-w-0 truncate text-sm font-semibold hover:underline underline-offset-2 ${
+              isCurrent
+                ? "text-cecj-green"
+                : variant === "flush"
+                  ? "text-cecj-ink"
+                  : "text-gray-900"
+            }`}
+          >
+            {teaching.title}
+          </Link>
+          <TeachingBadge teaching={teaching} />
+        </div>
         <p
           className={`mt-0.5 truncate text-xs ${
             variant === "flush" ? "text-cecj-ink-dim" : "text-gray-400"

@@ -194,6 +194,8 @@
       "remainingPlural": "restants",
       "loading": "Chargement…",
       "listen": "Écouter",
+      "badgeNew": "Nouveau",
+      "badgePopular": "Populaire",
       "pause": "Pause",
       "clearSearch": "Effacer la recherche"
     },

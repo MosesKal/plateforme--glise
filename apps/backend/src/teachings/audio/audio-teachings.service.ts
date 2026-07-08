@@ -388,6 +388,9 @@ export class AudioTeachingsService {
       coverImage: t.coverImage,
       playCount: t.playCount,
       position: t.position,
+      // Date d'ajout à la plateforme (≠ preachedAt) : sert au badge « Nouveau »
+      // côté public — un sermon ancien fraîchement mis en ligne EST nouveau.
+      createdAt: t.createdAt,
       theme: t.theme,
       speaker: t.speaker,
       tags: t.tags.map(({ tag }) => tag),
@@ -401,7 +404,6 @@ export class AudioTeachingsService {
       processing: t.processing,
       fileKey: t.fileKey,
       mimeType: t.mimeType,
-      createdAt: t.createdAt,
       updatedAt: t.updatedAt,
     };
   }
