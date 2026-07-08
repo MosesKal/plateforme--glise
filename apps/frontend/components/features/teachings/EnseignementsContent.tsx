@@ -14,6 +14,7 @@ import {
   useVideoTeachings,
 } from "@/hooks/useTeachings"
 import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
+import { FeaturedTeachingHero } from "@/components/features/teachings/audio/FeaturedTeachingHero"
 import { ThemeCard } from "@/components/features/teachings/audio/ThemeCard"
 import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
 import { ResumeListening } from "@/components/features/teachings/audio/ResumeListening"
@@ -148,6 +149,12 @@ export function EnseignementsContent() {
                   </button>
                 )}
               </div>
+            </motion.div>
+
+            {/* Dernier enseignement, jouable immédiatement : le visiteur peut
+                lancer l'écoute sans traverser thème puis page détail. */}
+            <motion.div variants={fadeUp} className="mx-auto max-w-xl pt-3">
+              <FeaturedTeachingHero />
             </motion.div>
           </motion.div>
         </div>
