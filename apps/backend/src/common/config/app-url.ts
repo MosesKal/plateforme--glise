@@ -36,3 +36,18 @@ export function getPublicBaseUrl(): string {
 export function buildUploadUrl(filename: string): string {
   return `${getPublicBaseUrl()}/${API_PREFIX}/uploads/${filename}`;
 }
+
+/**
+ * Origine publique du SITE (frontend), pour les liens sortants générés par le
+ * backend (flux RSS podcast…). Même logique de résolution que getPublicBaseUrl :
+ * en production le site et l'API partagent le domaine ; en local ils diffèrent
+ * (3000 / 3001), d'où le fallback distinct.
+ */
+export function getSiteBaseUrl(): string {
+  const override = process.env.SITE_URL?.trim();
+  if (override) return override.replace(/\/+$/, '');
+
+  if (process.env.NODE_ENV === 'production') return PROD_BASE_URL;
+
+  return 'http://localhost:3000';
+}

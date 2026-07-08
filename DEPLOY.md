@@ -291,6 +291,40 @@ pnpm --filter @cecj/backend import:audio -- --dir <chemin> --speaker "Nom" --dry
 Options : `--status DRAFT` pour importer en brouillon (défaut : `PUBLISHED`),
 `--dry-run` pour afficher le plan sans rien écrire.
 
+### 6. Flux RSS podcast (distribution Spotify / Apple Podcasts / YouTube Music)
+
+Le backend génère un flux RSS conforme podcast à partir des enseignements
+audio `PUBLISHED`. URL publique à donner aux annuaires :
+
+```
+https://<domaine>/podcast.xml
+```
+
+(réécriture Next vers `/api/v1/teachings/podcast.xml` — les deux répondent).
+
+Variables d'environnement backend, toutes optionnelles :
+
+```env
+# Requis par Apple Podcasts au moment de la soumission (sinon bloc owner omis)
+PODCAST_OWNER_EMAIL=contact@example.org
+# Apple exige une image carrée 1400–3000 px (JPG/PNG) — le fallback
+# /pwa-icon/512 est trop petit pour la soumission Apple
+PODCAST_IMAGE_URL=https://<domaine>/podcast-cover.jpg
+# Personnalisation (défauts corrects sinon)
+PODCAST_TITLE=Enseignements — C.E.C.J.C.
+PODCAST_DESCRIPTION=...
+PODCAST_AUTHOR=C.E.C.J.C.
+```
+
+Soumission (une seule fois, gratuite) :
+- **Spotify** : https://creators.spotify.com → « Ajouter votre podcast » → coller l'URL du flux
+- **Apple Podcasts** : https://podcastsconnect.apple.com (nécessite `PODCAST_OWNER_EMAIL` — Apple envoie un code de vérification à cette adresse)
+- **YouTube Music** : https://studio.youtube.com → Créer → « Nouveau podcast » → « Envoyer un flux RSS »
+
+Vérification : `curl -I https://<domaine>/podcast.xml` → `200` +
+`application/rss+xml`. Valider le flux sur https://podba.se/validate/ avant
+de soumettre.
+
 ---
 
 ## En cas de problème

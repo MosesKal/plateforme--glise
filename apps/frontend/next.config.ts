@@ -16,6 +16,16 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "i.ytimg.com" },
     ],
   },
+  async rewrites() {
+    // /podcast.xml : URL publique stable du flux podcast (celle à donner aux
+    // annuaires). La génération vit dans le backend — propriétaire des données
+    // et des URLs médias — mais l'URL exposée reste celle du site.
+    const apiUrl =
+      process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1";
+    return [
+      { source: "/podcast.xml", destination: `${apiUrl}/teachings/podcast.xml` },
+    ];
+  },
   async headers() {
     return [
       {

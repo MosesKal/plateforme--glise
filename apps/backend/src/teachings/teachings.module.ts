@@ -3,6 +3,8 @@ import { AudioTeachingsController } from './audio/audio-teachings.controller';
 import { AudioTeachingsService } from './audio/audio-teachings.service';
 import { AudioTranscodeService } from './audio/audio-transcode.service';
 import { MediaProbeService } from './audio/media-probe.service';
+import { PodcastController } from './podcast/podcast.controller';
+import { PodcastService } from './podcast/podcast.service';
 import { SpeakersController } from './speakers/speakers.controller';
 import { SpeakersService } from './speakers/speakers.service';
 import { TagsController } from './tags/tags.controller';
@@ -24,6 +26,7 @@ import { YouTubeSyncService } from './videos/youtube-sync.service';
     TagsController,
     AudioTeachingsController,
     VideoTeachingsController,
+    PodcastController,
   ],
   providers: [
     ThemesService,
@@ -34,6 +37,7 @@ import { YouTubeSyncService } from './videos/youtube-sync.service';
     MediaProbeService,
     VideoTeachingsService,
     YouTubeSyncService,
+    PodcastService,
   ],
 })
 export class TeachingsModule {}

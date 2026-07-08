@@ -49,6 +49,15 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
   },
+  alternates: {
+    // <link rel="alternate" type="application/rss+xml"> : les applis podcast
+    // et lecteurs RSS découvrent le flux depuis n'importe quelle page du site.
+    types: {
+      "application/rss+xml": [
+        { url: "/podcast.xml", title: "Enseignements — C.E.C.J.C." },
+      ],
+    },
+  },
 }
 
 export const viewport: Viewport = {
