@@ -244,6 +244,12 @@
       "listenAudio": "Listen to the audio teachings →",
       "playVideo": "Play video:"
     },
+    "share": {
+      "whatsapp": "WhatsApp",
+      "shareMoment": "Share this moment on WhatsApp",
+      "intro": "🎧 Listen to this teaching:",
+      "startingAt": "▶️ Starting at"
+    },
     "player": {
       "speed": "Playback speed",
       "previous": "Previous teaching",

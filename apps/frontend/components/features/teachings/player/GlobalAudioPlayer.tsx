@@ -5,9 +5,16 @@ import { useI18n } from "@/components/providers/I18nProvider"
 import { usePlayerStore } from "@/store/player.store"
 import { teachingsApi } from "@/lib/api/teachings"
 import { formatDuration } from "@/components/features/teachings/format"
+import {
+  audioTeachingShareUrl,
+  openWhatsAppShare,
+} from "@/components/features/teachings/share"
 import { readSavedPosition, recordRecentPlay } from "@/lib/recent-plays"
+import { WhatsAppIcon } from "@/components/ui/icons"
 
 const PLAY_BEACON_AFTER_SEC = 30
+// En dessous, le partage n'inclut pas la position : « à partir de 0:04 » n'a pas de sens.
+const SHARE_MIN_POSITION_SEC = 10
 const SPEEDS = [1, 1.25, 1.5, 2] as const
 const SPEED_KEY = "cecj-audio-speed"
 
@@ -25,9 +32,18 @@ function savedPositionKey(trackId: string) {
  * n'est jamais re-rendu par un timeupdate.
  */
 export function GlobalAudioPlayer() {
-  const { t } = useI18n()
-  const { track, queue, isPlaying, toggle, setPlaying, next, previous, close } =
-    usePlayerStore()
+  const { t, locale } = useI18n()
+  const {
+    track,
+    queue,
+    isPlaying,
+    toggle,
+    setPlaying,
+    next,
+    previous,
+    close,
+    consumePendingSeek,
+  } = usePlayerStore()
 
   const audioRef = useRef<HTMLAudioElement>(null)
   const listenedSecRef = useRef(0)
@@ -77,15 +93,25 @@ export function GlobalAudioPlayer() {
     // preload=metadata : seuls les en-têtes sont lus, le flux démarre au play.
     audio.load()
 
-    const resumeAt = readSavedPosition(track.id)
-    if (resumeAt > 10 && (!track.durationSec || resumeAt < track.durationSec - 10)) {
-      audio.currentTime = resumeAt
-      setCurrentTime(resumeAt)
+    // Priorité au lien partagé (?t=), sinon reprise de la dernière position.
+    const startAt = consumePendingSeek()
+    if (startAt != null && startAt > 0) {
+      const target = track.durationSec
+        ? Math.min(startAt, Math.max(track.durationSec - 5, 0))
+        : startAt
+      audio.currentTime = target
+      setCurrentTime(target)
+    } else {
+      const resumeAt = readSavedPosition(track.id)
+      if (resumeAt > 10 && (!track.durationSec || resumeAt < track.durationSec - 10)) {
+        audio.currentTime = resumeAt
+        setCurrentTime(resumeAt)
+      }
     }
 
     recordRecentPlay(track)
     audio.play().catch(() => setPlaying(false))
-  }, [track?.id, track?.fileUrl, track?.durationSec, setPlaying, track])
+  }, [track?.id, track?.fileUrl, track?.durationSec, setPlaying, track, consumePendingSeek])
 
   // ─── Synchronisation lecture/pause ──────────────────────────────────────────
 
@@ -189,6 +215,20 @@ export function GlobalAudioPlayer() {
     }
   }, [track])
 
+  // Partage WhatsApp du moment d'écoute : lien ?t= repris par la page de détail.
+  const shareMomentOnWhatsApp = useCallback(() => {
+    if (!track) return
+    const atSec =
+      currentTime >= SHARE_MIN_POSITION_SEC ? Math.floor(currentTime) : undefined
+    const lines = [
+      t("teachings.share.intro"),
+      `« ${track.title} » — ${track.speaker.fullName}`,
+      ...(atSec ? [`${t("teachings.share.startingAt")} ${formatDuration(atSec)}`] : []),
+      audioTeachingShareUrl(locale, track, atSec),
+    ]
+    openWhatsAppShare(lines.join("\n"))
+  }, [track, currentTime, locale, t])
+
   const handleEnded = useCallback(() => {
     if (track) window.localStorage.removeItem(savedPositionKey(track.id))
     if (hasNext) {
@@ -258,16 +298,26 @@ export function GlobalAudioPlayer() {
           occupent toute la 1re ligne, temps + contrôles la 2e — le temps et
           la vitesse restent donc accessibles, là où l'écoute se fait le plus. */}
       <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 sm:flex-nowrap sm:gap-4 sm:py-2.5 lg:px-8">
-        {/* Infos piste */}
-        <div className="w-full min-w-0 sm:w-auto sm:flex-1">
-          <p className="truncate text-sm font-semibold">{track.title}</p>
-          <p className="truncate text-xs text-white/60">
-            {audioError ? (
-              <span className="text-red-300">{t("teachings.player.fileUnavailable")}</span>
-            ) : (
-              <>{track.speaker.fullName} · {track.theme.nameFr}</>
-            )}
-          </p>
+        {/* Infos piste + partage du moment */}
+        <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:flex-1">
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold">{track.title}</p>
+            <p className="truncate text-xs text-white/60">
+              {audioError ? (
+                <span className="text-red-300">{t("teachings.player.fileUnavailable")}</span>
+              ) : (
+                <>{track.speaker.fullName} · {track.theme.nameFr}</>
+              )}
+            </p>
+          </div>
+          <button
+            onClick={shareMomentOnWhatsApp}
+            aria-label={t("teachings.share.shareMoment")}
+            title={t("teachings.share.shareMoment")}
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
+          >
+            <WhatsAppIcon className="h-4.5 w-4.5" />
+          </button>
         </div>
 
         {/* Temps — mr-auto pousse les contrôles à droite sur la ligne mobile */}

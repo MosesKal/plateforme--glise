@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { stagger, fadeUp, inView } from "@/lib/motion"
@@ -13,6 +13,11 @@ import {
   formatFileSize,
   formatTeachingDate,
 } from "@/components/features/teachings/format"
+import {
+  audioTeachingShareUrl,
+  openWhatsAppShare,
+} from "@/components/features/teachings/share"
+import { WhatsAppIcon } from "@/components/ui/icons"
 
 export function AudioTeachingDetailContent({ slug }: { slug: string }) {
   const { t, locale } = useI18n()
@@ -24,6 +29,19 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
   const isCurrent = track?.id === teaching?.id
   const isActive = isCurrent && isPlaying
 
+  // Lien partagé « ?t=754 » : on charge la piste à cette position dès l'arrivée.
+  // Si le navigateur bloque l'autoplay, le player reste en pause au bon endroit.
+  const deepLinkHandled = useRef(false)
+  useEffect(() => {
+    if (!teaching || deepLinkHandled.current) return
+    deepLinkHandled.current = true
+    const raw = new URLSearchParams(window.location.search).get("t")
+    const startAt = raw ? Number(raw) : NaN
+    if (Number.isFinite(startAt) && startAt > 0) {
+      play(teaching, [teaching, ...teaching.related], Math.floor(startAt))
+    }
+  }, [teaching, play])
+
   const handlePlay = () => {
     if (!teaching) return
     if (isCurrent) {
@@ -34,8 +52,20 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
     }
   }
 
+  const handleWhatsAppShare = () => {
+    if (!teaching) return
+    const lines = [
+      t("teachings.share.intro"),
+      `« ${teaching.title} » — ${teaching.speaker.fullName}`,
+      audioTeachingShareUrl(locale, teaching),
+    ]
+    openWhatsAppShare(lines.join("\n"))
+  }
+
   const handleShare = async () => {
-    const url = window.location.href
+    if (!teaching) return
+    // URL canonique (sans ?t= éventuel) : on partage l'enseignement, pas un moment.
+    const url = audioTeachingShareUrl(locale, teaching)
     try {
       if (navigator.share) {
         await navigator.share({ title: teaching?.title, url })
@@ -165,6 +195,14 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8.684 13.342a3 3 0 100-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684zm0-9.316a3 3 0 105.368-2.684 3 3 0 00-5.368 2.684z" />
                   </svg>
                   {shareFeedback ? t("teachings.detail.linkCopied") : t("teachings.detail.share")}
+                </button>
+
+                <button
+                  onClick={handleWhatsAppShare}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/25 px-5 py-3 text-sm font-semibold text-white/90 transition hover:bg-white/10"
+                >
+                  <WhatsAppIcon className="h-4 w-4" />
+                  {t("teachings.share.whatsapp")}
                 </button>
               </motion.div>
             </motion.div>

@@ -244,6 +244,12 @@
       "listenAudio": "Écouter les enseignements audio →",
       "playVideo": "Lire la vidéo :"
     },
+    "share": {
+      "whatsapp": "WhatsApp",
+      "shareMoment": "Partager ce moment sur WhatsApp",
+      "intro": "🎧 Écoute cet enseignement :",
+      "startingAt": "▶️ À partir de"
+    },
     "player": {
       "speed": "Vitesse de lecture",
       "previous": "Enseignement précédent",

@@ -13,9 +13,13 @@ interface PlayerState {
   track: AudioTeaching | null
   queue: AudioTeaching[]
   isPlaying: boolean
+  /** Position de départ (secondes) demandée pour la piste en cours de chargement — lien partagé `?t=`. */
+  pendingSeekSec: number | null
 
   /** Lance une piste, avec la file (ex. les enseignements du thème) pour prev/next. */
-  play: (track: AudioTeaching, queue?: AudioTeaching[]) => void
+  play: (track: AudioTeaching, queue?: AudioTeaching[], startAtSec?: number) => void
+  /** Lit puis efface la position de départ demandée (consommée par GlobalAudioPlayer au chargement). */
+  consumePendingSeek: () => number | null
   toggle: () => void
   setPlaying: (playing: boolean) => void
   next: () => void
@@ -27,13 +31,21 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   track: null,
   queue: [],
   isPlaying: false,
+  pendingSeekSec: null,
 
-  play: (track, queue) =>
+  play: (track, queue, startAtSec) =>
     set((state) => ({
       track,
       queue: queue ?? state.queue,
       isPlaying: true,
+      pendingSeekSec: startAtSec ?? null,
     })),
+
+  consumePendingSeek: () => {
+    const { pendingSeekSec } = get()
+    if (pendingSeekSec != null) set({ pendingSeekSec: null })
+    return pendingSeekSec
+  },
 
   toggle: () => set((state) => ({ isPlaying: !state.isPlaying })),
 
@@ -55,5 +67,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     if (prevTrack) set({ track: prevTrack, isPlaying: true })
   },
 
-  close: () => set({ track: null, queue: [], isPlaying: false }),
+  close: () =>
+    set({ track: null, queue: [], isPlaying: false, pendingSeekSec: null }),
 }))
