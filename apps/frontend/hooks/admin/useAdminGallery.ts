@@ -13,10 +13,14 @@ import {
 const ITEMS_KEY = ["admin", "gallery", "items"] as const
 const ALBUMS_KEY = ["admin", "gallery", "albums"] as const
 
-export function useAdminGalleryItems(params?: { albumId?: string; mediaType?: string }) {
+export function useAdminGalleryItems(
+  params?: { albumId?: string; mediaType?: string },
+  enabled = true,
+) {
   return useQuery<GalleryItemsResponse>({
     queryKey: [...ITEMS_KEY, params],
     queryFn: () => adminGalleryApi.listItems({ ...params, limit: 100 }),
+    enabled,
   })
 }
 

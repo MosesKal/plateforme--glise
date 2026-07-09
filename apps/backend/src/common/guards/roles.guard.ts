@@ -2,6 +2,19 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '../decorators/roles.decorator';
 
+/**
+ * Comparaison insensible aux accents et à la casse : les rôles ont été seedés
+ * sans accents (« Administrateur General ») alors que les décorateurs @Roles
+ * les écrivent avec (« Administrateur Général ») — une comparaison stricte
+ * refuserait ces rôles partout.
+ */
+function normalize(name: string): string {
+  return name
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase();
+}
+
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
@@ -14,6 +27,10 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles || requiredRoles.length === 0) return true;
 
     const { user } = context.switchToHttp().getRequest();
-    return requiredRoles.includes(user?.role?.name);
+    const roleName: string | undefined = user?.role?.name;
+    if (!roleName) return false;
+
+    const normalized = normalize(roleName);
+    return requiredRoles.some((required) => normalize(required) === normalized);
   }
 }

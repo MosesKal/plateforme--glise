@@ -10,10 +10,11 @@ import {
 
 const KEY = ["admin", "testimonies"] as const
 
-export function useAdminTestimonies(status?: string) {
+export function useAdminTestimonies(status?: string, enabled = true) {
   return useQuery<TestimoniesResponse>({
     queryKey: [...KEY, status],
     queryFn: () => adminTestimoniesApi.list({ status }),
+    enabled,
   })
 }
 

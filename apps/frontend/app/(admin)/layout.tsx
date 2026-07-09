@@ -4,6 +4,7 @@ import NextTopLoader from "nextjs-toploader"
 import { AdminSidebar } from "@/components/layout/AdminSidebar"
 import { Header } from "@/components/layout/Header"
 import { AuthGuard } from "@/components/auth/AuthGuard"
+import { AdminAccessGate } from "@/components/auth/AdminAccessGate"
 import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider"
 import { AuthInitializer } from "@/components/auth/AuthInitializer"
 import "../globals.css"
@@ -26,7 +27,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
               <AdminSidebar />
               <div className="flex flex-1 flex-col overflow-hidden">
                 <Header />
-                <main className="flex-1 overflow-y-auto p-6">{children}</main>
+                <main className="flex-1 overflow-y-auto p-6">
+                  <AdminAccessGate>{children}</AdminAccessGate>
+                </main>
               </div>
             </div>
           </AuthGuard>

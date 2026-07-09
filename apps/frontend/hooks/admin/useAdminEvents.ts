@@ -5,11 +5,12 @@ import { adminEventsApi, type EventPayload } from "@/lib/api/admin/events"
 
 const QK = ["admin", "events"] as const
 
-export function useAdminEvents() {
+export function useAdminEvents(enabled = true) {
   return useQuery({
     queryKey: QK,
     queryFn: () => adminEventsApi.list().then((r) => r.data.items),
     staleTime: 30_000,
+    enabled,
   })
 }
 

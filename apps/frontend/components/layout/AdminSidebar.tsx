@@ -7,60 +7,77 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import { ADMIN_ROUTES } from "@/constants/routes"
 import { useUiStore } from "@/store/ui.store"
+import { useAuthStore } from "@/store/auth.store"
+import { canAccess, type AdminResource } from "@/lib/permissions"
 
 interface NavLeaf {
   label: string
   href: string
+  resource: AdminResource
 }
 
 type NavItem = NavLeaf | { label: string; children: NavLeaf[] }
 
 // Regroupement aligné sur les périmètres RBAC (ex. « Responsable Communication » :
 // galerie, témoignages, médias) — 6 entrées de premier niveau au lieu de 13.
+// Chaque entrée n'est affichée que si le rôle de l'utilisateur y a accès.
 const navItems: NavItem[] = [
-  { label: "Tableau de bord", href: ADMIN_ROUTES.dashboard },
+  { label: "Tableau de bord", href: ADMIN_ROUTES.dashboard, resource: "dashboard" },
   {
     label: "Enseignements",
     children: [
-      { label: "Vue d'ensemble",    href: ADMIN_ROUTES.enseignements       },
-      { label: "Audios",            href: ADMIN_ROUTES.enseignementsAudios },
-      { label: "Vidéos",            href: ADMIN_ROUTES.enseignementsVideos },
-      { label: "Écrits (PDF)",      href: ADMIN_ROUTES.enseignementsEcrits },
-      { label: "Thèmes & orateurs", href: ADMIN_ROUTES.enseignementsThemes },
+      { label: "Vue d'ensemble",    href: ADMIN_ROUTES.enseignements,       resource: "teachings" },
+      { label: "Audios",            href: ADMIN_ROUTES.enseignementsAudios, resource: "teachings" },
+      { label: "Vidéos",            href: ADMIN_ROUTES.enseignementsVideos, resource: "teachings" },
+      { label: "Écrits (PDF)",      href: ADMIN_ROUTES.enseignementsEcrits, resource: "teachings" },
+      { label: "Thèmes & orateurs", href: ADMIN_ROUTES.enseignementsThemes, resource: "teachings" },
     ],
   },
   {
     label: "Vie de l'église",
     children: [
-      { label: "Événements", href: ADMIN_ROUTES.evenements },
-      { label: "Programme",  href: ADMIN_ROUTES.programme  },
+      { label: "Événements", href: ADMIN_ROUTES.evenements, resource: "events"   },
+      { label: "Programme",  href: ADMIN_ROUTES.programme,  resource: "schedule" },
     ],
   },
   {
     label: "Communication",
     children: [
-      { label: "Galerie",     href: ADMIN_ROUTES.galerie     },
-      { label: "Témoignages", href: ADMIN_ROUTES.temoignages },
-      { label: "Contact",     href: ADMIN_ROUTES.contact     },
-      { label: "Pages",       href: ADMIN_ROUTES.pages       },
+      { label: "Galerie",     href: ADMIN_ROUTES.galerie,     resource: "gallery"     },
+      { label: "Témoignages", href: ADMIN_ROUTES.temoignages, resource: "testimonies" },
+      { label: "Contact",     href: ADMIN_ROUTES.contact,     resource: "contact"     },
+      { label: "Pages",       href: ADMIN_ROUTES.pages,       resource: "pages"       },
     ],
   },
   {
     label: "Organisation",
     children: [
-      { label: "Extensions",   href: ADMIN_ROUTES.extensions   },
-      { label: "Départements", href: ADMIN_ROUTES.departements },
-      { label: "Leadership",   href: ADMIN_ROUTES.leaders      },
+      { label: "Extensions",   href: ADMIN_ROUTES.extensions,   resource: "extensions"  },
+      { label: "Départements", href: ADMIN_ROUTES.departements, resource: "departments" },
+      { label: "Leadership",   href: ADMIN_ROUTES.leaders,      resource: "leaders"     },
     ],
   },
   {
     label: "Administration",
     children: [
-      { label: "Utilisateurs", href: ADMIN_ROUTES.utilisateurs },
-      { label: "Rôles",        href: ADMIN_ROUTES.roles        },
+      { label: "Utilisateurs", href: ADMIN_ROUTES.utilisateurs, resource: "users" },
+      { label: "Rôles",        href: ADMIN_ROUTES.roles,        resource: "roles" },
     ],
   },
 ]
+
+/** Ne garde que les entrées accessibles au rôle ; un groupe vide disparaît. */
+function visibleNavItems(roleName: string | undefined): NavItem[] {
+  return navItems
+    .map((item) =>
+      "children" in item
+        ? { ...item, children: item.children.filter((c) => canAccess(roleName, c.resource)) }
+        : item,
+    )
+    .filter((item) =>
+      "children" in item ? item.children.length > 0 : canAccess(roleName, item.resource),
+    )
+}
 
 /** Actif sur la page exacte ET ses sous-pages (ex. /admin/evenements/nouveau). */
 function isActive(pathname: string, href: string): boolean {
@@ -148,6 +165,9 @@ function SidebarGroup({
 }
 
 function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate?: () => void }) {
+  const roleName = useAuthStore((s) => s.user?.role.name)
+  const items = visibleNavItems(roleName)
+
   return (
     <>
       <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
@@ -162,7 +182,7 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
-        {navItems.map((item) =>
+        {items.map((item) =>
           "children" in item ? (
             <SidebarGroup
               key={item.label}

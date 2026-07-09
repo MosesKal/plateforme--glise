@@ -5,11 +5,12 @@ import { adminUsersApi, type CreateUserPayload, type UpdateUserPayload } from "@
 
 const QK = ["admin", "users"] as const
 
-export function useAdminUsers() {
+export function useAdminUsers(enabled = true) {
   return useQuery({
     queryKey: QK,
     queryFn: () => adminUsersApi.list().then((r) => r.data.items),
     staleTime: 30_000,
+    enabled,
   })
 }
 

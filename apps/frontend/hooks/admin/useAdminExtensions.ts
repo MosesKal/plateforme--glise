@@ -5,11 +5,12 @@ import { adminExtensionsApi, type ExtensionPayload } from "@/lib/api/admin/exten
 
 const QK = ["admin", "extensions"] as const
 
-export function useAdminExtensions() {
+export function useAdminExtensions(enabled = true) {
   return useQuery({
     queryKey: QK,
     queryFn: () => adminExtensionsApi.list().then((r) => r.data.items),
     staleTime: 30_000,
+    enabled,
   })
 }
 

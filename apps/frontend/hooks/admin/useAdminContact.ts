@@ -5,10 +5,11 @@ import { adminContactApi, type ContactMessage } from "@/lib/api/admin/contact"
 
 const KEY = ["admin", "contact"] as const
 
-export function useAdminContact() {
+export function useAdminContact(enabled = true) {
   return useQuery<ContactMessage[]>({
     queryKey: KEY,
     queryFn: () => adminContactApi.list(),
+    enabled,
   })
 }
 

@@ -10,6 +10,7 @@ import { useAdminContact } from "@/hooks/admin/useAdminContact"
 import { useAdminVideoTeachings, useTeachingsStats } from "@/hooks/admin/useAdminTeachings"
 import { useAuthStore } from "@/store/auth.store"
 import { ADMIN_ROUTES } from "@/constants/routes"
+import { canAccess, type AdminResource } from "@/lib/permissions"
 import { cn } from "@/lib/utils"
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
@@ -128,15 +129,23 @@ function todayLabel() {
 export function DashboardContent() {
   const { user } = useAuthStore()
 
-  const { data: users = [],      isLoading: loadingUsers }   = useAdminUsers()
-  const { data: extensions = [], isLoading: loadingExt }     = useAdminExtensions()
-  const { data: events = [],     isLoading: loadingEvents }  = useAdminEvents()
-  const { data: galleryData,     isLoading: loadingGallery } = useAdminGalleryItems()
-  const { data: pendingData,     isLoading: loadingPending } = useAdminTestimonies("PENDING")
-  const { data: messages = [],   isLoading: loadingMsgs }    = useAdminContact()
-  const { data: teachingsStats,  isLoading: loadingTeach }   = useTeachingsStats()
+  // Chaque requête et chaque carte est conditionnée par le rôle : on n'appelle
+  // pas une API que le backend refuserait (403) et on n'affiche pas le module.
+  const can = (resource: AdminResource) => canAccess(user?.role.name, resource)
+
+  const { data: users = [],      isLoading: loadingUsers }   = useAdminUsers(can("users"))
+  const { data: extensions = [], isLoading: loadingExt }     = useAdminExtensions(can("extensions"))
+  const { data: events = [],     isLoading: loadingEvents }  = useAdminEvents(can("events"))
+  const { data: galleryData,     isLoading: loadingGallery } = useAdminGalleryItems(undefined, can("gallery"))
+  const { data: pendingData,     isLoading: loadingPending } = useAdminTestimonies("PENDING", can("testimonies"))
+  const { data: messages = [],   isLoading: loadingMsgs }    = useAdminContact(can("contact"))
+  const { data: teachingsStats,  isLoading: loadingTeach }   = useTeachingsStats(can("teachings"))
   // limit: 1 — seul le total nous intéresse pour la carte du dashboard.
-  const { data: videosData,      isLoading: loadingVideos }  = useAdminVideoTeachings({ limit: 1 })
+  const { data: videosData,      isLoading: loadingVideos }  = useAdminVideoTeachings({ limit: 1 }, can("teachings"))
+
+  const hasAnyModule = (
+    ["users", "extensions", "events", "gallery", "teachings", "testimonies", "contact"] as AdminResource[]
+  ).some(can)
 
   // Derived
   const activeUsers      = users.filter((u) => u.status === "ACTIVE").length
@@ -169,89 +178,117 @@ export function DashboardContent() {
         </span>
       </div>
 
-      {/* ── Stats ── */}
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-        <StatCard
-          label="Utilisateurs actifs"
-          value={activeUsers}
-          sub={`${users.length} comptes au total`}
-          iconPath={ICONS.users}
-          href={ADMIN_ROUTES.utilisateurs}
-          loading={loadingUsers}
-        />
-        <StatCard
-          label="Extensions actives"
-          value={activeExtensions}
-          sub={`${extensions.length} au total`}
-          iconPath={ICONS.extensions}
-          href={ADMIN_ROUTES.extensions}
-          loading={loadingExt}
-        />
-        <StatCard
-          label="Événements publiés"
-          value={publishedEvents}
-          sub={`${upcomingEvents.length} à venir`}
-          iconPath={ICONS.events}
-          href={ADMIN_ROUTES.evenements}
-          loading={loadingEvents}
-        />
-        <StatCard
-          label="Photos en galerie"
-          value={totalPhotos}
-          iconPath={ICONS.gallery}
-          href={ADMIN_ROUTES.galerie}
-          loading={loadingGallery}
-        />
-        <StatCard
-          label="Enseignements audio"
-          value={teachingsStats?.published ?? 0}
-          sub={
-            teachingsStats
-              ? `${teachingsStats.totalPlays} écoute${teachingsStats.totalPlays > 1 ? "s" : ""} cumulée${teachingsStats.totalPlays > 1 ? "s" : ""}${teachingsStats.draft > 0 ? ` · ${teachingsStats.draft} brouillon${teachingsStats.draft > 1 ? "s" : ""}` : ""}`
-              : undefined
-          }
-          iconPath={ICONS.audio}
-          href={ADMIN_ROUTES.enseignementsAudios}
-          accent={teachingsStats && teachingsStats.draft > 0 ? "gold" : "default"}
-          loading={loadingTeach}
-        />
-        <StatCard
-          label="Enseignements vidéo"
-          value={videosData?.total ?? 0}
-          sub="Miroir de la chaîne YouTube"
-          iconPath={ICONS.video}
-          href={ADMIN_ROUTES.enseignementsVideos}
-          loading={loadingVideos}
-        />
-        <StatCard
-          label="Enseignements écrits"
-          value="—"
-          sub="Module PDF à venir"
-          iconPath={ICONS.document}
-          href={ADMIN_ROUTES.enseignementsEcrits}
-        />
-        <StatCard
-          label="Témoignages en attente"
-          value={pendingCount}
-          iconPath={ICONS.testimony}
-          href={ADMIN_ROUTES.temoignages}
-          accent={pendingCount > 0 ? "gold" : "default"}
-          loading={loadingPending}
-        />
-        <StatCard
-          label="Messages non lus"
-          value={unreadCount}
-          iconPath={ICONS.mail}
-          href={ADMIN_ROUTES.contact}
-          accent={unreadCount > 0 ? "red" : "default"}
-          loading={loadingMsgs}
-        />
-      </div>
+      {/* ── Stats — seuls les modules accessibles au rôle sont affichés ── */}
+      {hasAnyModule ? (
+        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+          {can("users") && (
+            <StatCard
+              label="Utilisateurs actifs"
+              value={activeUsers}
+              sub={`${users.length} comptes au total`}
+              iconPath={ICONS.users}
+              href={ADMIN_ROUTES.utilisateurs}
+              loading={loadingUsers}
+            />
+          )}
+          {can("extensions") && (
+            <StatCard
+              label="Extensions actives"
+              value={activeExtensions}
+              sub={`${extensions.length} au total`}
+              iconPath={ICONS.extensions}
+              href={ADMIN_ROUTES.extensions}
+              loading={loadingExt}
+            />
+          )}
+          {can("events") && (
+            <StatCard
+              label="Événements publiés"
+              value={publishedEvents}
+              sub={`${upcomingEvents.length} à venir`}
+              iconPath={ICONS.events}
+              href={ADMIN_ROUTES.evenements}
+              loading={loadingEvents}
+            />
+          )}
+          {can("gallery") && (
+            <StatCard
+              label="Photos en galerie"
+              value={totalPhotos}
+              iconPath={ICONS.gallery}
+              href={ADMIN_ROUTES.galerie}
+              loading={loadingGallery}
+            />
+          )}
+          {can("teachings") && (
+            <>
+              <StatCard
+                label="Enseignements audio"
+                value={teachingsStats?.published ?? 0}
+                sub={
+                  teachingsStats
+                    ? `${teachingsStats.totalPlays} écoute${teachingsStats.totalPlays > 1 ? "s" : ""} cumulée${teachingsStats.totalPlays > 1 ? "s" : ""}${teachingsStats.draft > 0 ? ` · ${teachingsStats.draft} brouillon${teachingsStats.draft > 1 ? "s" : ""}` : ""}`
+                    : undefined
+                }
+                iconPath={ICONS.audio}
+                href={ADMIN_ROUTES.enseignementsAudios}
+                accent={teachingsStats && teachingsStats.draft > 0 ? "gold" : "default"}
+                loading={loadingTeach}
+              />
+              <StatCard
+                label="Enseignements vidéo"
+                value={videosData?.total ?? 0}
+                sub="Miroir de la chaîne YouTube"
+                iconPath={ICONS.video}
+                href={ADMIN_ROUTES.enseignementsVideos}
+                loading={loadingVideos}
+              />
+              <StatCard
+                label="Enseignements écrits"
+                value="—"
+                sub="Module PDF à venir"
+                iconPath={ICONS.document}
+                href={ADMIN_ROUTES.enseignementsEcrits}
+              />
+            </>
+          )}
+          {can("testimonies") && (
+            <StatCard
+              label="Témoignages en attente"
+              value={pendingCount}
+              iconPath={ICONS.testimony}
+              href={ADMIN_ROUTES.temoignages}
+              accent={pendingCount > 0 ? "gold" : "default"}
+              loading={loadingPending}
+            />
+          )}
+          {can("contact") && (
+            <StatCard
+              label="Messages non lus"
+              value={unreadCount}
+              iconPath={ICONS.mail}
+              href={ADMIN_ROUTES.contact}
+              accent={unreadCount > 0 ? "red" : "default"}
+              loading={loadingMsgs}
+            />
+          )}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-gray-200 bg-white py-16 text-center">
+          <p className="text-sm text-gray-400">
+            Aucun module d&apos;administration n&apos;est attribué à votre rôle
+            {user ? ` (${user.role.name})` : ""}. Contactez un administrateur si
+            vous pensez que c&apos;est une erreur.
+          </p>
+        </div>
+      )}
 
       {/* ── Activity ── */}
+      {(can("events") || can("testimonies") || can("contact")) && (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 
         {/* Prochains événements */}
+        {can("events") && (
         <ActivityCard
           title="Prochains événements"
           count={upcomingEvents.length}
@@ -277,8 +314,10 @@ export function DashboardContent() {
             </div>
           ))}
         </ActivityCard>
+        )}
 
         {/* Témoignages en attente */}
+        {can("testimonies") && (
         <ActivityCard
           title="Témoignages en attente"
           count={pendingCount}
@@ -300,8 +339,10 @@ export function DashboardContent() {
             </div>
           ))}
         </ActivityCard>
+        )}
 
         {/* Messages non lus */}
+        {can("contact") && (
         <ActivityCard
           title="Messages non lus"
           count={unreadCount}
@@ -325,8 +366,10 @@ export function DashboardContent() {
             </div>
           ))}
         </ActivityCard>
+        )}
 
       </div>
+      )}
     </div>
   )
 }

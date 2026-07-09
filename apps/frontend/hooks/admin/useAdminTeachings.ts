@@ -138,26 +138,31 @@ export function useDeleteAudioTeaching() {
   })
 }
 
-export function useTeachingsStats() {
+export function useTeachingsStats(enabled = true) {
   return useQuery({
     queryKey: [...AUDIO_KEY, "stats"],
     queryFn: adminTeachingsApi.stats,
+    enabled,
   })
 }
 
 // ─── Enseignements vidéo (miroir YouTube) ─────────────────────────────────────
 
-export function useAdminVideoTeachings(params?: {
-  themeId?: string
-  status?: TeachingStatus
-  search?: string
-  page?: number
-  limit?: number
-}) {
+export function useAdminVideoTeachings(
+  params?: {
+    themeId?: string
+    status?: TeachingStatus
+    search?: string
+    page?: number
+    limit?: number
+  },
+  enabled = true,
+) {
   return useQuery({
     queryKey: [...VIDEOS_KEY, params],
     queryFn: () => adminTeachingsApi.listVideos(params),
     placeholderData: keepPreviousData,
+    enabled,
   })
 }
 
