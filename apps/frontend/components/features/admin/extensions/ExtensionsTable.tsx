@@ -117,7 +117,7 @@ export function ExtensionsTable({ extensions, onEdit, onDelete }: Props) {
                 </td>
 
                 <td className="px-4 py-3">
-                  <div className="flex items-center justify-end gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="flex items-center justify-end gap-1">
                     <button
                       onClick={() => onEdit(ext)}
                       title="Modifier"

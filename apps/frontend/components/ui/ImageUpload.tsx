@@ -65,7 +65,7 @@ export function ImageUpload({ value, onChange, className }: ImageUploadProps) {
           <button
             type="button"
             onClick={() => onChange("")}
-            className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100 hover:bg-red-600"
+            className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100 pointer-coarse:opacity-100 hover:bg-red-600"
             title="Supprimer"
           >
             <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

@@ -38,7 +38,8 @@ export function GalleryGrid({ items, onEdit, onDelete }: Props) {
             </div>
           )}
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/0 opacity-0 transition-all duration-200 group-hover:bg-black/50 group-hover:opacity-100">
+          {/* Actions au survol (desktop) ; toujours visibles sur écrans tactiles où le hover n'existe pas */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-black/0 opacity-0 transition-all duration-200 group-hover:bg-black/50 group-hover:opacity-100 pointer-coarse:bg-black/40 pointer-coarse:opacity-100">
             <button
               onClick={() => onEdit(item)}
               className="rounded-lg bg-white/90 px-3 py-1.5 text-xs font-semibold text-gray-800 hover:bg-white"

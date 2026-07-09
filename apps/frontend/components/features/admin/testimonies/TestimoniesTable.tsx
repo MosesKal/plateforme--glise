@@ -49,7 +49,7 @@ export function TestimoniesTable({ testimonies, onApprove, onReject, onDelete }:
                 </div>
               </div>
 
-              <div className="flex shrink-0 items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="flex shrink-0 items-center gap-1">
                 {t.status !== "APPROVED" && (
                   <button
                     onClick={() => onApprove(t.id)}

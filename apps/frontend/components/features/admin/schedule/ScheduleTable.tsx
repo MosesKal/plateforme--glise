@@ -166,7 +166,7 @@ export function ScheduleTable({ entries, onEdit, onDelete }: Props) {
         </span>
       </td>
       <td className="px-4 py-3">
-        <div className="flex items-center justify-end gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+        <div className="flex items-center justify-end gap-1">
           <button onClick={() => onEdit(entry)} title="Modifier" className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600">
             <EditIcon />
           </button>

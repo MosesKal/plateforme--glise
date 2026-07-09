@@ -125,7 +125,7 @@ export default function AdminDepartementsPage() {
 
                 <div className="mt-4 flex items-center justify-between">
                   <span className="text-[11px] text-gray-300">Ordre : {dept.order}</span>
-                  <div className="flex gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="flex gap-1">
                     <button
                       onClick={() => openEdit(dept)}
                       className="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
