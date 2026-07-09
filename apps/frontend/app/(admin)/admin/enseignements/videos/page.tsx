@@ -107,7 +107,7 @@ export default function AdminVideosPage() {
                 href={ADMIN_ROUTES.enseignements}
                 className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:border-cecj-green hover:text-cecj-green"
               >
-                ← Audio
+                ← Vue d&apos;ensemble
               </Link>
               <Button
                 onClick={handleSync}

@@ -454,7 +454,7 @@ function TeachingFormDialog({
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <Field label="Date de prédication" error={errors.preachedAt?.message}>
+            <Field label="Date de l'enseignement" error={errors.preachedAt?.message}>
               <input {...register("preachedAt")} type="date" disabled={isSubmitting} className={inputCls} />
             </Field>
             <Field label="Statut" error={errors.status?.message}>

@@ -1,58 +1,21 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import Link from "next/link"
 import { PageHeader } from "@/components/shared/PageHeader"
-import { Pagination } from "@/components/shared/Pagination"
-import { Button } from "@/components/ui/Button"
-import { useDebounce } from "@/hooks/useDebounce"
 import { ADMIN_ROUTES } from "@/constants/routes"
-import { AudioTeachingFormModal } from "@/components/features/admin/teachings/AudioTeachingFormModal"
-import { formatDuration, formatFileSize } from "@/components/features/teachings/format"
+import { formatFileSize } from "@/components/features/teachings/format"
 import {
-  useAdminAudioTeachings,
   useAdminSpeakers,
   useAdminThemes,
-  useCreateAudioTeaching,
-  useDeleteAudioTeaching,
-  useReorderAudioTeachings,
+  useAdminVideoTeachings,
   useTeachingsStats,
-  useUpdateAudioTeaching,
 } from "@/hooks/admin/useAdminTeachings"
-import type {
-  AdminAudioTeaching,
-  AudioProcessingStatus,
-  AudioTeachingPayload,
-  TeachingStatus,
-} from "@/lib/api/admin/teachings"
 
-const STATUS_LABELS: Record<TeachingStatus, { label: string; cls: string }> = {
-  PUBLISHED: { label: "Publié",    cls: "bg-green-100 text-green-700" },
-  DRAFT:     { label: "Brouillon", cls: "bg-amber-100 text-amber-700" },
-  ARCHIVED:  { label: "Archivé",   cls: "bg-gray-100 text-gray-500"   },
-}
-
-/** READY est l'état nominal : pas de badge. FAILED sert quand même l'original. */
-const PROCESSING_LABELS: Record<
-  AudioProcessingStatus,
-  { label: string; title: string; cls: string } | null
-> = {
-  READY: null,
-  PENDING: {
-    label: "Optimisation en attente",
-    title: "Le fichier sera compressé en AAC 96 kbps ; il est déjà écoutable.",
-    cls: "bg-blue-50 text-blue-600",
-  },
-  PROCESSING: {
-    label: "Optimisation en cours…",
-    title: "Compression AAC 96 kbps en cours ; le fichier reste écoutable.",
-    cls: "bg-blue-50 text-blue-600 animate-pulse",
-  },
-  FAILED: {
-    label: "Non optimisé",
-    title: "Le transcodage a échoué : le fichier original est conservé et reste écoutable. Ré-uploadez le fichier pour réessayer.",
-    cls: "bg-orange-50 text-orange-600",
-  },
+const ICONS = {
+  audio:    "M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 15.553z",
+  video:    "M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z",
+  document: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z",
+  tags:     "M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z M6 6h.008v.008H6V6z",
 }
 
 /** "3 h 24 min" à partir de secondes (durée cumulée de la bibliothèque). */
@@ -63,50 +26,64 @@ function formatTotalDuration(totalSec: number): string {
   return h > 0 ? `${h} h ${String(m).padStart(2, "0")} min` : `${m} min`
 }
 
-const PAGE_SIZE = 10
+function ModuleCard({
+  title,
+  value,
+  sub,
+  href,
+  iconPath,
+  cta = "Gérer",
+  soon,
+  loading,
+}: {
+  title: string
+  value: number | string
+  sub?: string
+  href: string
+  iconPath: string
+  cta?: string
+  soon?: boolean
+  loading?: boolean
+}) {
+  return (
+    <Link
+      href={href}
+      className="group flex flex-col rounded-xl border border-gray-100 bg-white p-5 shadow-sm transition hover:border-cecj-green/30 hover:shadow-md"
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cecj-green/8 text-cecj-green transition group-hover:bg-cecj-green group-hover:text-white">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
+          </svg>
+        </div>
+        {soon && (
+          <span className="rounded-full border border-cecj-gold/40 bg-cecj-gold/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-amber-600">
+            À venir
+          </span>
+        )}
+      </div>
+      <p className="mt-4 text-sm font-semibold text-gray-900">{title}</p>
+      {loading ? (
+        <div className="mt-1 h-8 w-16 animate-pulse rounded bg-gray-200" />
+      ) : (
+        <p className="text-3xl font-bold text-gray-900">{value}</p>
+      )}
+      {sub && <p className="mt-0.5 flex-1 text-xs text-gray-400">{sub}</p>}
+      <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-cecj-green">
+        {cta}
+        <span className="transition-transform group-hover:translate-x-0.5">→</span>
+      </span>
+    </Link>
+  )
+}
 
+/** Vue d'ensemble du module Enseignements : chaque format se gère sur sa page dédiée. */
 export default function AdminEnseignementsPage() {
-  const [themeId, setThemeId] = useState("")
-  const [status, setStatus] = useState<TeachingStatus | "">("")
-  const [search, setSearch] = useState("")
-  const [page, setPage] = useState(1)
-  const debouncedSearch = useDebounce(search, 300)
-
-  // Tout changement de filtre repart de la page 1 (la pagination courante
-  // n'a plus de sens sur un jeu de résultats différent).
-  const changeFilter = (fn: () => void) => {
-    setPage(1)
-    fn()
-  }
-
-  const { data: themes = [] } = useAdminThemes()
+  const { data: stats, isLoading: loadingStats } = useTeachingsStats()
+  // limit: 1 — seul le total nous intéresse ici.
+  const { data: videosData, isLoading: loadingVideos } = useAdminVideoTeachings({ limit: 1 })
+  const { data: themes = [], isLoading: loadingThemes } = useAdminThemes()
   const { data: speakers = [] } = useAdminSpeakers()
-  const { data, isLoading, isError } = useAdminAudioTeachings({
-    themeId: themeId || undefined,
-    status: status || undefined,
-    search: debouncedSearch || undefined,
-    page,
-    limit: PAGE_SIZE,
-  })
-
-  // Après une suppression, la dernière page peut disparaître : on se recale
-  // pendant le rendu (pattern React « adjusting state during render »).
-  if (data && page > 1 && page > data.totalPages) {
-    setPage(Math.max(data.totalPages, 1))
-  }
-
-  const { data: stats } = useTeachingsStats()
-
-  const create = useCreateAudioTeaching()
-  const update = useUpdateAudioTeaching()
-  const remove = useDeleteAudioTeaching()
-  const reorder = useReorderAudioTeachings()
-
-  const [modalOpen, setModalOpen] = useState(false)
-  const [editTarget, setEditTarget] = useState<AdminAudioTeaching | null>(null)
-  const [deleteTarget, setDeleteTarget] = useState<AdminAudioTeaching | null>(null)
-
-  const items = useMemo(() => data?.items ?? [], [data])
 
   const storagePercent = stats
     ? Math.min((stats.storageUsedBytes / stats.storageBudgetBytes) * 100, 100)
@@ -115,308 +92,111 @@ export default function AdminEnseignementsPage() {
     ? Math.round(stats.storageBudgetBytes / 1024 ** 3)
     : 100
 
-  // Le réordonnancement n'a de sens qu'à l'intérieur d'un thème.
-  const canReorder = Boolean(themeId) && !debouncedSearch && !status
-
-  // Le modal se ferme lui-même via onClose quand tout a réussi — en sélection
-  // multiple il reste ouvert tant que des fichiers sont en échec.
-  const handleSubmit = async (payload: AudioTeachingPayload) => {
-    if (editTarget) {
-      await update.mutateAsync({ id: editTarget.id, payload })
-    } else {
-      await create.mutateAsync(payload)
-    }
-  }
-
-  const moveItem = (index: number, direction: -1 | 1) => {
-    const target = index + direction
-    if (target < 0 || target >= items.length) return
-    reorder.mutate([
-      { id: items[index].id, position: items[target].position },
-      { id: items[target].id, position: items[index].position },
-    ])
-  }
-
   return (
-    <>
-      <AudioTeachingFormModal
-        open={modalOpen}
-        onClose={() => { setModalOpen(false); setEditTarget(null) }}
-        onSubmit={handleSubmit}
-        initialData={editTarget}
-        themes={themes}
-        speakers={speakers}
+    <div className="space-y-6">
+      <PageHeader
+        title="Enseignements"
+        subtitle="Vue d'ensemble du module — audio, vidéo et écrits"
       />
 
-      <div className="space-y-6">
-        <PageHeader
-          title="Enseignements audio"
-          subtitle="Bibliothèque des enseignements de la C.E.C.J.C."
-          action={
-            <div className="flex gap-2">
-              <Link
-                href={`${ADMIN_ROUTES.enseignements}/videos`}
-                className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:border-cecj-green hover:text-cecj-green"
-              >
-                Vidéos
-              </Link>
-              <Link
-                href={`${ADMIN_ROUTES.enseignements}/themes`}
-                className="inline-flex items-center rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-600 transition hover:border-cecj-green hover:text-cecj-green"
-              >
-                Thèmes & orateurs
-              </Link>
-              <Button
-                onClick={() => { setEditTarget(null); setModalOpen(true) }}
-                className="bg-cecj-green hover:bg-cecj-green/90"
-              >
-                + Ajouter un enseignement
-              </Button>
-            </div>
+      {/* Un format = une page de gestion dédiée */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <ModuleCard
+          title="Audios"
+          value={stats?.total ?? 0}
+          sub={
+            stats
+              ? `${stats.published} publié${stats.published > 1 ? "s" : ""}${stats.draft > 0 ? ` · ${stats.draft} brouillon${stats.draft > 1 ? "s" : ""}` : ""} · ${formatTotalDuration(stats.totalDurationSec)}`
+              : undefined
           }
+          href={ADMIN_ROUTES.enseignementsAudios}
+          iconPath={ICONS.audio}
+          loading={loadingStats}
         />
+        <ModuleCard
+          title="Vidéos"
+          value={videosData?.total ?? 0}
+          sub="Miroir de la chaîne YouTube"
+          href={ADMIN_ROUTES.enseignementsVideos}
+          iconPath={ICONS.video}
+          loading={loadingVideos}
+        />
+        <ModuleCard
+          title="Écrits (PDF)"
+          value="—"
+          sub="Module en préparation"
+          href={ADMIN_ROUTES.enseignementsEcrits}
+          iconPath={ICONS.document}
+          cta="Voir"
+          soon
+        />
+        <ModuleCard
+          title="Thèmes & orateurs"
+          value={themes.length}
+          sub={`${speakers.length} orateur${speakers.length > 1 ? "s" : ""}`}
+          href={ADMIN_ROUTES.enseignementsThemes}
+          iconPath={ICONS.tags}
+          loading={loadingThemes}
+        />
+      </div>
 
-        {/* Stats globales du module */}
-        <div className="flex flex-wrap gap-4">
-          {[
-            { label: "Enseignements", value: stats?.total ?? "…",      color: "text-gray-900"   },
-            { label: "Publiés",       value: stats?.published ?? "…",  color: "text-green-600"  },
-            { label: "Brouillons",    value: stats?.draft ?? "…",      color: "text-amber-600"  },
-            { label: "Écoutes",       value: stats?.totalPlays ?? "…", color: "text-cecj-green" },
-            { label: "Durée totale",  value: stats ? formatTotalDuration(stats.totalDurationSec) : "…", color: "text-gray-900" },
-          ].map(({ label, value, color }) => (
-            <div key={label} className="rounded-xl border border-gray-200 bg-white px-5 py-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">{label}</p>
-              <p className={`text-2xl font-bold ${color}`}>{value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Stockage + top écoutes */}
-        {stats && (
-          <div className={`grid gap-4 ${stats.topTeachings.length > 0 ? "lg:grid-cols-2" : ""}`}>
-            <div className="rounded-xl border border-gray-200 bg-white p-5">
-              <div className="flex items-baseline justify-between">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                  Stockage audio
-                </p>
-                <p className="text-sm font-bold text-gray-900">
-                  {formatFileSize(stats.storageUsedBytes)}
-                  <span className="font-normal text-gray-400"> / {storageBudgetGb} Go</span>
-                </p>
-              </div>
-              <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-gray-100">
-                <div
-                  className={`h-full rounded-full transition-all ${
-                    storagePercent > 85
-                      ? "bg-red-500"
-                      : storagePercent > 65
-                        ? "bg-amber-400"
-                        : "bg-cecj-green"
-                  }`}
-                  style={{ width: `${Math.max(storagePercent, 0.5)}%` }}
-                />
-              </div>
-              <p className="mt-2 text-xs text-gray-400">
-                {storagePercent < 0.1
-                  ? "Moins de 0,1 % du budget utilisé"
-                  : `${storagePercent.toFixed(1).replace(".", ",")} % du budget utilisé`}
-                {storagePercent > 85 && " — envisagez la migration vers un stockage objet (R2)"}
+      {/* Stockage + top écoutes — préoccupations transverses du module */}
+      {stats && (
+        <div className={`grid gap-4 ${stats.topTeachings.length > 0 ? "lg:grid-cols-2" : ""}`}>
+          <div className="rounded-xl border border-gray-200 bg-white p-5">
+            <div className="flex items-baseline justify-between">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                Stockage audio
+              </p>
+              <p className="text-sm font-bold text-gray-900">
+                {formatFileSize(stats.storageUsedBytes)}
+                <span className="font-normal text-gray-400"> / {storageBudgetGb} Go</span>
               </p>
             </div>
-
-            {stats.topTeachings.length > 0 && (
-              <div className="rounded-xl border border-gray-200 bg-white p-5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
-                  Les plus écoutés
-                </p>
-                <div className="mt-3 space-y-2">
-                  {stats.topTeachings.map((t, i) => (
-                    <div key={t.id} className="flex items-center gap-3">
-                      <span className="w-4 shrink-0 text-center text-xs font-bold text-gray-300">
-                        {i + 1}
-                      </span>
-                      <p className="min-w-0 flex-1 truncate text-sm font-medium text-gray-700">
-                        {t.title}
-                      </p>
-                      <span className="shrink-0 text-xs tabular-nums text-gray-400">
-                        {t.playCount} écoute{t.playCount > 1 ? "s" : ""}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Filtres */}
-        <div className="flex flex-wrap items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3">
-          <select
-            value={themeId}
-            onChange={(e) => changeFilter(() => setThemeId(e.target.value))}
-            className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green"
-          >
-            <option value="">Tous les thèmes</option>
-            {themes.map((t) => (
-              <option key={t.id} value={t.id}>{t.nameFr}</option>
-            ))}
-          </select>
-
-          <select
-            value={status}
-            onChange={(e) => changeFilter(() => setStatus(e.target.value as TeachingStatus | ""))}
-            className="rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green"
-          >
-            <option value="">Tous les statuts</option>
-            <option value="PUBLISHED">Publiés</option>
-            <option value="DRAFT">Brouillons</option>
-            <option value="ARCHIVED">Archivés</option>
-          </select>
-
-          <input
-            value={search}
-            onChange={(e) => changeFilter(() => setSearch(e.target.value))}
-            placeholder="Rechercher un titre…"
-            className="min-w-52 flex-1 rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green"
-          />
-        </div>
-
-        {canReorder && (
-          <p className="text-xs text-gray-400">
-            Utilisez les flèches pour réorganiser l&apos;ordre d&apos;écoute dans ce thème.
-          </p>
-        )}
-
-        {/* Liste */}
-        {isLoading ? (
-          <div className="space-y-3">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="h-[72px] animate-pulse rounded-xl bg-gray-100" />
-            ))}
-          </div>
-        ) : isError ? (
-          <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-            Erreur lors du chargement. Vérifiez que le backend est démarré et que vous êtes connecté.
-          </div>
-        ) : items.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-gray-200 py-16 text-center">
-            <p className="text-sm text-gray-400">
-              {themes.length === 0 || speakers.length === 0
-                ? "Commencez par créer un thème et un orateur (bouton « Thèmes & orateurs »)."
-                : "Aucun enseignement. Ajoutez le premier."}
+            <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-gray-100">
+              <div
+                className={`h-full rounded-full transition-all ${
+                  storagePercent > 85
+                    ? "bg-red-500"
+                    : storagePercent > 65
+                      ? "bg-amber-400"
+                      : "bg-cecj-green"
+                }`}
+                style={{ width: `${Math.max(storagePercent, 0.5)}%` }}
+              />
+            </div>
+            <p className="mt-2 text-xs text-gray-400">
+              {storagePercent < 0.1
+                ? "Moins de 0,1 % du budget utilisé"
+                : `${storagePercent.toFixed(1).replace(".", ",")} % du budget utilisé`}
+              {storagePercent > 85 && " — envisagez la migration vers un stockage objet (R2)"}
             </p>
           </div>
-        ) : (
-          <div className="space-y-3">
-            {items.map((teaching, index) => {
-              const statusInfo = STATUS_LABELS[teaching.status]
-              const processingInfo = teaching.fileKey
-                ? PROCESSING_LABELS[teaching.processing]
-                : null
-              return (
-                <div
-                  key={teaching.id}
-                  className="flex items-center gap-4 rounded-xl border border-gray-100 bg-white px-5 py-4"
-                >
-                  {canReorder && (
-                    <div className="flex flex-col">
-                      <button
-                        onClick={() => moveItem(index, -1)}
-                        disabled={index === 0 || reorder.isPending}
-                        aria-label="Monter"
-                        className="text-gray-300 transition hover:text-cecj-green disabled:opacity-30"
-                      >
-                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
-                        </svg>
-                      </button>
-                      <button
-                        onClick={() => moveItem(index, 1)}
-                        disabled={index === items.length - 1 || reorder.isPending}
-                        aria-label="Descendre"
-                        className="text-gray-300 transition hover:text-cecj-green disabled:opacity-30"
-                      >
-                        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                        </svg>
-                      </button>
-                    </div>
-                  )}
 
-                  <div className="min-w-0 flex-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-semibold text-gray-900">{teaching.title}</span>
-                      <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${statusInfo.cls}`}>
-                        {statusInfo.label}
-                      </span>
-                      {processingInfo && (
-                        <span
-                          title={processingInfo.title}
-                          className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${processingInfo.cls}`}
-                        >
-                          {processingInfo.label}
-                        </span>
-                      )}
-                    </div>
-                    <p className="mt-0.5 text-xs text-gray-400">
-                      {teaching.theme.nameFr} · {teaching.speaker.fullName}
-                      {" · "}{formatDuration(teaching.durationSec)}
-                      {" · "}{formatFileSize(teaching.fileSize)}
-                      {teaching.playCount > 0 && ` · ${teaching.playCount} écoute${teaching.playCount > 1 ? "s" : ""}`}
+          {stats.topTeachings.length > 0 && (
+            <div className="rounded-xl border border-gray-200 bg-white p-5">
+              <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">
+                Les plus écoutés
+              </p>
+              <div className="mt-3 space-y-2">
+                {stats.topTeachings.map((t, i) => (
+                  <div key={t.id} className="flex items-center gap-3">
+                    <span className="w-4 shrink-0 text-center text-xs font-bold text-gray-300">
+                      {i + 1}
+                    </span>
+                    <p className="min-w-0 flex-1 truncate text-sm font-medium text-gray-700">
+                      {t.title}
                     </p>
+                    <span className="shrink-0 text-xs tabular-nums text-gray-400">
+                      {t.playCount} écoute{t.playCount > 1 ? "s" : ""}
+                    </span>
                   </div>
-
-                  <div className="flex shrink-0 items-center gap-2">
-                    {deleteTarget?.id === teaching.id ? (
-                      <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-1.5">
-                        <span className="text-xs text-red-700">Supprimer ?</span>
-                        <button
-                          onClick={() => { remove.mutate(teaching.id); setDeleteTarget(null) }}
-                          className="rounded-md bg-red-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-red-700"
-                        >
-                          Oui
-                        </button>
-                        <button
-                          onClick={() => setDeleteTarget(null)}
-                          className="rounded-md border border-gray-200 bg-white px-2.5 py-1 text-xs font-semibold text-gray-600"
-                        >
-                          Non
-                        </button>
-                      </div>
-                    ) : (
-                      <>
-                        <button
-                          onClick={() => { setEditTarget(teaching); setModalOpen(true) }}
-                          className="rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-600 transition hover:border-cecj-green hover:text-cecj-green"
-                        >
-                          Modifier
-                        </button>
-                        <button
-                          onClick={() => setDeleteTarget(teaching)}
-                          className="rounded-lg border border-red-200 px-3 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-50"
-                        >
-                          Supprimer
-                        </button>
-                      </>
-                    )}
-                  </div>
-                </div>
-              )
-            })}
-          </div>
-        )}
-
-        {data && (
-          <Pagination
-            page={page}
-            totalPages={data.totalPages}
-            total={data.total}
-            itemLabel="enseignement"
-            onPageChange={setPage}
-          />
-        )}
-      </div>
-    </>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
   )
 }

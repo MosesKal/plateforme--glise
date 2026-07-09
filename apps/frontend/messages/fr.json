@@ -11,6 +11,10 @@
     "evenements": "Événements",
     "galerie": "Galerie",
     "enseignements": "Enseignements",
+    "enseignements_tous": "Tous les enseignements",
+    "enseignements_audios": "Audios",
+    "enseignements_videos": "Vidéos",
+    "enseignements_ecrits": "Écrits (PDF)",
     "leadership": "Leadership",
     "temoignages": "Témoignages",
     "departements": "Départements",
@@ -175,10 +179,10 @@
   "teachingsSection": {
     "badge": "Enseignements",
     "title": "Nourrissez votre foi par la Parole",
-    "subtitle": "Prédications et enseignements de l'église, en audio et en vidéo — où que vous soyez.",
+    "subtitle": "Les enseignements de l'église, en audio et en vidéo — où que vous soyez.",
     "audioCountLabel": "enseignements audio",
     "videoCountLabel": "vidéos",
-    "latestVideo": "Dernière prédication en vidéo",
+    "latestVideo": "Dernier enseignement en vidéo",
     "latestAudio": "Derniers enseignements audio",
     "listenHint": "Lancez l'écoute ici — le lecteur vous accompagne sur tout le site.",
     "browseAudio": "Explorer la bibliothèque audio",
@@ -202,7 +206,16 @@
     "hub": {
       "badge": "La Parole en tout temps",
       "title": "Enseignements",
-      "intro": "Écoutez les enseignements de l'église, organisés par thèmes. Lancez la lecture et continuez votre navigation — l'écoute vous suit.",
+      "intro": "La Parole prêchée au Camp de Jésus-Christ, disponible en audio, en vidéo et bientôt à l'écrit.",
+      "formatsTitle": "Explorer par format",
+      "cardCta": "Découvrir",
+      "audioCardTitle": "Audios",
+      "audioCardDesc": "Les enseignements à écouter, organisés par thèmes, avec recherche et reprise de lecture.",
+      "videoCardTitle": "Vidéos",
+      "videoCardDesc": "Les cultes et enseignements en vidéo, depuis la chaîne YouTube de l'église.",
+      "ecritsCardTitle": "Écrits (PDF)",
+      "ecritsCardDesc": "Notes d'enseignement et études bibliques à lire et à télécharger.",
+      "ecritsCardSoon": "À venir",
       "searchPlaceholder": "Rechercher un enseignement…",
       "featured": "Dernier enseignement",
       "topics": "Sujets",
@@ -215,6 +228,20 @@
       "mostPlayed": "Les plus écoutés",
       "latestVideos": "Dernières vidéos",
       "allVideos": "Toutes les vidéos →"
+    },
+    "audios": {
+      "badge": "Bibliothèque audio",
+      "title": "Enseignements audio",
+      "intro": "Écoutez les enseignements de l'église, organisés par thèmes. Lancez la lecture et continuez votre navigation — l'écoute vous suit."
+    },
+    "ecrits": {
+      "badge": "Bibliothèque écrite",
+      "title": "Enseignements écrits",
+      "intro": "Notes d'enseignement, études bibliques et supports au format PDF, à lire et à télécharger.",
+      "comingSoon": "Cette section est en préparation",
+      "comingSoonDetail": "Les enseignements écrits seront bientôt disponibles. En attendant, découvrez les enseignements audio et vidéo.",
+      "ctaAudios": "Écouter les audios",
+      "ctaVideos": "Voir les vidéos"
     },
     "theme": {
       "notFound": "Ce thème n'existe pas ou n'est plus disponible.",
@@ -236,7 +263,7 @@
     "videos": {
       "badge": "La Parole en images",
       "title": "Enseignements vidéo",
-      "intro": "Regardez les prédications et enseignements de la chaîne YouTube de l'église, directement sur le site.",
+      "intro": "Regardez les enseignements de la chaîne YouTube de l'église, directement sur le site.",
       "searchPlaceholder": "Rechercher une vidéo…",
       "themes": "Thèmes",
       "noMatch": "Aucune vidéo ne correspond à votre recherche.",

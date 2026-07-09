@@ -9,6 +9,16 @@ import { SITE_ROUTES } from "@/constants/routes"
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher"
 import { useI18n } from "@/components/providers/I18nProvider"
 
+interface NavLink {
+  label: string
+  href: string
+  isActive: boolean
+}
+
+type NavItem =
+  | ({ type: "link" } & NavLink)
+  | { type: "dropdown"; label: string; align?: "left" | "right"; links: NavLink[] }
+
 function ChevronIcon({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round">
@@ -17,48 +27,159 @@ function ChevronIcon({ className }: { className?: string }) {
   )
 }
 
-export function Navbar() {
-  const pathname = usePathname()
-  const [menuOpen, setMenuOpen] = useState(false)
-  const [dropdownOpen, setDropdownOpen] = useState(false)
-  const [mobileExploreOpen, setMobileExploreOpen] = useState(false)
-  const { locale, t } = useI18n()
-  const dropdownRef = useRef<HTMLLIElement>(null)
-
-  const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
-
-  // Actif sur la page exacte ET ses sous-pages (ex. /enseignements/audio/...),
-  // sauf pour l'accueil qui ne matche que lui-meme.
-  const isLinkActive = (href: string) =>
-    pathname === href || (href !== lp("/") && pathname.startsWith(`${href}/`))
+/** Dropdown desktop autonome : cliquer ailleurs (y compris sur l'autre dropdown) le referme. */
+function DesktopDropdown({ label, links, align = "left" }: { label: string; links: NavLink[]; align?: "left" | "right" }) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLLIElement>(null)
+  const isActive = links.some((l) => l.isActive)
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setDropdownOpen(false)
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
       }
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  const navLinks = [
-    { label: t("nav.accueil"),       href: lp(SITE_ROUTES.accueil) },
-    { label: t("nav.apropos"),       href: lp(SITE_ROUTES.apropos) },
-    { label: t("nav.enseignements"), href: lp(SITE_ROUTES.enseignements) },
-    { label: t("nav.evenements"),    href: lp(SITE_ROUTES.evenements) },
-    { label: t("nav.adhesion"),      href: lp(SITE_ROUTES.adhesion) },
-    { label: t("nav.extensions"),    href: lp(SITE_ROUTES.extensions) },
+  return (
+    <li className="relative" ref={ref}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          "flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium transition-colors",
+          isActive || open
+            ? "bg-white/20 text-white"
+            : "text-white/80 hover:text-white hover:bg-white/10",
+        )}
+      >
+        {label}
+        <ChevronIcon className={cn("h-3.5 w-3.5 transition-transform duration-200", open && "rotate-180")} />
+      </button>
+
+      {open && (
+        <div
+          className={cn(
+            "absolute top-full mt-2 min-w-[190px] rounded-xl bg-white py-1.5 shadow-xl ring-1 ring-black/8",
+            align === "right" ? "right-0" : "left-0",
+          )}
+        >
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              onClick={() => setOpen(false)}
+              className={cn(
+                "block px-4 py-2.5 text-sm transition-colors",
+                link.isActive
+                  ? "bg-cecj-green/8 font-semibold text-cecj-green"
+                  : "text-gray-700 hover:bg-cecj-green/5 hover:text-cecj-green",
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </li>
+  )
+}
+
+/** Sous-section repliable du menu mobile. */
+function MobileAccordion({ label, links, onNavigate }: { label: string; links: NavLink[]; onNavigate: () => void }) {
+  const [open, setOpen] = useState(false)
+  const isActive = links.some((l) => l.isActive)
+
+  return (
+    <li>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className={cn(
+          "flex w-full items-center justify-between rounded px-3 py-3 text-sm font-medium",
+          isActive ? "bg-white/20 text-white" : "text-white/80 hover:text-white",
+        )}
+      >
+        {label}
+        <ChevronIcon className={cn("h-4 w-4 transition-transform duration-200", open && "rotate-180")} />
+      </button>
+
+      {open && (
+        <ul className="ml-3 mt-1 space-y-0.5 border-l border-white/15 pl-3">
+          {links.map((link) => (
+            <li key={link.href}>
+              <Link
+                href={link.href}
+                onClick={onNavigate}
+                className={cn(
+                  "block rounded px-3 py-2.5 text-sm",
+                  link.isActive
+                    ? "font-semibold text-white"
+                    : "text-white/65 hover:text-white",
+                )}
+              >
+                {link.label}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </li>
+  )
+}
+
+export function Navbar() {
+  const pathname = usePathname()
+  const [menuOpen, setMenuOpen] = useState(false)
+  const { locale, t } = useI18n()
+
+  const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
+
+  // Actif sur la page exacte ET ses sous-pages (ex. /enseignements/videos/...),
+  // sauf pour l'accueil qui ne matche que lui-meme.
+  const isLinkActive = (href: string) =>
+    pathname === href || (href !== lp("/") && pathname.startsWith(`${href}/`))
+
+  const teachingsLinks: NavLink[] = [
+    {
+      label: t("nav.enseignements_tous"),
+      href: lp(SITE_ROUTES.enseignements),
+      // Le hub uniquement — ses sous-pages ont chacune leur entrée dédiée.
+      isActive: pathname === lp(SITE_ROUTES.enseignements),
+    },
+    {
+      label: t("nav.enseignements_audios"),
+      href: lp(SITE_ROUTES.enseignementsAudios),
+      isActive: isLinkActive(lp(SITE_ROUTES.enseignementsAudios)),
+    },
+    {
+      label: t("nav.enseignements_videos"),
+      href: lp(SITE_ROUTES.enseignementsVideos),
+      isActive: isLinkActive(lp(SITE_ROUTES.enseignementsVideos)),
+    },
+    {
+      label: t("nav.enseignements_ecrits"),
+      href: lp(SITE_ROUTES.enseignementsEcrits),
+      isActive: isLinkActive(lp(SITE_ROUTES.enseignementsEcrits)),
+    },
   ]
 
-  const exploreLinks = [
-    { label: t("nav.galerie"),     href: lp(SITE_ROUTES.galerie) },
-    { label: t("nav.temoignages"), href: lp(SITE_ROUTES.temoignages) },
-    { label: t("nav.lecture"),     href: lp(SITE_ROUTES.lectureBiblique) },
-    { label: t("nav.contact"),     href: lp(SITE_ROUTES.contact) },
+  const exploreLinks: NavLink[] = [
+    { label: t("nav.galerie"),     href: lp(SITE_ROUTES.galerie),         isActive: isLinkActive(lp(SITE_ROUTES.galerie)) },
+    { label: t("nav.temoignages"), href: lp(SITE_ROUTES.temoignages),     isActive: isLinkActive(lp(SITE_ROUTES.temoignages)) },
+    { label: t("nav.lecture"),     href: lp(SITE_ROUTES.lectureBiblique), isActive: isLinkActive(lp(SITE_ROUTES.lectureBiblique)) },
+    { label: t("nav.contact"),     href: lp(SITE_ROUTES.contact),         isActive: isLinkActive(lp(SITE_ROUTES.contact)) },
   ]
 
-  const isExploreActive = exploreLinks.some((l) => isLinkActive(l.href))
+  const navItems: NavItem[] = [
+    { type: "link", label: t("nav.accueil"), href: lp(SITE_ROUTES.accueil), isActive: isLinkActive(lp(SITE_ROUTES.accueil)) },
+    { type: "link", label: t("nav.apropos"), href: lp(SITE_ROUTES.apropos), isActive: isLinkActive(lp(SITE_ROUTES.apropos)) },
+    { type: "dropdown", label: t("nav.enseignements"), links: teachingsLinks },
+    { type: "link", label: t("nav.evenements"), href: lp(SITE_ROUTES.evenements), isActive: isLinkActive(lp(SITE_ROUTES.evenements)) },
+    { type: "link", label: t("nav.adhesion"),   href: lp(SITE_ROUTES.adhesion),   isActive: isLinkActive(lp(SITE_ROUTES.adhesion)) },
+    { type: "link", label: t("nav.extensions"), href: lp(SITE_ROUTES.extensions), isActive: isLinkActive(lp(SITE_ROUTES.extensions)) },
+    { type: "dropdown", label: t("nav.explorer"), align: "right", links: exploreLinks },
+  ]
 
   return (
     <header className="sticky top-0 z-50 bg-cecj-green shadow-md">
@@ -80,57 +201,25 @@ export function Navbar() {
 
         {/* Desktop nav */}
         <ul className="hidden items-center gap-1 lg:flex">
-          {navLinks.map((link) => (
-            <li key={link.href}>
-              <Link
-                href={link.href}
-                className={cn(
-                  "rounded px-3 py-1.5 text-sm font-medium transition-colors",
-                  isLinkActive(link.href)
-                    ? "bg-white/20 text-white"
-                    : "text-white/80 hover:text-white hover:bg-white/10",
-                )}
-              >
-                {link.label}
-              </Link>
-            </li>
-          ))}
-
-          {/* Explorer dropdown */}
-          <li className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setDropdownOpen((v) => !v)}
-              className={cn(
-                "flex items-center gap-1 rounded px-3 py-1.5 text-sm font-medium transition-colors",
-                isExploreActive || dropdownOpen
-                  ? "bg-white/20 text-white"
-                  : "text-white/80 hover:text-white hover:bg-white/10",
-              )}
-            >
-              {t("nav.explorer")}
-              <ChevronIcon className={cn("h-3.5 w-3.5 transition-transform duration-200", dropdownOpen && "rotate-180")} />
-            </button>
-
-            {dropdownOpen && (
-              <div className="absolute right-0 top-full mt-2 min-w-[190px] rounded-xl bg-white py-1.5 shadow-xl ring-1 ring-black/8">
-                {exploreLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setDropdownOpen(false)}
-                    className={cn(
-                      "block px-4 py-2.5 text-sm transition-colors",
-                      isLinkActive(link.href)
-                        ? "bg-cecj-green/8 font-semibold text-cecj-green"
-                        : "text-gray-700 hover:bg-cecj-green/5 hover:text-cecj-green",
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </li>
+          {navItems.map((item) =>
+            item.type === "dropdown" ? (
+              <DesktopDropdown key={item.label} label={item.label} links={item.links} align={item.align} />
+            ) : (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "rounded px-3 py-1.5 text-sm font-medium transition-colors",
+                    item.isActive
+                      ? "bg-white/20 text-white"
+                      : "text-white/80 hover:text-white hover:bg-white/10",
+                  )}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ),
+          )}
         </ul>
 
         {/* Right controls */}
@@ -152,57 +241,31 @@ export function Navbar() {
       {menuOpen && (
         <div className="border-t border-white/10 bg-cecj-green px-4 pb-4 lg:hidden">
           <ul className="mt-2 space-y-1">
-            {navLinks.map((link) => (
-              <li key={link.href}>
-                <Link
-                  href={link.href}
-                  onClick={() => setMenuOpen(false)}
-                  className={cn(
-                    "block rounded px-3 py-3 text-sm font-medium",
-                    isLinkActive(link.href)
-                      ? "bg-white/20 text-white"
-                      : "text-white/80 hover:text-white",
-                  )}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-
-            {/* Explorer sub-section mobile */}
-            <li>
-              <button
-                onClick={() => setMobileExploreOpen((v) => !v)}
-                className={cn(
-                  "flex w-full items-center justify-between rounded px-3 py-3 text-sm font-medium",
-                  isExploreActive ? "bg-white/20 text-white" : "text-white/80 hover:text-white",
-                )}
-              >
-                {t("nav.explorer")}
-                <ChevronIcon className={cn("h-4 w-4 transition-transform duration-200", mobileExploreOpen && "rotate-180")} />
-              </button>
-
-              {mobileExploreOpen && (
-                <ul className="ml-3 mt-1 space-y-0.5 border-l border-white/15 pl-3">
-                  {exploreLinks.map((link) => (
-                    <li key={link.href}>
-                      <Link
-                        href={link.href}
-                        onClick={() => { setMenuOpen(false); setMobileExploreOpen(false) }}
-                        className={cn(
-                          "block rounded px-3 py-2.5 text-sm",
-                          isLinkActive(link.href)
-                            ? "font-semibold text-white"
-                            : "text-white/65 hover:text-white",
-                        )}
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
+            {navItems.map((item) =>
+              item.type === "dropdown" ? (
+                <MobileAccordion
+                  key={item.label}
+                  label={item.label}
+                  links={item.links}
+                  onNavigate={() => setMenuOpen(false)}
+                />
+              ) : (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={() => setMenuOpen(false)}
+                    className={cn(
+                      "block rounded px-3 py-3 text-sm font-medium",
+                      item.isActive
+                        ? "bg-white/20 text-white"
+                        : "text-white/80 hover:text-white",
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ),
+            )}
           </ul>
         </div>
       )}

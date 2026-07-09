@@ -11,6 +11,10 @@
     "evenements": "Events",
     "galerie": "Gallery",
     "enseignements": "Teachings",
+    "enseignements_tous": "All teachings",
+    "enseignements_audios": "Audio",
+    "enseignements_videos": "Videos",
+    "enseignements_ecrits": "Written (PDF)",
     "leadership": "Leadership",
     "temoignages": "Testimonies",
     "departements": "Departments",
@@ -175,10 +179,10 @@
   "teachingsSection": {
     "badge": "Teachings",
     "title": "Feed your faith with the Word",
-    "subtitle": "Sermons and teachings from the church, in audio and video — wherever you are.",
+    "subtitle": "The church's teachings, in audio and video — wherever you are.",
     "audioCountLabel": "audio teachings",
     "videoCountLabel": "videos",
-    "latestVideo": "Latest video sermon",
+    "latestVideo": "Latest video teaching",
     "latestAudio": "Latest audio teachings",
     "listenHint": "Start listening here — the player follows you across the site.",
     "browseAudio": "Explore the audio library",
@@ -202,7 +206,16 @@
     "hub": {
       "badge": "The Word at all times",
       "title": "Teachings",
-      "intro": "Listen to the church's teachings, organised by theme. Start playing and keep browsing — the audio follows you.",
+      "intro": "The Word preached at Camp de Jésus-Christ, available in audio, video and soon in writing.",
+      "formatsTitle": "Browse by format",
+      "cardCta": "Explore",
+      "audioCardTitle": "Audio",
+      "audioCardDesc": "Teachings to listen to, organised by theme, with search and resume playback.",
+      "videoCardTitle": "Videos",
+      "videoCardDesc": "Services and teachings on video, from the church's YouTube channel.",
+      "ecritsCardTitle": "Written (PDF)",
+      "ecritsCardDesc": "Teaching notes and Bible studies to read and download.",
+      "ecritsCardSoon": "Coming soon",
       "searchPlaceholder": "Search for a teaching…",
       "featured": "Latest teaching",
       "topics": "Topics",
@@ -215,6 +228,20 @@
       "mostPlayed": "Most played",
       "latestVideos": "Latest videos",
       "allVideos": "All videos →"
+    },
+    "audios": {
+      "badge": "Audio library",
+      "title": "Audio teachings",
+      "intro": "Listen to the church's teachings, organised by theme. Start playing and keep browsing — the audio follows you."
+    },
+    "ecrits": {
+      "badge": "Written library",
+      "title": "Written teachings",
+      "intro": "Teaching notes, Bible studies and PDF resources to read and download.",
+      "comingSoon": "This section is in preparation",
+      "comingSoonDetail": "Written teachings will be available soon. In the meantime, explore the audio and video teachings.",
+      "ctaAudios": "Listen to audio",
+      "ctaVideos": "Watch videos"
     },
     "theme": {
       "notFound": "This theme does not exist or is no longer available.",
@@ -236,7 +263,7 @@
     "videos": {
       "badge": "The Word in pictures",
       "title": "Video teachings",
-      "intro": "Watch the church's sermons and teachings from our YouTube channel, right here on the site.",
+      "intro": "Watch the church's teachings from our YouTube channel, right here on the site.",
       "searchPlaceholder": "Search for a video…",
       "themes": "Themes",
       "noMatch": "No video matches your search.",

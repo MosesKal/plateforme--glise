@@ -1,25 +1,13 @@
 "use client"
 
-import { useMemo, useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
 import { stagger, fadeUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
-import { useDebounce } from "@/hooks/useDebounce"
-import {
-  useAudioTeachings,
-  useInfiniteAudioTeachings,
-  useTeachingTags,
-  useTeachingThemes,
-  useVideoTeachings,
-} from "@/hooks/useTeachings"
-import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
+import { useVideoTeachings } from "@/hooks/useTeachings"
+import { SITE_ROUTES } from "@/constants/routes"
 import { FeaturedTeachingHero } from "@/components/features/teachings/audio/FeaturedTeachingHero"
-import { ThemeCard } from "@/components/features/teachings/audio/ThemeCard"
-import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
-import { ResumeListening } from "@/components/features/teachings/audio/ResumeListening"
 import { VideoCard } from "@/components/features/teachings/video/VideoCard"
-import type { AudioTeaching, PublicTag } from "@/lib/api/teachings"
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
@@ -30,75 +18,65 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   )
 }
 
-function RowList({ items }: { items: AudioTeaching[] }) {
+const FORMAT_ICONS = {
+  audio: "M9 9l10.5-3m0 6.553v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 11-.99-3.467l2.31-.66a2.25 2.25 0 001.632-2.163zm0 0V2.25L9 5.25v10.303m0 0v3.75a2.25 2.25 0 01-1.632 2.163l-1.32.377a1.803 1.803 0 01-.99-3.467l2.31-.66A2.25 2.25 0 009 15.553z",
+  video: "M15.75 10.5l4.72-4.72a.75.75 0 011.28.53v11.38a.75.75 0 01-1.28.53l-4.72-4.72M4.5 18.75h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 002.25 7.5v9a2.25 2.25 0 002.25 2.25z",
+  ecrits: "M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z",
+} as const
+
+function FormatCard({
+  title,
+  description,
+  href,
+  iconPath,
+  cta,
+  soonLabel,
+}: {
+  title: string
+  description: string
+  href: string
+  iconPath: string
+  cta: string
+  soonLabel?: string
+}) {
   return (
-    <div className="space-y-3">
-      {items.map((teaching, index) => (
-        <AudioTeachingRow key={teaching.id} teaching={teaching} queue={items} index={index} />
-      ))}
-    </div>
+    <Link
+      href={href}
+      className="group flex flex-col rounded-2xl border border-gray-100 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-cecj-green/30 hover:shadow-md"
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-cecj-green/8 text-cecj-green transition group-hover:bg-cecj-green group-hover:text-white">
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+            <path strokeLinecap="round" strokeLinejoin="round" d={iconPath} />
+          </svg>
+        </div>
+        {soonLabel && (
+          <span className="rounded-full border border-cecj-gold/40 bg-cecj-gold/10 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-amber-600">
+            {soonLabel}
+          </span>
+        )}
+      </div>
+      <h3 className="mt-4 text-lg font-bold text-gray-900">{title}</h3>
+      <p className="mt-1.5 flex-1 text-sm leading-relaxed text-gray-500">{description}</p>
+      <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-cecj-green">
+        {cta}
+        <span className="transition-transform group-hover:translate-x-0.5">→</span>
+      </span>
+    </Link>
   )
 }
 
-function RowSkeleton({ count = 5 }: { count?: number }) {
-  return (
-    <div className="space-y-3">
-      {Array.from({ length: count }).map((_, i) => (
-        <div key={i} className="h-[74px] animate-pulse rounded-xl bg-gray-100" />
-      ))}
-    </div>
-  )
-}
-
+/** Hub des enseignements : présente les trois formats (audio, vidéo, écrit). */
 export function EnseignementsContent() {
   const { t, locale } = useI18n()
 
-  const [search, setSearch] = useState("")
-  const [activeTag, setActiveTag] = useState<PublicTag | null>(null)
-  const debouncedSearch = useDebounce(search.trim(), 300)
+  const lp = (path: string) => `/${locale}${path}`
 
-  const isSearching = debouncedSearch.length >= 2
-  const isBrowsing = !isSearching && !activeTag
-
-  const { data: themes = [], isLoading: themesLoading } = useTeachingThemes()
-  const { data: tags = [] } = useTeachingTags()
-
-  // Résultats (recherche OU tag) — une seule requête active à la fois,
-  // en chargement progressif (un tag peut couvrir un thème de 200+ audios).
-  const {
-    data: results,
-    isLoading: resultsLoading,
-    fetchNextPage: fetchMoreResults,
-    isFetchingNextPage: isFetchingMoreResults,
-  } = useInfiniteAudioTeachings(
-    isSearching
-      ? { search: debouncedSearch, limit: 10 }
-      : { tag: activeTag?.slug, limit: 10 },
-    isSearching || Boolean(activeTag),
-  )
-
-  const resultItems = useMemo(
-    () => results?.pages.flatMap((p) => p.items) ?? [],
-    [results],
-  )
-  const resultsTotal = results?.pages[0]?.total ?? 0
-
-  const { data: recent } = useAudioTeachings({ sort: "recent", limit: 5 }, isBrowsing)
-  const { data: popular } = useAudioTeachings({ sort: "popular", limit: 5 }, isBrowsing)
-  const { data: videos } = useVideoTeachings({ limit: 3 }, isBrowsing)
-
-  const visibleThemes = themes.filter((t) => t._count.audioTeachings > 0)
-  const showPopular =
-    (popular?.items.some((t) => t.playCount > 0) ?? false) && (popular?.items.length ?? 0) > 1
-
-  const selectTag = (tag: PublicTag) => {
-    setSearch("")
-    setActiveTag((current) => (current?.id === tag.id ? null : tag))
-  }
+  const { data: videos } = useVideoTeachings({ limit: 3 })
 
   return (
     <div className="bg-white pb-24">
-      {/* Hero + recherche */}
+      {/* Hero */}
       <section className="relative overflow-hidden bg-cecj-green py-14 md:py-24">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -right-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
@@ -122,35 +100,6 @@ export function EnseignementsContent() {
               {t("teachings.hub.intro")}
             </motion.p>
 
-            {/* Recherche */}
-            <motion.div variants={fadeUp} className="mx-auto max-w-xl pt-2">
-              <div className="relative">
-                <svg
-                  className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/40"
-                  fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M17 10.5a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z" />
-                </svg>
-                <input
-                  value={search}
-                  onChange={(e) => { setSearch(e.target.value); setActiveTag(null) }}
-                  placeholder={t("teachings.hub.searchPlaceholder")}
-                  className="w-full rounded-full border border-white/15 bg-white/10 py-3.5 pl-12 pr-12 text-base text-white placeholder:text-white/40 outline-none backdrop-blur transition focus:border-cecj-gold/60 focus:bg-white/15 sm:text-sm"
-                />
-                {search && (
-                  <button
-                    onClick={() => setSearch("")}
-                    aria-label={t("teachings.common.clearSearch")}
-                    className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-full text-white/50 transition hover:bg-white/10 hover:text-white"
-                  >
-                    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" d="M6 6l12 12M18 6L6 18" />
-                    </svg>
-                  </button>
-                )}
-              </div>
-            </motion.div>
-
             {/* Dernier enseignement, jouable immédiatement : le visiteur peut
                 lancer l'écoute sans traverser thème puis page détail. */}
             <motion.div variants={fadeUp} className="mx-auto max-w-xl pt-3">
@@ -160,166 +109,70 @@ export function EnseignementsContent() {
         </div>
       </section>
 
-      {/* Tags — rangée défilante en mobile (le wrap de ~14 boutons repousse
-          le contenu trop bas), wrap classique dès sm. */}
-      {tags.length > 0 && (
-        <section className="mx-auto max-w-6xl px-4 pt-8 lg:px-8">
-          <div className="-mx-4 flex items-center gap-2 overflow-x-auto px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pb-0">
-            <span className="mr-1 shrink-0 text-xs font-bold uppercase tracking-widest text-gray-400">
-              {t("teachings.hub.topics")}
-            </span>
-            {tags.slice(0, 14).map((tag) => (
-              <button
-                key={tag.id}
-                onClick={() => selectTag(tag)}
-                className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-xs font-semibold transition ${
-                  activeTag?.id === tag.id
-                    ? "border-cecj-green bg-cecj-green text-white"
-                    : "border-gray-200 text-gray-600 hover:border-cecj-green hover:text-cecj-green"
-                }`}
-              >
-                {tag.name}
-                <span className="ml-1.5 opacity-50">{tag.count}</span>
-              </button>
-            ))}
+      {/* Les trois formats */}
+      <section className="mx-auto max-w-6xl px-4 pt-14 lg:px-8">
+        <motion.div initial="hidden" animate="visible" variants={stagger} className="space-y-8">
+          <motion.div variants={fadeUp}>
+            <SectionTitle>{t("teachings.hub.formatsTitle")}</SectionTitle>
+          </motion.div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <motion.div variants={fadeUp}>
+              <FormatCard
+                title={t("teachings.hub.audioCardTitle")}
+                description={t("teachings.hub.audioCardDesc")}
+                href={lp(SITE_ROUTES.enseignementsAudios)}
+                iconPath={FORMAT_ICONS.audio}
+                cta={t("teachings.hub.cardCta")}
+              />
+            </motion.div>
+            <motion.div variants={fadeUp}>
+              <FormatCard
+                title={t("teachings.hub.videoCardTitle")}
+                description={t("teachings.hub.videoCardDesc")}
+                href={lp(SITE_ROUTES.enseignementsVideos)}
+                iconPath={FORMAT_ICONS.video}
+                cta={t("teachings.hub.cardCta")}
+              />
+            </motion.div>
+            <motion.div variants={fadeUp}>
+              <FormatCard
+                title={t("teachings.hub.ecritsCardTitle")}
+                description={t("teachings.hub.ecritsCardDesc")}
+                href={lp(SITE_ROUTES.enseignementsEcrits)}
+                iconPath={FORMAT_ICONS.ecrits}
+                cta={t("teachings.hub.cardCta")}
+                soonLabel={t("teachings.hub.ecritsCardSoon")}
+              />
+            </motion.div>
           </div>
-        </section>
-      )}
+        </motion.div>
+      </section>
 
-      {/* Mode résultats : recherche ou tag actif */}
-      {!isBrowsing ? (
-        <section className="mx-auto max-w-4xl px-4 py-12 lg:px-8">
-          <div className="space-y-6">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <SectionTitle>
-                {isSearching ? (
-                  <>{t("teachings.hub.resultsFor")} «&nbsp;{debouncedSearch}&nbsp;»</>
-                ) : (
-                  <>{t("teachings.hub.topicLabel")} {activeTag?.name}</>
-                )}
-              </SectionTitle>
-              {!resultsLoading && (
-                <p className="text-sm text-gray-400">
-                  {resultsTotal}{" "}
-                  {resultsTotal > 1
-                    ? t("teachings.common.teachingPlural")
-                    : t("teachings.common.teachingSingular")}
-                </p>
-              )}
-            </div>
-
-            {resultsLoading ? (
-              <RowSkeleton />
-            ) : resultItems.length === 0 ? (
-              <p className="rounded-xl border border-dashed border-gray-200 py-16 text-center text-sm text-gray-400">
-                {t("teachings.hub.noResults")}
-              </p>
-            ) : (
-              <>
-                <RowList items={resultItems} />
-                <LoadMoreButton
-                  remaining={resultsTotal - resultItems.length}
-                  loading={isFetchingMoreResults}
-                  onClick={() => fetchMoreResults()}
-                />
-              </>
-            )}
-          </div>
-        </section>
-      ) : (
-        <>
-          {/* Reprendre l'écoute (localStorage, propre à l'appareil) */}
-          <ResumeListening />
-
-          {/* Thèmes — contenu principal de la page. Révélé au MONTAGE
-              (initial/animate) et non au scroll (whileInView) : les données
-              étant chargées côté client, l'IntersectionObserver ajoutait un
-              délai qui rendait l'apparition lente et saccadée. Chaque carte
-              est animée individuellement (stagger) pour un rendu fluide. */}
-          <section className="mx-auto max-w-6xl px-4 pt-14 lg:px-8">
-            <div className="space-y-8">
-              <SectionTitle>{t("teachings.hub.browseByTheme")}</SectionTitle>
-
-              {themesLoading ? (
-                <div className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3">
-                  {Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} className="h-32 animate-pulse rounded-2xl bg-gray-100 sm:h-40" />
-                  ))}
-                </div>
-              ) : visibleThemes.length === 0 ? (
-                <p className="rounded-xl border border-dashed border-gray-200 py-16 text-center text-sm text-gray-400">
-                  {t("teachings.hub.comingSoon")}
-                </p>
-              ) : (
-                <motion.div
-                  initial="hidden"
-                  animate="visible"
-                  variants={stagger}
-                  className="grid grid-cols-2 gap-3 sm:gap-5 lg:grid-cols-3"
-                >
-                  {visibleThemes.map((theme) => (
-                    <motion.div key={theme.id} variants={fadeUp}>
-                      <ThemeCard
-                        theme={theme}
-                        href={`/${locale}/enseignements/audio/${theme.slug}`}
-                      />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              )}
-            </div>
-          </section>
-
-          {/* Derniers + plus écoutés */}
-          {(recent?.items.length ?? 0) > 0 && (
-            <section className="mx-auto max-w-6xl px-4 pt-16 lg:px-8">
-              <motion.div
-                {...inView()}
-                variants={stagger}
-                className={`grid grid-cols-1 gap-12 ${showPopular ? "lg:grid-cols-2" : ""}`}
+      {/* Teaser vidéos — visible seulement si la chaîne a été synchronisée */}
+      {(videos?.items.length ?? 0) > 0 && (
+        <section className="mx-auto max-w-6xl px-4 pt-16 lg:px-8">
+          <motion.div {...inView()} variants={stagger} className="space-y-6">
+            <motion.div
+              variants={fadeUp}
+              className="flex flex-wrap items-baseline justify-between gap-2"
+            >
+              <SectionTitle>{t("teachings.hub.latestVideos")}</SectionTitle>
+              <Link
+                href={lp(SITE_ROUTES.enseignementsVideos)}
+                className="text-sm font-semibold text-cecj-green transition hover:underline"
               >
-                <motion.div variants={fadeUp} className="space-y-6">
-                  <SectionTitle>{t("teachings.hub.latest")}</SectionTitle>
-                  <RowList items={recent!.items} />
+                {t("teachings.hub.allVideos")}
+              </Link>
+            </motion.div>
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {videos!.items.map((video) => (
+                <motion.div key={video.id} variants={fadeUp}>
+                  <VideoCard video={video} />
                 </motion.div>
-
-                {showPopular && (
-                  <motion.div variants={fadeUp} className="space-y-6">
-                    <SectionTitle>{t("teachings.hub.mostPlayed")}</SectionTitle>
-                    <RowList items={popular!.items} />
-                  </motion.div>
-                )}
-              </motion.div>
-            </section>
-          )}
-
-          {/* Teaser vidéos — visible seulement si la chaîne a été synchronisée */}
-          {(videos?.items.length ?? 0) > 0 && (
-            <section className="mx-auto max-w-6xl px-4 pt-16 lg:px-8">
-              <motion.div {...inView()} variants={stagger} className="space-y-6">
-                <motion.div
-                  variants={fadeUp}
-                  className="flex flex-wrap items-baseline justify-between gap-2"
-                >
-                  <SectionTitle>{t("teachings.hub.latestVideos")}</SectionTitle>
-                  <Link
-                    href={`/${locale}/enseignements/videos`}
-                    className="text-sm font-semibold text-cecj-green transition hover:underline"
-                  >
-                    {t("teachings.hub.allVideos")}
-                  </Link>
-                </motion.div>
-                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                  {videos!.items.map((video) => (
-                    <motion.div key={video.id} variants={fadeUp}>
-                      <VideoCard video={video} />
-                    </motion.div>
-                  ))}
-                </div>
-              </motion.div>
-            </section>
-          )}
-        </>
+              ))}
+            </div>
+          </motion.div>
+        </section>
       )}
     </div>
   )

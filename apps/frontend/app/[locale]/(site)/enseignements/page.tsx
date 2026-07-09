@@ -5,12 +5,12 @@ import { EnseignementsContent } from "@/components/features/teachings/Enseigneme
 export const metadata: Metadata = {
   title: "Enseignements",
   description:
-    "Écoutez les enseignements audio de l'église, organisés par thèmes : foi, prière, vie chrétienne et plus encore.",
+    "Retrouvez les enseignements de l'église en audio, en vidéo et bientôt à l'écrit (PDF).",
   openGraph: {
     ...OG_DEFAULTS,
     title: "Enseignements",
     description:
-      "Écoutez les enseignements audio de l'église, organisés par thèmes : foi, prière, vie chrétienne et plus encore.",
+      "Retrouvez les enseignements de l'église en audio, en vidéo et bientôt à l'écrit (PDF).",
   },
 }
 

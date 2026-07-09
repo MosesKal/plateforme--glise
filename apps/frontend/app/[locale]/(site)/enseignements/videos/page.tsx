@@ -5,12 +5,12 @@ import { VideosContent } from "@/components/features/teachings/video/VideosConte
 export const metadata: Metadata = {
   title: "Enseignements vidéo",
   description:
-    "Regardez les prédications et enseignements vidéo de l'église, synchronisés depuis notre chaîne YouTube.",
+    "Regardez les enseignements vidéo de l'église, synchronisés depuis notre chaîne YouTube.",
   openGraph: {
     ...OG_DEFAULTS,
     title: "Enseignements vidéo",
     description:
-      "Regardez les prédications et enseignements vidéo de l'église, synchronisés depuis notre chaîne YouTube.",
+      "Regardez les enseignements vidéo de l'église, synchronisés depuis notre chaîne YouTube.",
   },
 }
 

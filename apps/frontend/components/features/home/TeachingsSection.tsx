@@ -113,7 +113,7 @@ export function TeachingsSection() {
                     )}
                   </div>
                   <Link
-                    href={`/${locale}${SITE_ROUTES.enseignements}/videos`}
+                    href={`/${locale}${SITE_ROUTES.enseignementsVideos}`}
                     className="group flex items-center justify-between border-t border-cecj-rule px-4 py-3 text-sm font-semibold text-cecj-green transition-colors hover:bg-cecj-green/5 sm:px-5"
                   >
                     {t("teachingsSection.browseVideos")}
@@ -143,7 +143,7 @@ export function TeachingsSection() {
                     ))}
                   </div>
                   <Link
-                    href={`/${locale}${SITE_ROUTES.enseignements}`}
+                    href={`/${locale}${SITE_ROUTES.enseignementsAudios}`}
                     className="group flex items-center justify-between border-t border-cecj-rule px-4 py-3 text-sm font-semibold text-cecj-green transition-colors hover:bg-cecj-green/5 sm:px-5"
                   >
                     {t("teachingsSection.browseAudio")}
