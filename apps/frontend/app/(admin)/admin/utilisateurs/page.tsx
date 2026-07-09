@@ -31,6 +31,8 @@ export default function UtilisateursPage() {
         payload: {
           firstName: values.firstName,
           lastName:  values.lastName,
+          email:     values.email,
+          password:  values.password,
           phone:     values.phone,
           roleId:    values.roleId,
           status:    values.status,

@@ -34,4 +34,9 @@ export const authApi = {
 
   logout: (refreshToken: string) =>
     api.post<void>("/auth/logout", { refreshToken }),
+
+  // Retourne une nouvelle paire de tokens : le backend révoque toutes les
+  // sessions existantes lors du changement de mot de passe.
+  changePassword: (currentPassword: string, newPassword: string) =>
+    api.post<AuthResponse>("/auth/change-password", { currentPassword, newPassword }),
 }

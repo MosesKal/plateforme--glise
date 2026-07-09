@@ -36,6 +36,9 @@ export interface CreateUserPayload {
 export interface UpdateUserPayload {
   firstName?: string
   lastName?: string
+  // email et password : acceptés par l'API uniquement pour le Super Admin
+  email?: string
+  password?: string
   phone?: string
   roleId?: string
   status?: UserStatus

@@ -100,6 +100,34 @@ export class AuthService {
     await this.prisma.refreshToken.deleteMany({ where: { token: rawToken } });
   }
 
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
+    if (!user) throw new UnauthorizedException();
+
+    const valid = await bcrypt.compare(currentPassword, user.password);
+    if (!valid) throw new UnauthorizedException('Current password incorrect');
+
+    const hashed = await bcrypt.hash(newPassword, 12);
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { password: hashed },
+    });
+
+    // Toutes les sessions existantes sont révoquées (un éventuel attaquant qui
+    // détenait un refresh token est éjecté) ; une nouvelle paire est émise pour
+    // que la session courante continue sans re-login.
+    await this.prisma.refreshToken.deleteMany({ where: { userId } });
+    const tokens = await this.generateTokens(user.id, user.email);
+    return { user: this.sanitize(user), ...tokens };
+  }
+
   // ── Helpers ────────────────────────────────────────────────────────────────
 
   private async generateTokens(userId: string, email: string) {

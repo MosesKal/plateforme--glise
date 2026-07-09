@@ -1,5 +1,6 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -84,8 +85,22 @@ export class UsersService {
     });
   }
 
-  async update(id: string, dto: UpdateUserDto) {
+  async update(
+    id: string,
+    dto: UpdateUserDto,
+    currentUser: { id: string; role: { name: string } },
+  ) {
     await this.findOne(id);
+
+    // L'identité de connexion (email, mot de passe) est réservée au Super Admin.
+    if (
+      (dto.email || dto.password) &&
+      currentUser.role.name !== 'Super Admin'
+    ) {
+      throw new ForbiddenException(
+        'Only Super Admin can change email or password',
+      );
+    }
 
     if (dto.roleId) {
       const role = await this.prisma.role.findUnique({
@@ -94,11 +109,32 @@ export class UsersService {
       if (!role) throw new NotFoundException('Role not found');
     }
 
-    return this.prisma.user.update({
+    if (dto.email) {
+      const conflict = await this.prisma.user.findFirst({
+        where: { email: dto.email, NOT: { id } },
+      });
+      if (conflict) throw new ConflictException('Email already in use');
+    }
+
+    const { password, ...rest } = dto;
+    const data: Record<string, unknown> = { ...rest };
+    if (password) {
+      data.password = await bcrypt.hash(password, 12);
+    }
+
+    const user = await this.prisma.user.update({
       where: { id },
-      data: dto,
+      data,
       select: USER_SELECT,
     });
+
+    // Un mot de passe changé par l'admin invalide toutes les sessions de la
+    // cible : ses refresh tokens sont révoqués, elle devra se reconnecter.
+    if (password) {
+      await this.prisma.refreshToken.deleteMany({ where: { userId: id } });
+    }
+
+    return user;
   }
 
   async remove(id: string, currentUserId: string) {

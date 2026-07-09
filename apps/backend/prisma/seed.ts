@@ -11,7 +11,7 @@ async function main() {
   const roleDefinitions = [
     { name: "Super Admin",               description: "Acces complet a toute la plateforme" },
     { name: "Administrateur General",    description: "Gestion globale du contenu" },
-    { name: "Responsable Communication", description: "Actualites, galerie, evenements, medias" },
+    { name: "Responsable Communication", description: "Enseignements, galerie, evenements, programme, pages, medias" },
     { name: "Responsable Extension",     description: "Gestion de sa propre extension" },
     { name: "Moderateur",                description: "Validation des contenus soumis" },
     { name: "Member",                    description: "Membre inscrit - acces de base" },

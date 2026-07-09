@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/Button"
+import { useAuthStore } from "@/store/auth.store"
 import type { AdminUser } from "@/lib/api/admin/users"
 import type { AdminRole } from "@/lib/api/admin/roles"
 
@@ -53,6 +54,10 @@ interface Props {
 
 export function UserFormModal({ open, onClose, onSubmit, initialData, roles }: Props) {
   const isEdit = !!initialData
+  // Seul le Super Admin peut modifier l'identité de connexion (email, mot de
+  // passe) d'un autre utilisateur — l'API rejette ces champs pour les autres rôles.
+  const isSuperAdmin = useAuthStore((s) => s.user?.role.name === "Super Admin")
+  const showCredentials = !isEdit || isSuperAdmin
 
   const { register, handleSubmit, reset, setError, formState: { errors, isSubmitting } } =
     useForm<FormValues>({ resolver: zodResolver(baseSchema) })
@@ -67,7 +72,7 @@ export function UserFormModal({ open, onClose, onSubmit, initialData, roles }: P
             phone:     initialData.phone ?? "",
             roleId:    initialData.role.id,
             status:    initialData.status,
-            email:     "",
+            email:     initialData.email,
             password:  "",
           }
         : { status: "ACTIVE", email: "", password: "", phone: "" },
@@ -91,7 +96,15 @@ export function UserFormModal({ open, onClose, onSubmit, initialData, roles }: P
       phone:     values.phone || undefined,
       roleId:    values.roleId,
       status:    values.status,
-      ...(isEdit ? {} : { email: values.email!, password: values.password! }),
+      ...(isEdit
+        ? {
+            // N'envoyer que ce qui change : l'API réserve ces champs au Super Admin.
+            ...(isSuperAdmin && values.email && values.email !== initialData!.email
+              ? { email: values.email }
+              : {}),
+            ...(isSuperAdmin && values.password ? { password: values.password } : {}),
+          }
+        : { email: values.email!, password: values.password! }),
     })
   }
 
@@ -123,15 +136,23 @@ export function UserFormModal({ open, onClose, onSubmit, initialData, roles }: P
             </Field>
           </div>
 
-          {!isEdit && (
+          {showCredentials && (
             <Field label="Email *" error={errors.email?.message}>
               <input {...register("email")} type="email" className={inputCls} placeholder="jean@cecj.org" />
             </Field>
           )}
 
-          {!isEdit && (
-            <Field label="Mot de passe *" error={errors.password?.message}>
-              <input {...register("password")} type="password" className={inputCls} placeholder="Minimum 8 caractères" />
+          {showCredentials && (
+            <Field
+              label={isEdit ? "Nouveau mot de passe" : "Mot de passe *"}
+              error={errors.password?.message}
+            >
+              <input
+                {...register("password")}
+                type="password"
+                className={inputCls}
+                placeholder={isEdit ? "Laisser vide pour ne pas changer" : "Minimum 8 caractères"}
+              />
             </Field>
           )}
 
