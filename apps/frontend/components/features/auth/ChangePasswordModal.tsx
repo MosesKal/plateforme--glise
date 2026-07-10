@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Button } from "@/components/ui/Button"
 import { authApi } from "@/lib/api/auth"
+import { parseApiError } from "@/lib/api/errors"
 import { useAuthStore } from "@/store/auth.store"
 
 const inputCls = "w-full rounded-lg border border-gray-200 px-3 py-2 text-sm outline-none focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
@@ -67,11 +68,11 @@ export function ChangePasswordModal({ open, onClose }: Props) {
       setAuth(data.user, data.accessToken, data.refreshToken)
       setSuccess(true)
     } catch (err: unknown) {
-      const status = (err as { response?: { status?: number } })?.response?.status
-      if (status === 401) {
-        setError("currentPassword", { message: "Mot de passe actuel incorrect" })
+      const apiError = parseApiError(err, "changePassword")
+      if (apiError.status === 401) {
+        setError("currentPassword", { message: apiError.message })
       } else {
-        setError("root", { message: "Une erreur est survenue. Réessayez." })
+        setError("root", { message: apiError.message })
       }
     }
   }

@@ -105,14 +105,18 @@ function EditForm({
   const mediaType = watch("mediaType")
 
   const submit = async (values: EditValues) => {
-    await onUpdate(initialData.id, {
-      mediaUrl: values.mediaUrl,
-      title: values.title || undefined,
-      mediaType: values.mediaType,
-      albumId: values.albumId || null,
-      order: values.order ?? 0,
-    })
-    onClose()
+    try {
+      await onUpdate(initialData.id, {
+        mediaUrl: values.mediaUrl,
+        title: values.title || undefined,
+        mediaType: values.mediaType,
+        albumId: values.albumId || null,
+        order: values.order ?? 0,
+      })
+      onClose()
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
+    }
   }
 
   return (

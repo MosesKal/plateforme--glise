@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { authApi } from "@/lib/api/auth"
+import { parseApiError } from "@/lib/api/errors"
 import { useAuthStore } from "@/store/auth.store"
 import { loginSchema, type LoginFormValues } from "@/lib/validations/auth"
 
@@ -47,11 +48,7 @@ export function LoginForm({ locale }: { locale: string }) {
       setAuth(data.user, data.accessToken, data.refreshToken)
       router.push("/admin")
     } catch (err: unknown) {
-      const msg =
-        (err as { response?: { data?: { message?: string } } })?.response?.data?.message
-      setServerError(
-        typeof msg === "string" ? msg : "Email ou mot de passe incorrect.",
-      )
+      setServerError(parseApiError(err, "login").message)
     }
   }
 

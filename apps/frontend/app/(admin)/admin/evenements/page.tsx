@@ -35,12 +35,16 @@ export default function AdminEvenementsPage() {
       address:    values.address    || undefined,
       coverImage: values.coverImage || undefined,
     }
-    if (editTarget) {
-      await updateEvent.mutateAsync({ id: editTarget.id, payload })
-    } else {
-      await createEvent.mutateAsync(payload)
+    try {
+      if (editTarget) {
+        await updateEvent.mutateAsync({ id: editTarget.id, payload })
+      } else {
+        await createEvent.mutateAsync(payload)
+      }
+      closeModal()
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    closeModal()
   }
 
   const handleToggleStatus = (event: AdminEvent) => {

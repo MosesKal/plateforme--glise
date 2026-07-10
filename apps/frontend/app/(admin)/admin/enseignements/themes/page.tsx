@@ -73,23 +73,31 @@ export default function AdminTeachingThemesPage() {
   const [deleteError, setDeleteError] = useState<string | null>(null)
 
   const submitTheme = async (payload: ThemePayload) => {
-    if (themeTarget) {
-      await updateTheme.mutateAsync({ id: themeTarget.id, payload })
-    } else {
-      await createTheme.mutateAsync(payload)
+    try {
+      if (themeTarget) {
+        await updateTheme.mutateAsync({ id: themeTarget.id, payload })
+      } else {
+        await createTheme.mutateAsync(payload)
+      }
+      setThemeModalOpen(false)
+      setThemeTarget(null)
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    setThemeModalOpen(false)
-    setThemeTarget(null)
   }
 
   const submitSpeaker = async (payload: SpeakerPayload) => {
-    if (speakerTarget) {
-      await updateSpeaker.mutateAsync({ id: speakerTarget.id, payload })
-    } else {
-      await createSpeaker.mutateAsync(payload)
+    try {
+      if (speakerTarget) {
+        await updateSpeaker.mutateAsync({ id: speakerTarget.id, payload })
+      } else {
+        await createSpeaker.mutateAsync(payload)
+      }
+      setSpeakerModalOpen(false)
+      setSpeakerTarget(null)
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    setSpeakerModalOpen(false)
-    setSpeakerTarget(null)
   }
 
   const handleDelete = async (kind: Tab, id: string) => {

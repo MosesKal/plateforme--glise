@@ -22,18 +22,26 @@ export default function AdminPagesPage() {
   function openEdit(page: SitePage) { setEditing(page); setModalOpen(true) }
 
   async function handleSubmit(values: PagePayload) {
-    if (editing) {
-      await updatePage.mutateAsync({ id: editing.id, payload: values })
-    } else {
-      await createPage.mutateAsync(values)
+    try {
+      if (editing) {
+        await updatePage.mutateAsync({ id: editing.id, payload: values })
+      } else {
+        await createPage.mutateAsync(values)
+      }
+      setModalOpen(false)
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    setModalOpen(false)
   }
 
   async function handleDelete() {
     if (!deleting) return
-    await deletePage.mutateAsync(deleting.id)
-    setDeleting(null)
+    try {
+      await deletePage.mutateAsync(deleting.id)
+      setDeleting(null)
+    } catch {
+      // Erreur déjà toastée par le MutationCache — le dialogue reste ouvert.
+    }
   }
 
   return (

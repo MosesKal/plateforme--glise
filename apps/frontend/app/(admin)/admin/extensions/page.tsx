@@ -40,12 +40,16 @@ export default function AdminExtensionsPage() {
       description: values.description || undefined,
       foundedAt:   values.foundedAt   ? new Date(values.foundedAt).toISOString() : undefined,
     }
-    if (editTarget) {
-      await updateExtension.mutateAsync({ id: editTarget.id, payload })
-    } else {
-      await createExtension.mutateAsync(payload)
+    try {
+      if (editTarget) {
+        await updateExtension.mutateAsync({ id: editTarget.id, payload })
+      } else {
+        await createExtension.mutateAsync(payload)
+      }
+      closeModal()
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    closeModal()
   }
 
   const handleDelete = async (id: string) => {

@@ -69,16 +69,24 @@ export default function AdminGaleriePage() {
       description: values.description || undefined,
       coverUrl:    values.coverUrl || undefined,
     }
-    if (editAlbum) {
-      await updateAlbum.mutateAsync({ id: editAlbum.id, payload })
-    } else {
-      await createAlbum.mutateAsync(payload)
+    try {
+      if (editAlbum) {
+        await updateAlbum.mutateAsync({ id: editAlbum.id, payload })
+      } else {
+        await createAlbum.mutateAsync(payload)
+      }
+      closeAlbum()
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    closeAlbum()
   }
 
   const handleDeleteItem = async (id: string) => {
-    await deleteItem.mutateAsync(id)
+    try {
+      await deleteItem.mutateAsync(id)
+    } catch {
+      // Erreur déjà toastée par le MutationCache.
+    }
   }
 
   const handleDeleteAlbum = async (id: string) => {
@@ -87,8 +95,12 @@ export default function AdminGaleriePage() {
       alert(`Impossible de supprimer l'album "${album.title}" car il contient ${album._count.items} média(s). Déplacez ou supprimez les médias d'abord.`)
       return
     }
-    await deleteAlbum.mutateAsync(id)
-    if (selectedAlbumId === id) setSelectedAlbumId(null)
+    try {
+      await deleteAlbum.mutateAsync(id)
+      if (selectedAlbumId === id) setSelectedAlbumId(null)
+    } catch {
+      // Erreur déjà toastée par le MutationCache.
+    }
   }
 
   const images = items.filter((i) => i.mediaType === "IMAGE").length

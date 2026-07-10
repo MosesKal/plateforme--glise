@@ -64,9 +64,14 @@ export function RolesTable({ roles, onEdit, onDelete }: Props) {
   const handleConfirmDelete = async () => {
     if (!deleteTarget) return
     setDeleting(true)
-    await onDelete(deleteTarget.id)
-    setDeleting(false)
-    setDeleteTarget(null)
+    try {
+      await onDelete(deleteTarget.id)
+      setDeleteTarget(null)
+    } catch {
+      // Erreur déjà toastée par le MutationCache — le dialogue reste ouvert.
+    } finally {
+      setDeleting(false)
+    }
   }
 
   if (roles.length === 0) {

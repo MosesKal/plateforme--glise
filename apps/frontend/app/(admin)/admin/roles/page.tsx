@@ -25,12 +25,16 @@ export default function RolesPage() {
 
   const handleSubmit = async (values: RoleFormValues) => {
     const payload = { ...values, description: values.description || undefined }
-    if (editTarget) {
-      await updateRole.mutateAsync({ id: editTarget.id, payload })
-    } else {
-      await createRole.mutateAsync(payload)
+    try {
+      if (editTarget) {
+        await updateRole.mutateAsync({ id: editTarget.id, payload })
+      } else {
+        await createRole.mutateAsync(payload)
+      }
+      closeModal()
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    closeModal()
   }
 
   return (

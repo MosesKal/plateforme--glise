@@ -82,8 +82,12 @@ export default function AdminVideosPage() {
 
   const handleUpdate = async (payload: VideoTeachingPayload) => {
     if (!editTarget) return
-    await update.mutateAsync({ id: editTarget.id, payload })
-    setEditTarget(null)
+    try {
+      await update.mutateAsync({ id: editTarget.id, payload })
+      setEditTarget(null)
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
+    }
   }
 
   return (

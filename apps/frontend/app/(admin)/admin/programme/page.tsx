@@ -34,12 +34,16 @@ export default function AdminProgrammePage() {
       weekStart:   (!values.isRecurring && values.weekStart) ? values.weekStart : undefined,
       isRecurring: values.isRecurring,
     }
-    if (editTarget) {
-      await updateEntry.mutateAsync({ id: editTarget.id, payload })
-    } else {
-      await createEntry.mutateAsync(payload)
+    try {
+      if (editTarget) {
+        await updateEntry.mutateAsync({ id: editTarget.id, payload })
+      } else {
+        await createEntry.mutateAsync(payload)
+      }
+      closeModal()
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    closeModal()
   }
 
   const handleDelete = async (id: string) => {

@@ -25,31 +25,35 @@ export default function UtilisateursPage() {
   const closeModal = () => { setModalOpen(false); setEditTarget(null) }
 
   const handleSubmit = async (values: UserSubmitPayload) => {
-    if (editTarget) {
-      await updateUser.mutateAsync({
-        id: editTarget.id,
-        payload: {
+    try {
+      if (editTarget) {
+        await updateUser.mutateAsync({
+          id: editTarget.id,
+          payload: {
+            firstName: values.firstName,
+            lastName:  values.lastName,
+            email:     values.email,
+            password:  values.password,
+            phone:     values.phone,
+            roleId:    values.roleId,
+            status:    values.status,
+          },
+        })
+      } else {
+        await createUser.mutateAsync({
           firstName: values.firstName,
           lastName:  values.lastName,
-          email:     values.email,
-          password:  values.password,
+          email:     values.email!,
+          password:  values.password!,
           phone:     values.phone,
           roleId:    values.roleId,
           status:    values.status,
-        },
-      })
-    } else {
-      await createUser.mutateAsync({
-        firstName: values.firstName,
-        lastName:  values.lastName,
-        email:     values.email!,
-        password:  values.password!,
-        phone:     values.phone,
-        roleId:    values.roleId,
-        status:    values.status,
-      })
+        })
+      }
+      closeModal()
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    closeModal()
   }
 
   const active   = users.filter((u) => u.status === "ACTIVE").length

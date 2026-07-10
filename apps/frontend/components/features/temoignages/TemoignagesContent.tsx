@@ -59,8 +59,12 @@ export function TemoignagesContent() {
     useForm<FormValues>({ resolver: zodResolver(schema) })
 
   const onSubmit = async (values: FormValues) => {
-    await submitMutation.mutateAsync({ fullName: values.fullName, content: values.content })
-    reset()
+    try {
+      await submitMutation.mutateAsync({ fullName: values.fullName, content: values.content })
+      reset()
+    } catch {
+      // Erreur déjà toastée par le MutationCache — le formulaire garde sa saisie.
+    }
   }
 
   return (

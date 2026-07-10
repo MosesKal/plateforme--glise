@@ -54,12 +54,16 @@ export default function AdminLeadersPage() {
       order:     values.order ?? 0,
       isActive:  values.isActive,
     }
-    if (editTarget) {
-      await update.mutateAsync({ id: editTarget.id, payload })
-    } else {
-      await create.mutateAsync(payload)
+    try {
+      if (editTarget) {
+        await update.mutateAsync({ id: editTarget.id, payload })
+      } else {
+        await create.mutateAsync(payload)
+      }
+      closeModal()
+    } catch {
+      // Erreur déjà toastée par le MutationCache — la modale reste ouverte.
     }
-    closeModal()
   }
 
   const active   = leaders.filter((l) => l.isActive).length
