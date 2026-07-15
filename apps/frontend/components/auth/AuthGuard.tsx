@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuthStore } from "@/store/auth.store"
 import { getRefreshToken } from "@/lib/token-store"
+import { getLoginUrl } from "@/lib/auth/getLoginUrl"
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter()
@@ -16,7 +17,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (mounted && !isAuthenticated && !getRefreshToken()) {
-      router.replace("/fr/login")
+      router.replace(getLoginUrl(window.location.pathname))
     }
   }, [mounted, isAuthenticated, router])
 

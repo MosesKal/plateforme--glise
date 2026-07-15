@@ -6,6 +6,7 @@ import { useAuthStore } from "@/store/auth.store"
 import { useUiStore } from "@/store/ui.store"
 import { authApi } from "@/lib/api/auth"
 import { getRefreshToken } from "@/lib/token-store"
+import { getLoginUrl } from "@/lib/auth/getLoginUrl"
 import { cn, getInitials } from "@/lib/utils"
 import { ChangePasswordModal } from "@/components/features/auth/ChangePasswordModal"
 
@@ -46,7 +47,7 @@ export function Header() {
       await authApi.logout(refreshToken).catch(() => undefined)
     }
     clearAuth()
-    router.replace("/fr/login")
+    router.replace(getLoginUrl(window.location.pathname))
   }
 
   return (

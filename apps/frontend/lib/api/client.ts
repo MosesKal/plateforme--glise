@@ -5,6 +5,7 @@ import {
   setAccessToken,
   setRefreshToken,
 } from "@/lib/token-store"
+import { getLoginUrl } from "@/lib/auth/getLoginUrl"
 
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1",
@@ -59,7 +60,7 @@ api.interceptors.response.use(
           setAccessToken(null)
           setRefreshToken(null)
           if (typeof window !== "undefined") {
-            window.location.href = `/${window.location.pathname.split("/")[1]}/login`
+            window.location.href = getLoginUrl(window.location.pathname)
           }
         }
       }
