@@ -23,6 +23,7 @@ export interface Gallery {
 export interface Testimony {
   id: string;
   fullname: string;
+  phone?: string | null;
   content: string;
   status: TestimonyStatus;
   createdAt: string;

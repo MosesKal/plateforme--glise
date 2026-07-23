@@ -3,7 +3,7 @@ import { SitePageContent } from "@/components/features/site-pages/SitePageConten
 
 export const metadata: Metadata = {
   title: "Mission",
-  description: "La mission de l'Église Camp de Jésus Bel-air.",
+  description: "La mission de l'Église Camp de Jésus-Christ Bel-Air Fizi.",
 }
 
 export default function MissionPage() {

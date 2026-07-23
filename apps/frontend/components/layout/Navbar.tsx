@@ -185,7 +185,7 @@ export function Navbar() {
     <header className="sticky top-0 z-50 bg-cecj-green shadow-md">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 lg:px-8">
         {/* Logo */}
-        <Link href={lp("/")} className="flex items-center gap-3">
+        <Link href={lp("/")} className="flex items-center">
           <Image
             src="/Logo C.E.C.j-BLANC.png"
             alt="Logo C.E.C.J.C."
@@ -194,9 +194,6 @@ export function Navbar() {
             className="h-12 w-auto object-contain"
             priority
           />
-          <span className="hidden text-sm font-semibold uppercase tracking-widest text-white sm:block">
-            C.E.C.J.C.
-          </span>
         </Link>
 
         {/* Desktop nav */}

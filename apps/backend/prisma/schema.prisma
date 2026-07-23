@@ -393,6 +393,7 @@ enum TestimonyStatus {
 model Testimony {
   id        String          @id @default(cuid())
   fullName  String
+  phone     String?
   content   String          @db.Text
   photoUrl  String?
   status    TestimonyStatus @default(PENDING)

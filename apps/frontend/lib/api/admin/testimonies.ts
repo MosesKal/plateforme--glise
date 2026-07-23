@@ -5,6 +5,7 @@ export type TestimonyStatus = "PENDING" | "APPROVED" | "REJECTED"
 export interface Testimony {
   id: string
   fullName: string
+  phone?: string | null
   content: string
   photoUrl?: string | null
   status: TestimonyStatus
@@ -22,6 +23,7 @@ export interface TestimoniesResponse {
 
 export interface SubmitTestimonyPayload {
   fullName: string
+  phone: string
   content: string
   photoUrl?: string
 }

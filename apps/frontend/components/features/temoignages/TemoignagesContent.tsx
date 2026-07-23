@@ -15,6 +15,12 @@ const inputCls = "w-full rounded-xl border border-gray-200 px-4 py-3 text-sm out
 
 const schema = z.object({
   fullName: z.string().min(2, "Votre nom est requis").max(100),
+  phone: z
+    .string()
+    .trim()
+    .min(7, "Votre numéro de téléphone est requis")
+    .max(30, "Le numéro de téléphone est trop long")
+    .regex(/^\+?[0-9\s().-]{7,30}$/, "Entrez un numéro de téléphone valide"),
   content:  z.string().min(20, "Le témoignage doit faire au moins 20 caractères").max(2000),
 })
 type FormValues = z.infer<typeof schema>
@@ -60,7 +66,11 @@ export function TemoignagesContent() {
 
   const onSubmit = async (values: FormValues) => {
     try {
-      await submitMutation.mutateAsync({ fullName: values.fullName, content: values.content })
+      await submitMutation.mutateAsync({
+        fullName: values.fullName,
+        phone: values.phone,
+        content: values.content,
+      })
       reset()
     } catch {
       // Erreur déjà toastée par le MutationCache — le formulaire garde sa saisie.
@@ -84,7 +94,7 @@ export function TemoignagesContent() {
               Témoignages
             </motion.h1>
             <motion.p variants={fadeUp} className="mx-auto max-w-xl text-lg text-white/70">
-              Découvrez comment Dieu transforme des vies au sein de l'Église Camp de Jésus Bel-air. Partagez votre propre témoignage.
+              Découvrez comment Dieu transforme des vies au sein de l'Église Camp de Jésus-Christ Bel-Air Fizi. Partagez votre propre témoignage.
             </motion.p>
             <motion.div variants={fadeUp} className="pt-2">
               <span className="text-3xl font-bold text-cecj-gold">{testimonies.length}</span>
@@ -128,6 +138,20 @@ export function TemoignagesContent() {
                       placeholder="Jean Kalala"
                     />
                     {errors.fullName && <p className="text-xs text-red-500">{errors.fullName.message}</p>}
+                  </div>
+
+                  <div className="space-y-1">
+                    <label className="block text-xs font-semibold uppercase tracking-wide text-gray-500">Votre numéro de téléphone *</label>
+                    <input
+                      {...register("phone")}
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      className={cn(inputCls, errors.phone && "border-red-300 focus:border-red-400 focus:ring-red-100")}
+                      placeholder="+243 000 000 000"
+                    />
+                    <p className="text-xs text-gray-400">Ce numéro restera privé et servira uniquement à vous contacter.</p>
+                    {errors.phone && <p className="text-xs text-red-500">{errors.phone.message}</p>}
                   </div>
 
                   <div className="space-y-1">

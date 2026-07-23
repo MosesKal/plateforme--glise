@@ -51,7 +51,7 @@ async function main() {
         country: "République Démocratique du Congo",
         city: "Lubumbashi",
         address: "13 Av. Bondo, Bel-Air Kilobelobe, Réf. Arrêt Fizi",
-        phone: "+243 898 700 596",
+        phone: "+243 810 531 035",
         pastorName: "Apôtre Paulin Mambwe",
         latitude: -11.6609,
         longitude: 27.4795,

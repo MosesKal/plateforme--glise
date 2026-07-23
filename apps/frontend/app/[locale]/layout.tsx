@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     template: "%s | Camps de Jésus-Christ Bel-air Fizi",
   },
   description:
-    "Bienvenue à l'Église Camp de Jésus Bel-air, fondée sur la saine doctrine du Seigneur Jésus-Christ.",
+    "Bienvenue à l'Église Camp de Jésus-Christ Bel-Air Fizi, fondée sur la saine doctrine du Seigneur Jésus-Christ.",
   openGraph: {
     ...OG_DEFAULTS,
   },

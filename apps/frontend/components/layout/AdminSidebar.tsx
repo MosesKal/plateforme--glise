@@ -170,15 +170,22 @@ function SidebarContent({ pathname, onNavigate }: { pathname: string; onNavigate
 
   return (
     <>
-      <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
+      <div className="flex items-center gap-3 border-b border-white/10 px-4 py-5">
         <Image
           src="/Logo C.E.C.j-BLANC.png"
-          alt="C.E.C.J.C."
-          width={40}
-          height={40}
-          className="h-10 w-auto object-contain"
+          alt="Logo du Camp de Jésus-Christ Bel-Air Fizi"
+          width={48}
+          height={48}
+          className="h-12 w-auto shrink-0 object-contain"
         />
-        <span className="text-sm font-semibold uppercase tracking-widest">C.E.C.J.C.</span>
+        <div className="min-w-0 border-l border-white/20 pl-3">
+          <p className="text-[13px] font-semibold leading-tight tracking-wide text-white">
+            Camp de Jésus-Christ
+          </p>
+          <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.16em] text-cecj-gold">
+            Bel-Air Fizi
+          </p>
+        </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">

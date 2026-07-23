@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { motion, useInView, AnimatePresence } from "framer-motion"
+import { motion, useInView, useReducedMotion, AnimatePresence } from "framer-motion"
 import { Navbar } from "@/components/layout/Navbar"
 import { PublicFooter } from "@/components/layout/PublicFooter"
 import { SITE_ROUTES } from "@/constants/routes"
@@ -15,6 +15,13 @@ import { TestimonySpotlight } from "./TestimonySpotlight"
 import { WeeklyProgramSection } from "./WeeklyProgramSection"
 import { TeachingsSection } from "./TeachingsSection"
 import { EventsSection } from "./EventsSection"
+
+const HERO_SLIDES = [
+  "/img_prg_3.jpg",
+  "/img_prg_1.jpg",
+  "/image_3.jpg",
+  "/img_prg_8.jpg",
+] as const
 
 // ── Static data (placeholder — à remplacer par API) ───────────────────────────
 
@@ -122,6 +129,8 @@ function CountUp({ to, suffix = "" }: { to: number; suffix?: string }) {
 
 export function HomePageContent() {
   const { locale, t } = useI18n()
+  const shouldReduceMotion = useReducedMotion()
+  const [heroSlide, setHeroSlide] = useState(0)
   const lp = (path: string) => (path === "/" ? `/${locale}` : `/${locale}${path}`)
 
   const valeurs = t("values.items") as Array<{ label: string; desc: string }>
@@ -135,6 +144,15 @@ export function HomePageContent() {
   const missionItems = t("mission.items") as string[]
   const aboutCards = t("about.cards") as Array<{ label: string; desc: string }>
 
+  useEffect(() => {
+    if (shouldReduceMotion) return
+
+    const intervalId = window.setInterval(() => {
+      setHeroSlide((current) => (current + 1) % HERO_SLIDES.length)
+    }, 6500)
+
+    return () => window.clearInterval(intervalId)
+  }, [shouldReduceMotion])
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -142,14 +160,32 @@ export function HomePageContent() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <section className="relative flex min-h-[90svh] flex-col items-center justify-center overflow-hidden px-4 text-center sm:min-h-[95vh]">
-        <Image
-          src="/background_image_1.jpg"
-          alt=""
-          fill
-          priority
-          className="object-cover object-center"
-          sizes="100vw"
-        />
+        <div className="absolute inset-0" aria-hidden="true">
+          {HERO_SLIDES.map((src, index) => (
+            <motion.div
+              key={src}
+              className="absolute inset-0"
+              initial={false}
+              animate={{
+                opacity: heroSlide === index ? 1 : 0,
+                scale: heroSlide === index && !shouldReduceMotion ? 1.045 : 1,
+              }}
+              transition={{
+                opacity: { duration: shouldReduceMotion ? 0 : 1.4, ease: "easeInOut" },
+                scale: { duration: 7.5, ease: "linear" },
+              }}
+            >
+              <Image
+                src={src}
+                alt=""
+                fill
+                priority={index === 0}
+                className="object-cover object-center"
+                sizes="100vw"
+              />
+            </motion.div>
+          ))}
+        </div>
         <div
           className="absolute inset-0"
           style={{ background: "linear-gradient(to bottom, rgba(2,67,57,0.88), rgba(2,67,57,0.80), rgba(2,67,57,0.93))" }}
@@ -204,6 +240,23 @@ export function HomePageContent() {
           </motion.p>
 
         </motion.div>
+
+        <div className="absolute bottom-5 z-20 flex items-center gap-2" aria-label="Choisir l’image du banner">
+          {HERO_SLIDES.map((src, index) => (
+            <button
+              key={src}
+              type="button"
+              onClick={() => setHeroSlide(index)}
+              aria-label={`Afficher l’image ${index + 1}`}
+              aria-current={heroSlide === index ? "true" : undefined}
+              className={`h-1.5 rounded-full transition-all duration-500 ${
+                heroSlide === index
+                  ? "w-8 bg-cecj-gold"
+                  : "w-3 bg-white/35 hover:bg-white/70"
+              }`}
+            />
+          ))}
+        </div>
       </section>
 
       {/* ── Chiffres clés ────────────────────────────────────────────────── */}
@@ -216,7 +269,7 @@ export function HomePageContent() {
           {[
             { to: 50,   suffix: "+", labelKey: "stats.churches",    count: true  },
             { to: 2000, suffix: "+", labelKey: "stats.members",     count: true  },
-            { to: 4,    suffix: "+", labelKey: "stats.departments", count: true  },
+            { to: 20,   suffix: "+", labelKey: "stats.departments", count: true  },
             { to: 2016, suffix: "",  labelKey: "stats.founded",     count: false },
           ].map((stat) => (
             <motion.div key={stat.labelKey} variants={fadeUp}>
@@ -363,9 +416,7 @@ export function HomePageContent() {
               {t("about.badge")}
             </h2>
             <p className="text-cecj-ink leading-relaxed">
-              {t("about.p1_prefix")}{" "}
-              <strong className="text-cecj-green">{t("about.p1_date")}</strong>
-              {t("about.p1_suffix")}
+              {t("about.summary")}
             </p>
             <Link
               href={lp(SITE_ROUTES.apropos) + "#histoire"}
@@ -435,7 +486,7 @@ export function HomePageContent() {
               </h2>
               <p className="text-base text-white/70 leading-relaxed">
                 Vos témoignages encouragent d&apos;autres croyants et glorifient Dieu.
-                Rejoignez l&apos;Église Camp de Jésus Bel-air et partagez ce que le Seigneur a accompli dans votre vie.
+                Rejoignez l&apos;Église Camp de Jésus-Christ Bel-Air Fizi et partagez ce que le Seigneur a accompli dans votre vie.
               </p>
               <AnimatedVerse />
             </motion.div>

@@ -97,8 +97,8 @@
   "hero": {
     "title": "Bienvenue au Camp de Jésus-Christ Bel-Air Fizi",
     "subtitle": "Une église ayant pour fondement la saine doctrine du Seigneur Jésus-Christ — une communauté qui forme, transforme, aime et vit par la foi.",
-    "quote": "Christ en nous, l'espérance de la gloire.",
-    "quoteRef": "Colossiens 1:27",
+    "quote": "Allez, faites de toutes les nations des disciples, les baptisant au nom du Père, du Fils et du Saint-Esprit, et enseignez-leur à observer tout ce que je vous ai prescrit. Et voici, je suis avec vous tous les jours, jusqu'à la fin du monde.",
+    "quoteRef": "Matthieu 28:19-20",
     "cta_discover": "Découvrir l'Église",
     "cta_extensions": "Trouver une Extension",
     "cta_contact": "Nous Contacter"
@@ -106,12 +106,12 @@
   "stats": {
     "churches": "Églises ouvertes",
     "members": "Fidèles",
-    "departments": "Départements",
+    "departments": "Départements et Commissions",
     "founded": "Année de fondation"
   },
   "vision": {
     "title": "Notre Vision",
-    "piliers": ["Parole", "Prière", "Formation", "Annonce"],
+    "piliers": ["Parole", "Prière", "Formation", "Évangélisation"],
     "body": "Former une génération de disciples profondément enracinés dans la Parole de Dieu, fervents dans la prière et engagés à vivre et annoncer fidèlement la doctrine de Jésus-Christ à toutes les nations.",
     "link": "En savoir plus sur notre vision →"
   },
@@ -130,9 +130,7 @@
   "about": {
     "badge": "Qui Sommes-Nous ?",
     "title": "Le Camp de Jésus Bel-Air Fizi",
-    "p1_prefix": "Fondée officiellement le",
-    "p1_date": "13 novembre 2016",
-    "p1_suffix": ", l'Église de Bel-Air Fizi est née à la suite d'une conférence biblique organisée par l'École des Lecteurs de la Bible — débutant comme une simple cellule de prière réunissant deux familles.",
+    "summary": "Nous sommes l’Église Le Camp de Jésus-Christ Bel-Air Fizi, l’une des paroisses de la Communauté des Églises Le Camp de Jésus-Christ.",
     "p2_prefix": "Sous la direction de l'",
     "p2_apostle": "Apôtre Paulin Mambwe",
     "p2_mid": ", l'œuvre a crû pour rassembler aujourd'hui plus de",
@@ -338,7 +336,7 @@
         "initiales": "JM"
       },
       {
-        "texte": "Le Camp de Jésus Bel-Air m'a aidée à grandir dans ma foi. Les enseignements sont pratiques, ancrés dans la Bible et applicables au quotidien.",
+        "texte": "Le Camp de Jésus-Christ Bel-Air Fizi m'a aidée à grandir dans ma foi. Les enseignements sont pratiques, ancrés dans la Bible et applicables au quotidien.",
         "nom": "Esther N.",
         "role": "Membre depuis 2 ans",
         "initiales": "EN"

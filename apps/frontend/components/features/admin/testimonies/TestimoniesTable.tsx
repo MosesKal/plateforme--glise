@@ -45,6 +45,14 @@ export function TestimoniesTable({ testimonies, onApprove, onReject, onDelete }:
                       {new Date(t.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                     </span>
                   </div>
+                  {t.phone && (
+                    <a
+                      href={`tel:${t.phone.replace(/[^\d+]/g, "")}`}
+                      className="mt-1 inline-block text-xs font-medium text-cecj-green hover:underline"
+                    >
+                      {t.phone}
+                    </a>
+                  )}
                   <p className="mt-1.5 text-sm leading-relaxed text-gray-600 line-clamp-3">{t.content}</p>
                 </div>
               </div>

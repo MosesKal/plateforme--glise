@@ -41,6 +41,17 @@ export class TestimoniesService {
       where: { status: TestimonyStatus.APPROVED },
       orderBy: { createdAt: 'desc' },
       take: limit,
+      // Le numéro sert uniquement à la modération et ne doit jamais être
+      // exposé dans la liste publique des témoignages approuvés.
+      select: {
+        id: true,
+        fullName: true,
+        content: true,
+        photoUrl: true,
+        status: true,
+        createdAt: true,
+        updatedAt: true,
+      },
     });
   }
 

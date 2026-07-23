@@ -19,7 +19,7 @@ import { TestimoniesService } from './testimonies.service';
 export class TestimoniesController {
   constructor(private testimoniesService: TestimoniesService) {}
 
-  @Public()
+  @Roles('Super Admin', 'Administrateur Général', 'Modérateur')
   @Get()
   findAll(@Query() query: TestimoniesQueryDto) {
     return this.testimoniesService.findAll(query);

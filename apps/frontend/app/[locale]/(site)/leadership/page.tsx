@@ -4,7 +4,7 @@ import { LeadershipContent } from "@/components/features/leadership/LeadershipCo
 
 export const metadata: Metadata = {
   title: "Leadership | C.E.C.J.C.",
-  description: "Découvrez l'équipe de direction de l'Église Camp de Jésus Bel-air — des hommes et des femmes appelés par Dieu pour guider et servir.",
+  description: "Découvrez l'équipe de direction de l'Église Camp de Jésus-Christ Bel-Air Fizi — des hommes et des femmes appelés par Dieu pour guider et servir.",
   openGraph: {
     ...OG_DEFAULTS,
     title: "Leadership | C.E.C.J.C.",

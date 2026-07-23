@@ -207,9 +207,9 @@ const INFO_ITEMS = [
       </svg>
     ),
     label: "Téléphone",
-    value: "+243 898 700 596",
+    value: "+243 810 531 035",
     link: {
-      href: "tel:+243898700596",
+      href: "tel:+243810531035",
       label: "Contact →",
     },
   },

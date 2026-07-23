@@ -1,6 +1,7 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useEffect, useState } from "react"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { fadeUp, stagger, staggerSlow, scaleUp, inView } from "@/lib/motion"
 import { useI18n } from "@/components/providers/I18nProvider"
@@ -11,6 +12,12 @@ import { useWeeklySchedule } from "@/hooks/useWeeklySchedule"
 
 const FRENCH_WEEKDAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
 const DISPLAY_WEEK_DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+const WELCOME_MESSAGES = [
+  "Karibu",
+  "Boyei malamu",
+  "Bienvenue",
+  "Welcome",
+] as const
 
 function getTodayLabel() {
   return FRENCH_WEEKDAYS[new Date().getDay()]
@@ -27,6 +34,46 @@ function getYoutubeStatus(activity: ProgramActivity, today: string): "live" | "a
 
 function formatHeure(time: string) {
   return time.replace(":", "h")
+}
+
+function WelcomeRotator() {
+  const [index, setIndex] = useState(0)
+  const shouldReduceMotion = useReducedMotion()
+
+  useEffect(() => {
+    if (shouldReduceMotion) return
+
+    const intervalId = window.setInterval(() => {
+      setIndex((current) => (current + 1) % WELCOME_MESSAGES.length)
+    }, 2200)
+
+    return () => window.clearInterval(intervalId)
+  }, [shouldReduceMotion])
+
+  return (
+    <motion.div variants={fadeUp}>
+      <span className="sr-only">
+        {WELCOME_MESSAGES.join(", ")}
+      </span>
+      <span
+        aria-hidden="true"
+        className="mb-4 inline-flex h-11 min-w-56 items-center justify-center overflow-hidden rounded-full border border-cecj-gold/40 bg-cecj-gold/12 px-5 text-base font-bold uppercase tracking-widest text-cecj-green sm:min-w-64 sm:text-lg"
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.span
+            key={WELCOME_MESSAGES[index]}
+            initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={shouldReduceMotion ? undefined : { opacity: 0, y: -14 }}
+            transition={{ duration: 0.35, ease: "easeOut" }}
+            className="whitespace-nowrap"
+          >
+            {WELCOME_MESSAGES[index]}
+          </motion.span>
+        </AnimatePresence>
+      </span>
+    </motion.div>
+  )
 }
 
 function LiveBadge({ label }: { label: string }) {
@@ -160,12 +207,7 @@ export function WeeklyProgramSection() {
     >
       <div className="mx-auto max-w-6xl">
         <motion.div className="mb-8 text-center sm:mb-12" variants={stagger} {...inView()}>
-          <motion.span
-            variants={fadeUp}
-            className="mb-4 inline-block rounded-full border border-cecj-gold/40 bg-cecj-gold/12 px-5 py-2 text-base font-bold uppercase tracking-widest text-cecj-green sm:text-lg"
-          >
-            {CHURCH_INFO.welcomeMessage}
-          </motion.span>
+          <WelcomeRotator />
           <motion.h2 id="weekly-program-heading" variants={fadeUp} className="text-3xl font-bold text-cecj-green sm:text-4xl">
             {t("weeklyProgram.title")}
           </motion.h2>

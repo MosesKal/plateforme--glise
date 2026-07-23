@@ -3,7 +3,7 @@ import { DepartementsContent } from "@/components/features/departements/Departem
 
 export const metadata: Metadata = {
   title: "Départements",
-  description: "Découvrez les départements et ministères de l'Église Camp de Jésus Bel-air.",
+  description: "Découvrez les départements et ministères de l'Église Camp de Jésus-Christ Bel-Air Fizi.",
 }
 
 export default function DepartementsPage() {

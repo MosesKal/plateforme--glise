@@ -32,7 +32,7 @@ export const EXTENSIONS: Extension[] = [
     countryCode: "CD",
     city:        "Lubumbashi",
     address:     "13 Av. Bondo, Bel-Air Kilobelobe, Réf. Arrêt Fizi",
-    phone:       "+243 898 700 596",
+    phone:       "+243 810 531 035",
     pastor:      "Apôtre Paulin Mambwe",
     founded:     "2016",
     members:     "2 000+",

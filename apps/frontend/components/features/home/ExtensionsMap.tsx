@@ -5,7 +5,7 @@ import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
 const extensions = [
-  { id: 1,  nom: "Camp de Jésus Bel-Air", ville: "Kinshasa",   pays: "RDC",     lat: -4.352,  lng: 15.281, principale: true  },
+  { id: 1,  nom: "Camp de Jésus-Christ Bel-Air Fizi", ville: "Kinshasa",   pays: "RDC",     lat: -4.352,  lng: 15.281, principale: true  },
   { id: 2,  nom: "Extension Gombe",        ville: "Kinshasa",   pays: "RDC",     lat: -4.318,  lng: 15.327, principale: false },
   { id: 3,  nom: "Extension Lubumbashi",   ville: "Lubumbashi", pays: "RDC",     lat: -11.664, lng: 27.479, principale: false },
   { id: 4,  nom: "Extension Brazzaville",  ville: "Brazzaville",pays: "Congo",   lat: -4.263,  lng: 15.243, principale: false },

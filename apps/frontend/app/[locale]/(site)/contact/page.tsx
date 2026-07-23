@@ -4,7 +4,7 @@ import { ContactContent } from "@/components/features/contact/ContactContent"
 
 export const metadata: Metadata = {
   title: "Contact | C.E.C.J.C.",
-  description: "Contactez l'Église Camp de Jésus Bel-air. Une question, une demande de prière ou envie de nous rejoindre ? Nous sommes là pour vous.",
+  description: "Contactez l'Église Camp de Jésus-Christ Bel-Air Fizi. Une question, une demande de prière ou envie de nous rejoindre ? Nous sommes là pour vous.",
   openGraph: {
     ...OG_DEFAULTS,
     title: "Contact | C.E.C.J.C.",

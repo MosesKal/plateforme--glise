@@ -53,7 +53,7 @@ export async function GET() {
               textAlign: "center",
             }}
           >
-            Église Camp de Jésus-Christ Bel-air
+            Église Camp de Jésus-Christ Bel-Air Fizi
           </div>
           <div style={{ width: 72, height: 6, background: "#ffcb32", borderRadius: 3 }} />
           <div style={{ fontSize: 28, color: "rgba(255,255,255,0.65)" }}>

@@ -97,8 +97,8 @@
   "hero": {
     "title": "Welcome to Camp de Jésus-Christ Bel-Air Fizi",
     "subtitle": "A church grounded in the sound doctrine of the Lord Jesus Christ — a community that forms, transforms, loves and lives by faith.",
-    "quote": "Christ in us, the hope of glory.",
-    "quoteRef": "Colossians 1:27",
+    "quote": "Go and make disciples of all nations, baptizing them in the name of the Father and of the Son and of the Holy Spirit, and teaching them to obey everything I have commanded you. And surely I am with you always, to the very end of the age.",
+    "quoteRef": "Matthew 28:19-20",
     "cta_discover": "Discover the Church",
     "cta_extensions": "Find a Church Near You",
     "cta_contact": "Contact Us"
@@ -106,12 +106,12 @@
   "stats": {
     "churches": "Churches planted",
     "members": "Members",
-    "departments": "Departments",
+    "departments": "Departments and Commissions",
     "founded": "Year founded"
   },
   "vision": {
     "title": "Our Vision",
-    "piliers": ["Word", "Prayer", "Formation", "Proclamation"],
+    "piliers": ["Word", "Prayer", "Formation", "Evangelism"],
     "body": "To form a generation of disciples deeply rooted in the Word of God, fervent in prayer, and committed to faithfully living and proclaiming the doctrine of Jesus Christ to all nations.",
     "link": "Learn more about our vision →"
   },
@@ -130,9 +130,7 @@
   "about": {
     "badge": "Who We Are",
     "title": "Camp de Jésus Bel-Air Fizi",
-    "p1_prefix": "Officially founded on",
-    "p1_date": "November 13, 2016",
-    "p1_suffix": ", the Bel-Air Fizi Church was born following a biblical conference organized by the School of Bible Readers — starting as a simple prayer cell bringing together two families.",
+    "summary": "We are Camp de Jésus-Christ Bel-Air Fizi Church, one of the parishes of the Communauté des Églises Le Camp de Jésus-Christ.",
     "p2_prefix": "Under the leadership of",
     "p2_apostle": "Apostle Paulin Mambwe",
     "p2_mid": ", the work has grown to gather more than",
@@ -338,7 +336,7 @@
         "initiales": "JM"
       },
       {
-        "texte": "Camp de Jésus Bel-Air helped me grow in my faith. The teachings are practical, rooted in the Bible and applicable to daily life.",
+        "texte": "Camp de Jésus-Christ Bel-Air Fizi helped me grow in my faith. The teachings are practical, rooted in the Bible and applicable to daily life.",
         "nom": "Esther N.",
         "role": "Member for 2 years",
         "initiales": "EN"
