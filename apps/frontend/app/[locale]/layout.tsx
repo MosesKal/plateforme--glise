@@ -3,7 +3,12 @@ import { Montserrat, Great_Vibes } from "next/font/google"
 import { notFound } from "next/navigation"
 import NextTopLoader from "nextjs-toploader"
 import { getDictionary, hasLocale } from "@/lib/i18n"
-import { BRAND_SEARCH_VARIANTS, OG_DEFAULTS, type SeoLocale } from "@/lib/seo"
+import {
+  BRAND_SEARCH_VARIANTS,
+  OG_DEFAULTS,
+  SITE_TAB_TITLES,
+  type SeoLocale,
+} from "@/lib/seo"
 import { CONFIG } from "@/constants/config"
 import { CHURCH_INFO } from "@/constants/church"
 import { I18nProvider } from "@/components/providers/I18nProvider"
@@ -33,12 +38,12 @@ const greatVibes = Great_Vibes({
  */
 const HOME_SEO = {
   fr: {
-    title: "Église Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi",
+    title: SITE_TAB_TITLES.fr,
     description:
       "Site officiel de l'Église Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi : enseignements bibliques, événements, programme, extensions et vie de l'église.",
   },
   en: {
-    title: "Camp de Jésus-Christ Bel-Air Fizi Church in Lubumbashi",
+    title: SITE_TAB_TITLES.en,
     description:
       "Official website of Camp de Jésus-Christ Bel-Air Fizi Church in Lubumbashi: Bible teachings, events, weekly program, extensions and church life.",
   },
@@ -53,10 +58,7 @@ export async function generateMetadata({
   const locale: SeoLocale = rawLocale === "en" ? "en" : "fr"
   return {
     metadataBase: new URL(CONFIG.siteUrl),
-    title: {
-      default: HOME_SEO[locale].title,
-      template: `%s | ${CONFIG.appName}`,
-    },
+    title: { absolute: SITE_TAB_TITLES[locale] },
     description: HOME_SEO[locale].description,
     applicationName: CONFIG.appName,
     category: "religion",

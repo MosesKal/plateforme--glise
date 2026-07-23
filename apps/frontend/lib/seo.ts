@@ -8,6 +8,18 @@ export const SEO_LOCALES = ["fr", "en"] as const
 export type SeoLocale = (typeof SEO_LOCALES)[number]
 
 /**
+ * Titre de marque affiché dans l'onglet du navigateur.
+ *
+ * Il est volontairement indépendant du titre SEO de chaque page : les titres
+ * spécifiques restent utilisés par Open Graph et Twitter, tandis que l'onglet
+ * conserve une identité stable pendant toute la navigation publique.
+ */
+export const SITE_TAB_TITLES: Record<SeoLocale, string> = {
+  fr: "Église Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi",
+  en: "Camp de Jésus-Christ Bel-Air Fizi Church in Lubumbashi",
+}
+
+/**
  * Variantes réellement utilisées pour rechercher la communauté.
  * Elles alimentent les données structurées et les métadonnées de marque ;
  * le contenu visible reste rédigé naturellement pour éviter le keyword stuffing.
@@ -68,7 +80,9 @@ export function createLocalizedMetadata({
   const url = localizedPath(locale, path)
 
   return {
-    title,
+    title: {
+      absolute: SITE_TAB_TITLES[locale],
+    },
     description,
     alternates: localizedAlternates(locale, path),
     openGraph: {

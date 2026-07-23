@@ -1,6 +1,11 @@
 import type { Metadata } from "next"
 import { CONFIG } from "@/constants/config"
-import { localizedAlternates, OG_DEFAULTS, toSeoLocale } from "@/lib/seo"
+import {
+  localizedAlternates,
+  OG_DEFAULTS,
+  SITE_TAB_TITLES,
+  toSeoLocale,
+} from "@/lib/seo"
 import { ThemeAudioContent } from "@/components/features/teachings/ThemeAudioContent"
 
 interface PageProps {
@@ -19,7 +24,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         data.descriptionFr ??
         `Les enseignements audio de l'église sur le thème ${data.nameFr}.`
       return {
-        title: `${data.nameFr} — Enseignements`,
+        title: { absolute: SITE_TAB_TITLES[toSeoLocale(locale)] },
         description,
         alternates: localizedAlternates(
           toSeoLocale(locale),
@@ -38,7 +43,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     // API injoignable au build : métadonnées génériques.
   }
   return {
-    title: locale === "en" ? "Bible teachings" : "Enseignements bibliques",
+    title: { absolute: SITE_TAB_TITLES[toSeoLocale(locale)] },
     alternates: localizedAlternates(
       toSeoLocale(locale),
       `/enseignements/audio/${themeSlug}`,

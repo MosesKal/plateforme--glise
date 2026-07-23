@@ -3,7 +3,12 @@ import { CONFIG } from "@/constants/config"
 import { OG_DEFAULTS } from "@/lib/seo"
 import { AudioTeachingDetailContent } from "@/components/features/teachings/AudioTeachingDetailContent"
 import { JsonLd } from "@/components/seo/JsonLd"
-import { absoluteUrl, localizedAlternates, toSeoLocale } from "@/lib/seo"
+import {
+  absoluteUrl,
+  localizedAlternates,
+  SITE_TAB_TITLES,
+  toSeoLocale,
+} from "@/lib/seo"
 import { fetchSeoData, isoDuration, type SeoAudio } from "@/lib/seo-data"
 
 interface PageProps {
@@ -22,7 +27,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         data.description ??
         `Enseignement de ${data.speaker.fullName} sur le thème ${data.theme.nameFr}.`
       return {
-        title: `${data.title} — Enseignements`,
+        title: { absolute: SITE_TAB_TITLES[toSeoLocale(locale)] },
         description,
         alternates: localizedAlternates(
           toSeoLocale(locale),
@@ -42,7 +47,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     // API injoignable au build : métadonnées génériques.
   }
   return {
-    title: locale === "en" ? "Bible teaching" : "Enseignement biblique",
+    title: { absolute: SITE_TAB_TITLES[toSeoLocale(locale)] },
     alternates: localizedAlternates(
       toSeoLocale(locale),
       `/enseignements/audio/${themeSlug}/${slug}`,

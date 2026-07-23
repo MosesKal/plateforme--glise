@@ -111,7 +111,9 @@ export function PublicFooter() {
         </div>
 
         <div className="mt-10 flex flex-col items-center gap-6 border-t border-white/10 pt-6 sm:flex-row sm:justify-between">
-          <span className="text-xs text-white/40">© {new Date().getFullYear()} C.E.C.J.C. — {t("footer.rights")}</span>
+          <span className="text-xs text-white/40">
+            © {new Date().getFullYear()} {CHURCH_INFO.name} — {t("footer.rights")}
+          </span>
 
           <div className="flex items-center gap-3">
             <span className="sr-only">{t("footer.followUs")}</span>

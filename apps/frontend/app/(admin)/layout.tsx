@@ -17,10 +17,7 @@ const montserrat = Montserrat({
 })
 
 export const metadata: Metadata = {
-  title: {
-    default: "Administration C.E.C.J.C.",
-    template: "%s | Administration C.E.C.J.C.",
-  },
+  title: { absolute: "Administration" },
   robots: {
     index: false,
     follow: false,
