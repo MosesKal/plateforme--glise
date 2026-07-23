@@ -1,17 +1,9 @@
 import type { Metadata } from "next"
-import { OG_DEFAULTS } from "@/lib/seo"
+import { createPublicPageMetadata } from "@/lib/seo"
 import { EcritsContent } from "@/components/features/teachings/EcritsContent"
 
-export const metadata: Metadata = {
-  title: "Enseignements écrits (PDF)",
-  description:
-    "Notes d'enseignement, études bibliques et supports PDF de l'église, à lire et à télécharger.",
-  openGraph: {
-    ...OG_DEFAULTS,
-    title: "Enseignements écrits (PDF)",
-    description:
-      "Notes d'enseignement, études bibliques et supports PDF de l'église, à lire et à télécharger.",
-  },
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  return createPublicPageMetadata((await params).locale, "/enseignements/ecrits")
 }
 
 export default function EnseignementsEcritsPage() {

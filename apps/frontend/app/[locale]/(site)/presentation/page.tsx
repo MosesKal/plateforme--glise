@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { SitePageContent } from "@/components/features/site-pages/SitePageContent"
+import { createPublicPageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Présentation",
-  description: "Découvrez l'histoire et l'identité de la C.E.C.J.C.",
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  return createPublicPageMetadata((await params).locale, "/presentation")
 }
 
 export default function PresentationPage() {

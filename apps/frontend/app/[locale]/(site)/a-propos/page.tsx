@@ -1,16 +1,19 @@
 import type { Metadata } from "next"
 import { AProposContent } from "@/components/features/apropos/AProposContent"
 import { getDictionary } from "@/lib/i18n"
+import { createLocalizedMetadata, toSeoLocale } from "@/lib/seo"
 
 type Props = { params: Promise<{ locale: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
   const dict = await getDictionary(locale as "fr" | "en")
-  return {
+  return createLocalizedMetadata({
+    locale: toSeoLocale(locale),
+    path: "/a-propos",
     title: dict.apropos.meta_title,
     description: dict.apropos.meta_desc,
-  }
+  })
 }
 
 export default function AProposPage() {

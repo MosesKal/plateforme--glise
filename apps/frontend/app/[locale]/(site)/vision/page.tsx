@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import { SitePageContent } from "@/components/features/site-pages/SitePageContent"
+import { createPublicPageMetadata } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Vision",
-  description: "La vision de l'Église Camp de Jésus-Christ Bel-Air Fizi.",
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  return createPublicPageMetadata((await params).locale, "/vision")
 }
 
 export default function VisionPage() {

@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
 import NextTopLoader from "nextjs-toploader"
 import { AdminSidebar } from "@/components/layout/AdminSidebar"
@@ -14,6 +15,18 @@ const montserrat = Montserrat({
   subsets: ["latin"],
   display: "swap",
 })
+
+export const metadata: Metadata = {
+  title: {
+    default: "Administration C.E.C.J.C.",
+    template: "%s | Administration C.E.C.J.C.",
+  },
+  robots: {
+    index: false,
+    follow: false,
+    nocache: true,
+  },
+}
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (

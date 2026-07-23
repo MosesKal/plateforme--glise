@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import { CONFIG } from "@/constants/config"
-import { OG_DEFAULTS } from "@/lib/seo"
+import { localizedAlternates, OG_DEFAULTS, toSeoLocale } from "@/lib/seo"
 import { ThemeAudioContent } from "@/components/features/teachings/ThemeAudioContent"
 
 interface PageProps {
@@ -21,6 +21,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       return {
         title: `${data.nameFr} — Enseignements`,
         description,
+        alternates: localizedAlternates(
+          toSeoLocale(locale),
+          `/enseignements/audio/${themeSlug}`,
+        ),
         openGraph: {
           ...OG_DEFAULTS,
           title: `${data.nameFr} — Enseignements`,
@@ -33,7 +37,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   } catch {
     // API injoignable au build : métadonnées génériques.
   }
-  return { title: "Enseignements" }
+  return {
+    title: locale === "en" ? "Bible teachings" : "Enseignements bibliques",
+    alternates: localizedAlternates(
+      toSeoLocale(locale),
+      `/enseignements/audio/${themeSlug}`,
+    ),
+  }
 }
 
 export default async function ThemeAudioPage({ params }: PageProps) {
