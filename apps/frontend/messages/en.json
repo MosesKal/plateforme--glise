@@ -293,7 +293,7 @@
   "events": {
     "badge": "Events",
     "title": "Our Events",
-    "subtitle": "Conferences · Seminars · Prayer Vigils · Campaigns · Retreats",
+    "subtitle": "Thanksgiving · School of Tyrannus · Bible Quiz · Special Service",
     "upcomingBadge": "Upcoming event",
     "pastTitle": "Our latest events",
     "finishedBadge": "Past",
@@ -474,7 +474,7 @@
     "meta_desc": "Discover upcoming and past events of the Community of the Church Camps of Jesus Christ.",
     "hero_badge": "Events",
     "hero_title": "Our Events",
-    "hero_subtitle": "Conferences · Seminars · Prayer Vigils · Campaigns · Retreats",
+    "hero_subtitle": "Thanksgiving · School of Tyrannus · Bible Quiz · Special Service",
     "countdown_label": "Next event",
     "days": "Days",
     "hours": "Hours",

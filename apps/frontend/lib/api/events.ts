@@ -1,5 +1,6 @@
 import { api } from "./client"
 import { type ChurchEvent } from "@/constants/events"
+import { normalizeEventCategory } from "@cecj/shared"
 
 // ─── Backend shape ─────────────────────────────────────────────────────────────
 
@@ -92,7 +93,7 @@ export function toChurchEvent(event: ApiEvent): ChurchEvent {
   return {
     id:        event.id,
     title:     event.titleFr,
-    category:  event.category  ?? "Culte spécial",
+    category:  normalizeEventCategory(event.category),
     speaker:   event.speaker   ?? undefined,
     organizer: event.organizer ?? undefined,
     dateLabel: buildDateLabel(start, end),

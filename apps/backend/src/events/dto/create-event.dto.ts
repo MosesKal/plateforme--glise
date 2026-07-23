@@ -3,10 +3,12 @@ import {
   IsDateString,
   IsEnum,
   IsNotEmpty,
+  IsIn,
   IsOptional,
   IsString,
 } from 'class-validator';
 import { EventStatus } from '@prisma/client';
+import { EVENT_CATEGORIES, type EventCategory } from '@cecj/shared';
 
 export class CreateEventDto {
   @IsString()
@@ -44,9 +46,8 @@ export class CreateEventDto {
   @IsOptional()
   coverImage?: string;
 
-  @IsString()
-  @IsOptional()
-  category?: string;
+  @IsIn(EVENT_CATEGORIES)
+  category: EventCategory;
 
   @IsString()
   @IsOptional()

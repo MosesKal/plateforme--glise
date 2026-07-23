@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button"
 import { cn } from "@/lib/utils"
 import { ImageUpload } from "@/components/ui/ImageUpload"
 import type { AdminEvent } from "@/lib/api/admin/events"
+import { EVENT_CATEGORIES, normalizeEventCategory } from "@cecj/shared"
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -62,7 +63,7 @@ export function EventFormModal({ open, onClose, onSubmit, initialData }: Props) 
               titleFr:       initialData.titleFr,
               titleEn:       initialData.titleEn ?? "",
               descriptionFr: initialData.descriptionFr ?? "",
-              category:      initialData.category ?? "",
+              category:      normalizeEventCategory(initialData.category),
               speaker:       initialData.speaker ?? "",
               organizer:     initialData.organizer ?? "",
               startDate:     toLocalDatetime(initialData.startDate),
@@ -73,7 +74,11 @@ export function EventFormModal({ open, onClose, onSubmit, initialData }: Props) 
               status:        initialData.status,
               isFeatured:    initialData.isFeatured,
             }
-          : { status: "DRAFT", isFeatured: false },
+          : {
+              category: EVENT_CATEGORIES[0],
+              status: "DRAFT",
+              isFeatured: false,
+            },
       )
     }
   }, [open, initialData, reset])
@@ -110,7 +115,13 @@ export function EventFormModal({ open, onClose, onSubmit, initialData }: Props) 
 
           <div className="grid grid-cols-3 gap-4">
             <Field label="Catégorie">
-              <input {...register("category")} className={inputCls} placeholder="Louange & Adoration…" />
+              <select {...register("category")} className={inputCls}>
+                {EVENT_CATEGORIES.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
             </Field>
             <Field label="Orateur">
               <input {...register("speaker")} className={inputCls} placeholder="Pasteur…" />

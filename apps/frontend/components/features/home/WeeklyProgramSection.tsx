@@ -18,6 +18,7 @@ const WELCOME_MESSAGES = [
   "Bienvenue",
   "Welcome",
 ] as const
+const WELCOME_ROTATION_INTERVAL_MS = 4500
 
 function getTodayLabel() {
   return FRENCH_WEEKDAYS[new Date().getDay()]
@@ -45,7 +46,7 @@ function WelcomeRotator() {
 
     const intervalId = window.setInterval(() => {
       setIndex((current) => (current + 1) % WELCOME_MESSAGES.length)
-    }, 2200)
+    }, WELCOME_ROTATION_INTERVAL_MS)
 
     return () => window.clearInterval(intervalId)
   }, [shouldReduceMotion])

@@ -1,10 +1,11 @@
 import { z } from "zod"
+import { EVENT_CATEGORIES } from "@cecj/shared"
 
 export const eventSchema = z.object({
   titleFr:      z.string().min(1, "Le titre est requis"),
   titleEn:      z.string().optional(),
   descriptionFr: z.string().optional(),
-  category:     z.string().optional(),
+  category:     z.enum(EVENT_CATEGORIES),
   speaker:      z.string().optional(),
   organizer:    z.string().optional(),
   startDate:    z.string().min(1, "La date de début est requise"),

@@ -20,7 +20,7 @@ export const CHURCH_EVENTS: ChurchEvent[] = [
   {
     id: "action-affranchis-2",
     title: "Action Affranchis 2",
-    category: "Louange & Adoration",
+    category: "Action de grâces",
     organizer: "Le Chantre Agréable de Christ",
     dateLabel: "Dimanche 12 Juillet 2026",
     day: "12",
@@ -34,7 +34,7 @@ export const CHURCH_EVENTS: ChurchEvent[] = [
   {
     id: "culte-mamans-juin-2026",
     title: "Culte des Mamans",
-    category: "Rencontre des Mamans",
+    category: "Culte spécial",
     dateLabel: "Mardi 9 Juin 2026",
     day: "09",
     month: "Juin",
@@ -47,7 +47,7 @@ export const CHURCH_EVENTS: ChurchEvent[] = [
   {
     id: "mois-enseignement-saint-esprit",
     title: "Un Mois d'Enseignements — Le Saint-Esprit",
-    category: "École de Tyrannus",
+    category: "Ecole de tyrannus",
     dateLabel: "Avril 2026",
     day: "Avril",
     month: "2026",
@@ -60,7 +60,7 @@ export const CHURCH_EVENTS: ChurchEvent[] = [
   {
     id: "je-connais-ma-bible",
     title: "Je Connais Ma Bible — 1ère édition",
-    category: "Concours Biblique",
+    category: "Concours biblique",
     organizer: "Église Camp de Jésus-Christ Bel-Air Fizi",
     dateLabel: "Dimanche 22 Février 2026",
     day: "22",
@@ -88,7 +88,7 @@ export const CHURCH_EVENTS: ChurchEvent[] = [
   {
     id: "personnages-feminins-bible",
     title: "Les Personnages Féminins dans la Bible",
-    category: "Conférence des Femmes",
+    category: "Culte spécial",
     organizer: "Maman Karine Tumba, Maman Wivine Bobo, Maman Valine Kalem",
     dateLabel: "25 & 26 Octobre 2025",
     day: "25-26",
@@ -102,7 +102,7 @@ export const CHURCH_EVENTS: ChurchEvent[] = [
   {
     id: "je-connais-ma-bible-2eme-seance",
     title: "Je Connais Ma Bible — 2ème séance",
-    category: "Concours Biblique",
+    category: "Concours biblique",
     organizer: "Église Camp de Jésus-Christ Bel-Air Fizi",
     dateLabel: "Dimanche 22 Mars 2026",
     day: "22",
@@ -116,7 +116,7 @@ export const CHURCH_EVENTS: ChurchEvent[] = [
   {
     id: "culte-mamans-mars-2026",
     title: "Culte des Mamans",
-    category: "Rencontre des Mamans",
+    category: "Culte spécial",
     dateLabel: "Mardi 10 Mars 2026",
     day: "10",
     month: "Mars",

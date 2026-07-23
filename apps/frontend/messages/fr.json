@@ -293,7 +293,7 @@
   "events": {
     "badge": "Événements",
     "title": "Nos Événements",
-    "subtitle": "Conférences · Séminaires · Veillées · Campagnes · Retraites",
+    "subtitle": "Action de grâces · Ecole de tyrannus · Concours biblique · Culte spécial",
     "upcomingBadge": "Prochain événement",
     "pastTitle": "Nos derniers événements",
     "finishedBadge": "Terminé",
@@ -474,7 +474,7 @@
     "meta_desc": "Découvrez les événements à venir et passés de la Communauté des Églises Le Camp de Jésus-Christ.",
     "hero_badge": "Événements",
     "hero_title": "Nos Événements",
-    "hero_subtitle": "Conférences · Séminaires · Veillées de prière · Campagnes · Retraites",
+    "hero_subtitle": "Action de grâces · Ecole de tyrannus · Concours biblique · Culte spécial",
     "countdown_label": "Prochain événement",
     "days": "Jours",
     "hours": "Heures",

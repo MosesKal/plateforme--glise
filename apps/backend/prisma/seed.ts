@@ -184,7 +184,7 @@ async function main() {
       {
         titleFr: "Action Affranchis 2",
         descriptionFr: "Soiree de Louange & Adoration organisee par Le Chantre Agreable de Christ.",
-        category:  "Louange & Adoration",
+        category:  "Action de grâces",
         organizer: "Le Chantre Agreable de Christ",
         startDate: new Date("2026-07-12T14:30:00"),
         endDate:   new Date("2026-07-12T18:00:00"),
@@ -197,7 +197,7 @@ async function main() {
       {
         titleFr: "Culte des Mamans - Juin 2026",
         descriptionFr: "Rencontre mensuelle des mamans de l'eglise.",
-        category:  "Rencontre des Mamans",
+        category:  "Culte spécial",
         startDate: new Date("2026-06-09T16:00:00"),
         endDate:   new Date("2026-06-09T17:30:00"),
         location:  "Lubumbashi",
@@ -209,7 +209,7 @@ async function main() {
       {
         titleFr: "Un Mois d'Enseignements - Le Saint-Esprit",
         descriptionFr: "Ecole de Tyrannus — un mois complet consacre a l'enseignement sur le Saint-Esprit, en presentiel et en ligne.",
-        category:  "Ecole de Tyrannus",
+        category:  "Ecole de tyrannus",
         startDate: new Date("2026-04-01T00:00:00"),
         endDate:   new Date("2026-04-30T23:59:59"),
         location:  "Lubumbashi - en ligne",
@@ -221,7 +221,7 @@ async function main() {
       {
         titleFr: "Je Connais Ma Bible - 1ere edition",
         descriptionFr: "Concours biblique organise par la Communaute des Eglises Le Camp de Jesus-Christ.",
-        category:  "Concours Biblique",
+        category:  "Concours biblique",
         organizer: "Communaute des Eglises Le Camp de Jesus-Christ",
         startDate: new Date("2026-02-22T14:00:00"),
         endDate:   new Date("2026-02-22T18:00:00"),
@@ -234,7 +234,7 @@ async function main() {
       {
         titleFr: "Consecration des Pasteurs",
         descriptionFr: "Culte special de consecration anime par le Pasteur Elie Tshinguli.",
-        category:  "Culte special",
+        category:  "Culte spécial",
         speaker:   "Pasteur Elie Tshinguli",
         startDate: new Date("2025-11-23T08:00:00"),
         endDate:   new Date("2025-11-23T11:00:00"),
@@ -247,7 +247,7 @@ async function main() {
       {
         titleFr: "Les Personnages Feminins dans la Bible",
         descriptionFr: "Conference des Femmes animee par Maman Karine Tumba, Maman Wivine Bobo et Maman Valine Kalem.",
-        category:  "Conference des Femmes",
+        category:  "Culte spécial",
         organizer: "Maman Karine Tumba, Maman Wivine Bobo, Maman Valine Kalem",
         startDate: new Date("2025-10-25T13:30:00"),
         endDate:   new Date("2025-10-26T18:00:00"),
@@ -260,7 +260,7 @@ async function main() {
       {
         titleFr: "Je Connais Ma Bible - 2eme seance",
         descriptionFr: "Deuxieme seance du concours biblique de la C.E.C.J.C.",
-        category:  "Concours Biblique",
+        category:  "Concours biblique",
         organizer: "Communaute des Eglises Le Camp de Jesus-Christ",
         startDate: new Date("2026-03-22T13:30:00"),
         endDate:   new Date("2026-03-22T17:30:00"),
@@ -273,7 +273,7 @@ async function main() {
       {
         titleFr: "Culte des Mamans - Mars 2026",
         descriptionFr: "Rencontre mensuelle des mamans de l'eglise.",
-        category:  "Rencontre des Mamans",
+        category:  "Culte spécial",
         startDate: new Date("2026-03-10T16:00:00"),
         endDate:   new Date("2026-03-10T17:30:00"),
         location:  "Lubumbashi",
@@ -285,7 +285,7 @@ async function main() {
       {
         titleFr: "Culte Dominical - Actions de Grace",
         descriptionFr: "Culte special d'actions de grace anime par l'Apotre Paulin Mambwe.",
-        category:  "Culte special",
+        category:  "Culte spécial",
         speaker:   "Apotre Paulin Mambwe",
         startDate: new Date("2025-07-06T08:00:00"),
         endDate:   new Date("2025-07-06T11:00:00"),

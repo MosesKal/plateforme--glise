@@ -19,21 +19,17 @@ const DOW_FR    = ["Lun","Mar","Mer","Jeu","Ven","Sam","Dim"]
 const DOW_EN    = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
 
 const CATEGORY_DOT: Record<string, string> = {
-  "Louange & Adoration":   "bg-amber-400",
-  "Rencontre des Mamans":  "bg-rose-400",
-  "École de Tyrannus":     "bg-indigo-500",
-  "Concours Biblique":     "bg-purple-500",
-  "Culte spécial":         "bg-cecj-green",
-  "Conférence des Femmes": "bg-pink-400",
+  "Action de grâces":   "bg-amber-400",
+  "Ecole de tyrannus":  "bg-indigo-500",
+  "Concours biblique":  "bg-purple-500",
+  "Culte spécial":      "bg-cecj-green",
 }
 
 const CATEGORY_BADGE: Record<string, string> = {
-  "Louange & Adoration":   "bg-amber-400/10 text-amber-700 border-amber-200",
-  "Rencontre des Mamans":  "bg-rose-400/10 text-rose-700 border-rose-200",
-  "École de Tyrannus":     "bg-indigo-500/10 text-indigo-700 border-indigo-200",
-  "Concours Biblique":     "bg-purple-500/10 text-purple-700 border-purple-200",
-  "Culte spécial":         "bg-cecj-green/10 text-cecj-green border-cecj-green/20",
-  "Conférence des Femmes": "bg-pink-400/10 text-pink-700 border-pink-200",
+  "Action de grâces":   "bg-amber-400/10 text-amber-700 border-amber-200",
+  "Ecole de tyrannus":  "bg-indigo-500/10 text-indigo-700 border-indigo-200",
+  "Concours biblique":  "bg-purple-500/10 text-purple-700 border-purple-200",
+  "Culte spécial":      "bg-cecj-green/10 text-cecj-green border-cecj-green/20",
 }
 
 function dotColor(cat: string)   { return CATEGORY_DOT[cat]   ?? "bg-gray-400" }
@@ -538,7 +534,7 @@ export function EvenementsContent() {
             Un de nos cultes ou événements a changé quelque chose dans votre vie ?
           </h2>
           <p className="mb-7 text-gray-500">
-            Vos témoignages encouragent toute l'église. Quelques lignes suffisent.
+            Vos témoignages encouragent toute l&apos;église. Quelques lignes suffisent.
           </p>
           <Link
             href={`/${locale}/temoignages`}
