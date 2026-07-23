@@ -15,7 +15,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3000,
-        NEXT_PUBLIC_API_URL: "https://dev.impactgroup.cd/api/v1",
+        NEXT_PUBLIC_API_URL: "https://api.campdejesusbelairfizi.com/api/v1",
       },
     },
     {
@@ -29,6 +29,9 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3001,
+        BACKEND_URL: "https://api.campdejesusbelairfizi.com",
+        MEDIA_BASE_URL: "https://api.campdejesusbelairfizi.com",
+        SITE_URL: "https://campdejesusbelairfizi.com",
       },
     },
   ],

@@ -11,7 +11,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "*.cecj.org" },
       // Backend public servant les fichiers uploadés (/api/v1/uploads/*)
-      { protocol: "https", hostname: "dev.impactgroup.cd" },
+      { protocol: "https", hostname: "api.campdejesusbelairfizi.com" },
       // Vignettes YouTube (module enseignements vidéo)
       { protocol: "https", hostname: "i.ytimg.com" },
     ],

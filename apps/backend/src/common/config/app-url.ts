@@ -11,7 +11,7 @@
 export const API_PREFIX = 'api/v1';
 
 /** Domaine public du backend en production. */
-const PROD_BASE_URL = 'https://dev.impactgroup.cd';
+const PROD_BASE_URL = 'https://api.campdejesusbelairfizi.com';
 
 /**
  * Origine publique du backend, utilisée pour construire les liens absolus vers

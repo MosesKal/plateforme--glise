@@ -209,7 +209,7 @@ sudo chown <user_pm2>:<user_pm2> /var/lib/cecj/media
 MEDIA_ROOT=/var/lib/cecj/media
 
 # Optionnel : origine publique des URLs médias (défaut : domaine public backend)
-# MEDIA_BASE_URL=https://dev.impactgroup.cd
+# MEDIA_BASE_URL=https://api.campdejesusbelairfizi.com
 
 # Optionnel : chemins de ffprobe/ffmpeg s'ils ne sont pas dans le PATH
 # FFPROBE_PATH=/usr/bin/ffprobe

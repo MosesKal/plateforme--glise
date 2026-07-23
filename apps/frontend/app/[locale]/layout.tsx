@@ -32,7 +32,7 @@ const greatVibes = Great_Vibes({
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ??
   (process.env.NODE_ENV === "production"
-    ? "https://dev.impactgroup.cd"
+    ? "https://campdejesusbelairfizi.com"
     : "http://localhost:3000")
 
 export const metadata: Metadata = {

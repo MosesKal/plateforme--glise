@@ -229,7 +229,6 @@ export const adminTeachingsApi = {
     form.append("file", file)
     return api
       .post<AudioUploadResult>("/teachings/audio/upload", form, {
-        headers: { "Content-Type": "multipart/form-data" },
         timeout: 0,
         onUploadProgress: (e) => {
           if (onProgress && e.total) {

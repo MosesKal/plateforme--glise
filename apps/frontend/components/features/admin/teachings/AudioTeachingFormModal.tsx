@@ -170,11 +170,13 @@ function TeachingFormDialog({
       uploaded = await adminTeachingsApi.uploadAudio(item.file, (progress) =>
         updateItem(item.id, { progress }),
       )
-    } catch {
+    } catch (err: unknown) {
       updateItem(item.id, {
         state: "error",
         progress: null,
-        error: "L'upload du fichier a échoué. Vérifiez votre connexion et réessayez.",
+        error:
+          extractMessage(err) ||
+          "L'upload du fichier a échoué. Vérifiez votre connexion et réessayez.",
       })
       return false
     }
