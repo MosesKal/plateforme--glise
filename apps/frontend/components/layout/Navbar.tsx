@@ -167,7 +167,6 @@ export function Navbar() {
   const exploreLinks: NavLink[] = [
     { label: t("nav.galerie"),     href: lp(SITE_ROUTES.galerie),         isActive: isLinkActive(lp(SITE_ROUTES.galerie)) },
     { label: t("nav.temoignages"), href: lp(SITE_ROUTES.temoignages),     isActive: isLinkActive(lp(SITE_ROUTES.temoignages)) },
-    { label: t("nav.lecture"),     href: lp(SITE_ROUTES.lectureBiblique), isActive: isLinkActive(lp(SITE_ROUTES.lectureBiblique)) },
     { label: t("nav.contact"),     href: lp(SITE_ROUTES.contact),         isActive: isLinkActive(lp(SITE_ROUTES.contact)) },
   ]
 
@@ -175,6 +174,7 @@ export function Navbar() {
     { type: "link", label: t("nav.accueil"), href: lp(SITE_ROUTES.accueil), isActive: isLinkActive(lp(SITE_ROUTES.accueil)) },
     { type: "link", label: t("nav.apropos"), href: lp(SITE_ROUTES.apropos), isActive: isLinkActive(lp(SITE_ROUTES.apropos)) },
     { type: "dropdown", label: t("nav.enseignements"), links: teachingsLinks },
+    { type: "link", label: t("nav.lecture"), href: lp(SITE_ROUTES.lectureBiblique), isActive: isLinkActive(lp(SITE_ROUTES.lectureBiblique)) },
     { type: "link", label: t("nav.evenements"), href: lp(SITE_ROUTES.evenements), isActive: isLinkActive(lp(SITE_ROUTES.evenements)) },
     { type: "link", label: t("nav.adhesion"),   href: lp(SITE_ROUTES.adhesion),   isActive: isLinkActive(lp(SITE_ROUTES.adhesion)) },
     { type: "link", label: t("nav.extensions"), href: lp(SITE_ROUTES.extensions), isActive: isLinkActive(lp(SITE_ROUTES.extensions)) },

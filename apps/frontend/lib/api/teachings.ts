@@ -83,6 +83,16 @@ export interface VideoTeaching {
   speaker?: { id: string; slug: string; fullName: string; title?: string | null } | null
 }
 
+export interface YouTubeLive {
+  youtubeId: string
+  title: string
+  description?: string | null
+  thumbnailUrl?: string | null
+  channelTitle?: string | null
+  startedAt?: string | null
+  concurrentViewers?: number | null
+}
+
 export interface PaginatedVideoTeachings {
   items: VideoTeaching[]
   total: number
@@ -123,6 +133,9 @@ export const teachingsApi = {
     api
       .get<PaginatedVideoTeachings>("/teachings/videos", { params })
       .then((r) => r.data),
+
+  getCurrentLive: () =>
+    api.get<YouTubeLive | null>("/teachings/videos/live").then((r) => r.data),
 
   /** Beacon d'écoute (déclenché après ~30 s de lecture réelle). */
   registerPlay: (id: string) =>

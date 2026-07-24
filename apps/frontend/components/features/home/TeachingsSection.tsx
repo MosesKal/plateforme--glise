@@ -9,6 +9,7 @@ import { useAudioTeachings, useVideoTeachings } from "@/hooks/useTeachings"
 import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
 import { LiteYouTubeEmbed } from "@/components/features/teachings/video/LiteYouTubeEmbed"
 import { formatDuration, formatTeachingDate } from "@/components/features/teachings/format"
+import { YouTubeLiveSection } from "@/components/features/teachings/video/YouTubeLiveSection"
 
 /**
  * Section Enseignements de la page d'accueil : la dernière prédication vidéo
@@ -57,6 +58,8 @@ export function TeachingsSection() {
             </motion.p>
           )}
         </motion.div>
+
+        <YouTubeLiveSection />
 
         {isLoading ? (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-5 lg:gap-8">

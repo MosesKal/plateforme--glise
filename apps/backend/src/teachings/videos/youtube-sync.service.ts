@@ -23,6 +23,19 @@ interface YouTubeVideoData {
   publishedAt: Date;
 }
 
+export interface PublicYouTubeLive {
+  youtubeId: string;
+  title: string;
+  description: string | null;
+  thumbnailUrl: string | null;
+  channelTitle: string | null;
+  startedAt: string | null;
+  concurrentViewers: number | null;
+}
+
+const LIVE_CACHE_WHEN_OFFLINE_MS = 15 * 60 * 1000;
+const LIVE_CACHE_WHEN_ACTIVE_MS = 2 * 60 * 1000;
+
 /**
  * Synchronisation de la chaîne YouTube vers la table video_teachings.
  *
@@ -44,6 +57,8 @@ export class YouTubeSyncService {
   private readonly logger = new Logger(YouTubeSyncService.name);
   private syncing = false;
   private lastResult: SyncResult | null = null;
+  private liveCache: { value: PublicYouTubeLive | null; expiresAt: number } | null = null;
+  private liveRequest: Promise<PublicYouTubeLive | null> | null = null;
 
   constructor(private prisma: PrismaService) {}
 
@@ -56,6 +71,34 @@ export class YouTubeSyncService {
       process.env.YOUTUBE_API_KEY?.trim() &&
         process.env.YOUTUBE_CHANNEL_ID?.trim(),
     );
+  }
+
+  /**
+   * Direct public actif de la chaîne. Le résultat négatif est conservé 15 min
+   * pour respecter le quota YouTube ; pendant un direct, la fraîcheur passe à
+   * 2 min afin de détecter rapidement sa fin.
+   */
+  async findCurrentLive(): Promise<PublicYouTubeLive | null> {
+    if (!this.isConfigured) return null;
+    if (this.liveCache && this.liveCache.expiresAt > Date.now()) {
+      return this.liveCache.value;
+    }
+    if (this.liveRequest) return this.liveRequest;
+
+    this.liveRequest = this.fetchCurrentLive()
+      .then((value) => {
+        this.liveCache = {
+          value,
+          expiresAt:
+            Date.now() + (value ? LIVE_CACHE_WHEN_ACTIVE_MS : LIVE_CACHE_WHEN_OFFLINE_MS),
+        };
+        return value;
+      })
+      .finally(() => {
+        this.liveRequest = null;
+      });
+
+    return this.liveRequest;
   }
 
   @Cron(CronExpression.EVERY_6_HOURS)
@@ -142,6 +185,44 @@ export class YouTubeSyncService {
   }
 
   // ─── YouTube Data API ───────────────────────────────────────────────────────
+
+  private async fetchCurrentLive(): Promise<PublicYouTubeLive | null> {
+    const apiKey = process.env.YOUTUBE_API_KEY!.trim();
+    const channelId = process.env.YOUTUBE_CHANNEL_ID!.trim();
+    const search = await this.get('/search', {
+      key: apiKey,
+      channelId,
+      part: 'snippet',
+      eventType: 'live',
+      type: 'video',
+      maxResults: '1',
+    });
+    const youtubeId: string | undefined = search.items?.[0]?.id?.videoId;
+    if (!youtubeId) return null;
+
+    const details = await this.get('/videos', {
+      key: apiKey,
+      id: youtubeId,
+      part: 'snippet,liveStreamingDetails,status',
+    });
+    const video = details.items?.[0];
+    if (!video || video.status?.embeddable === false) return null;
+
+    const snippet = video.snippet ?? {};
+    const live = video.liveStreamingDetails ?? {};
+    const thumbs = snippet.thumbnails ?? {};
+    const viewers = Number(live.concurrentViewers);
+    return {
+      youtubeId,
+      title: snippet.title ?? 'YouTube Live',
+      description: snippet.description || null,
+      thumbnailUrl:
+        thumbs.maxres?.url ?? thumbs.high?.url ?? thumbs.medium?.url ?? null,
+      channelTitle: snippet.channelTitle || null,
+      startedAt: live.actualStartTime ?? null,
+      concurrentViewers: Number.isFinite(viewers) ? viewers : null,
+    };
+  }
 
   private async fetchChannelVideos(): Promise<YouTubeVideoData[]> {
     const apiKey = process.env.YOUTUBE_API_KEY!.trim();

@@ -194,9 +194,9 @@ const INFO_ITEMS = [
       </svg>
     ),
     label: "Adresse",
-    value: "13 Avenue Bondo, Bel-Air Kilobelobe\nRéf. Arrêt Fizi, Lubumbashi, RDC",
+    value: "13 Avenue Bondo, Q/Bel-Air Kilobelobe, Commune Kampemba\nRéférence Arrêt Fizi, Lubumbashi, Haut-Katanga, RDC",
     link: {
-      href: "https://maps.google.com/?q=13+Avenue+Bondo+Bel-Air+Kilobelobe+Lubumbashi",
+      href: "https://maps.google.com/?q=13+Avenue+Bondo+Bel-Air+Kilobelobe+Kampemba+Lubumbashi+Haut-Katanga+RDC",
       label: "Voir l'itinéraire →",
     },
   },
@@ -216,24 +216,11 @@ const INFO_ITEMS = [
   {
     icon: (
       <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-      </svg>
-    ),
-    label: "Email",
-    value: "contact@cecj.org",
-    link: {
-      href: "mailto:contact@cecj.org",
-      label: "Contact →",
-    },
-  },
-  {
-    icon: (
-      <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
     label: "Cultes",
-    value: "Dimanche 09h00 & 11h30",
+    value: "Dimanche 09h00 & 11h00",
     link: null,
   },
 ]

@@ -33,6 +33,12 @@ export class VideoTeachingsController {
     return this.videoTeachingsService.findAllPublic(query);
   }
 
+  @Public()
+  @Get('live')
+  findCurrentLive() {
+    return this.youtubeSync.findCurrentLive();
+  }
+
   @Roles('Super Admin', 'Administrateur Général', 'Responsable Communication')
   @Get('admin')
   findAllAdmin(@Query() query: AdminVideoQueryDto) {

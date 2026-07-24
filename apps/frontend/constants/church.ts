@@ -31,7 +31,7 @@ export const CHURCH_INFO: ChurchInfo = {
     district: "Bel-Air Fizi",
     city: "Lubumbashi",
     country: "République Démocratique du Congo",
-    fullAddress: "13 Avenue Bondo, Bel-Air Kilobelobe, Référence Arrêt Fizi, Lubumbashi, RDC",
+    fullAddress: "13 Avenue Bondo, Q/Bel-Air Kilobelobe, Commune Kampemba, Référence Arrêt Fizi, Lubumbashi, Haut-Katanga, RDC",
   },
   contact: {
     phone: "+243 810 531 035",

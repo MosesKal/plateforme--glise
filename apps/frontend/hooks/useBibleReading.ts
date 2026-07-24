@@ -14,12 +14,15 @@ import {
 } from "@/constants/bible"
 
 const STORAGE_KEY = "cecj_bible_state"
+const EXTRA_CHAPTER_WINDOW = 5
 
 interface BibleReadingState {
   planId: ReadingPlanId
   startDate: string                        // ISO "YYYY-MM-DD"
   completedChapters: string[]              // ["GEN_1", "GEN_2", ...]
   readingHistory: Record<string, boolean>  // {"2026-06-23": true}
+  chapterCompletions: Record<string, string> // {"GEN_1": "2026-06-23"}
+  dailyAssignments: Record<string, string[]> // objectif fige par date
 }
 
 export interface ColumnProgress {
@@ -40,10 +43,13 @@ export interface ColumnProgress {
 export interface CalendarDay {
   date: string   // "YYYY-MM-DD"
   status: "completed" | "missed" | "future" | "today"
+  readCount: number
+  extraCount: number
 }
 
 function todayIso(): string {
-  return new Date().toISOString().slice(0, 10)
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`
 }
 
 function diffDays(from: string, to: string): number {
@@ -73,7 +79,13 @@ export function useBibleReading() {
         const parsed = JSON.parse(raw) as BibleReadingState
         // Discard state with a plan that no longer exists (e.g. legacy "1year")
         if (parsed.planId in READING_PLANS) {
-          setState(parsed)
+          // Hydratation volontaire depuis une API navigateur indisponible pendant le SSR.
+          // eslint-disable-next-line react-hooks/set-state-in-effect
+          setState({
+            ...parsed,
+            chapterCompletions: parsed.chapterCompletions ?? {},
+            dailyAssignments: parsed.dailyAssignments ?? {},
+          })
         } else {
           localStorage.removeItem(STORAGE_KEY)
         }
@@ -104,30 +116,54 @@ export function useBibleReading() {
     const today = todayIso()
     const daysSinceStart = Math.max(0, diffDays(state.startDate, today))
     const completedSet = new Set(state.completedChapters)
-    const completedCount = state.completedChapters.length
-
-    // Next N unread chapters from current position
+    // Objectif du jour fige des la premiere validation. Pour un ancien etat,
+    // les prochains chapitres non lus sont proposes.
     const todayCount = chaptersForDay(state.planId, daysSinceStart)
-    const nextChapters: ChapterRef[] = []
-    let i = completedCount
-    while (nextChapters.length < todayCount && i < flatChapters.length) {
-      if (!completedSet.has(flatChapters[i].chapterId)) {
-        nextChapters.push(flatChapters[i])
-      }
-      i++
-    }
+    const assignedIds = state.dailyAssignments[today]
+    const assigned = assignedIds
+      ? assignedIds
+          .map((id) => flatChapters.find((chapter) => chapter.chapterId === id))
+          .filter((chapter): chapter is ChapterRef => Boolean(chapter))
+      : flatChapters.filter((chapter) => !completedSet.has(chapter.chapterId)).slice(0, todayCount)
 
     const { morning, afternoon } = splitMorningAfternoon(
-      nextChapters,
+      assigned,
       state.planId,
       daysSinceStart,
     )
 
-    const allDoneToday =
-      nextChapters.length > 0 &&
-      nextChapters.every((c) => completedSet.has(c.chapterId))
+    // L'historique est marqué au moment exact où le dernier chapitre du quota
+    // est validé. Il doit donc déverrouiller les lectures supplémentaires sans
+    // attendre un rechargement ou un nouveau calcul de l'assignation.
+    const allDoneToday = Boolean(state.readingHistory[today]) || (
+      assigned.length > 0 && assigned.every((c) => completedSet.has(c.chapterId))
+    )
+    const assignedSet = new Set(assigned.map((chapter) => chapter.chapterId))
+    const extraCompleted = flatChapters.filter(
+      (chapter) =>
+        state.chapterCompletions[chapter.chapterId] === today &&
+        !assignedSet.has(chapter.chapterId),
+    )
+    const nextExtras = allDoneToday
+      ? flatChapters
+          .filter((chapter) => !completedSet.has(chapter.chapterId))
+          .slice(0, EXTRA_CHAPTER_WINDOW)
+      : []
+    const activeChapterId =
+      assigned.find((chapter) => !completedSet.has(chapter.chapterId))?.chapterId ??
+      nextExtras[0]?.chapterId ??
+      null
 
-    return { chapters: nextChapters, morning, afternoon, allDoneToday, daysSinceStart }
+    return {
+      chapters: assigned,
+      morning,
+      afternoon,
+      extra: [...extraCompleted, ...nextExtras],
+      extraCompletedCount: extraCompleted.length,
+      activeChapterId,
+      allDoneToday,
+      daysSinceStart,
+    }
   }, [state, flatChapters])
 
   // ── Overall progress ───────────────────────────────────────────────────────
@@ -186,29 +222,78 @@ export function useBibleReading() {
     })
   }, [state])
 
-  // ── Calendar (current month) ───────────────────────────────────────────────
+  // ── Calendar (from plan start through current month) ──────────────────────
   const calendarData = useMemo((): CalendarDay[] => {
     if (!state) return []
     const today = todayIso()
     const now = new Date()
-    const year = now.getFullYear()
-    const month = now.getMonth()
-    const daysInMonth = new Date(year, month + 1, 0).getDate()
+    const start = new Date(`${state.startDate}T00:00:00`)
+    const cursor = new Date(start.getFullYear(), start.getMonth(), 1)
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0)
     const result: CalendarDay[] = []
-    for (let d = 1; d <= daysInMonth; d++) {
-      const date = `${year}-${String(month + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`
+    while (cursor <= end) {
+      const date = `${cursor.getFullYear()}-${String(cursor.getMonth() + 1).padStart(2, "0")}-${String(cursor.getDate()).padStart(2, "0")}`
+      const readCount = Object.values(state.chapterCompletions).filter(
+        (completedAt) => completedAt === date,
+      ).length
+      const objectiveCount = state.dailyAssignments[date]?.length ?? 0
+      const extraCount = Math.max(0, readCount - objectiveCount)
+      const stats = { readCount, extraCount }
       if (date > today) {
-        result.push({ date, status: "future" })
+        result.push({ date, status: "future", ...stats })
       } else if (date === today) {
-        result.push({ date, status: todayData?.allDoneToday ? "completed" : "today" })
+        result.push({ date, status: todayData?.allDoneToday ? "completed" : "today", ...stats })
       } else if (date < state.startDate) {
-        result.push({ date, status: "future" }) // before plan started
+        result.push({ date, status: "future", ...stats }) // before plan started
       } else {
-        result.push({ date, status: state.readingHistory[date] ? "completed" : "missed" })
+        result.push({ date, status: state.readingHistory[date] ? "completed" : "missed", ...stats })
       }
+      cursor.setDate(cursor.getDate() + 1)
     }
     return result
   }, [state, todayData])
+
+  const readingReport = useMemo(() => {
+    const completedDays = calendarData.filter((day) => day.status === "completed").length
+    const missedDays = calendarData.filter((day) => day.status === "missed").length
+    const trackedDays = completedDays + missedDays
+    const consistencyPercent = trackedDays > 0 ? Math.round((completedDays / trackedDays) * 100) : 0
+    const totalExtra = calendarData.reduce((sum, day) => sum + day.extraCount, 0)
+    const today = todayIso()
+    const todayRead = calendarData.find((day) => day.date === today)?.readCount ?? 0
+    const todayGoal = todayData?.chapters.length ?? 0
+
+    let currentStreak = 0
+    const chronological = calendarData.filter((day) => day.date <= today)
+    let index = chronological.length - 1
+    if (chronological[index]?.status === "today") index--
+    while (index >= 0 && chronological[index].status === "completed") {
+      currentStreak++
+      index--
+    }
+
+    let longestStreak = 0
+    let running = 0
+    for (const day of chronological) {
+      if (day.status === "completed") {
+        running++
+        longestStreak = Math.max(longestStreak, running)
+      } else if (day.status === "missed") {
+        running = 0
+      }
+    }
+
+    return {
+      completedDays,
+      missedDays,
+      consistencyPercent,
+      currentStreak,
+      longestStreak,
+      totalExtra,
+      todayRead,
+      todayGoal,
+    }
+  }, [calendarData, todayData])
 
   // ─── Actions ────────────────────────────────────────────────────────────────
 
@@ -218,6 +303,8 @@ export function useBibleReading() {
       startDate: todayIso(),
       completedChapters: [],
       readingHistory: {},
+      chapterCompletions: {},
+      dailyAssignments: {},
     })
   }, [])
 
@@ -225,11 +312,32 @@ export function useBibleReading() {
     setState((prev) => {
       if (!prev) return prev
       if (prev.completedChapters.includes(chapterId)) return prev
+      const today = todayIso()
+      const completedSet = new Set(prev.completedChapters)
+      const todayCount = chaptersForDay(
+        prev.planId,
+        Math.max(0, diffDays(prev.startDate, today)),
+      )
+      const assigned =
+        prev.dailyAssignments[today] ??
+        flatChapters
+          .filter((chapter) => !completedSet.has(chapter.chapterId))
+          .slice(0, todayCount)
+          .map((chapter) => chapter.chapterId)
       const completedChapters = [...prev.completedChapters, chapterId]
-      // Mark today in history once all today's chapters are done
-      return { ...prev, completedChapters }
+      const updatedSet = new Set(completedChapters)
+      const objectiveCompleted = assigned.every((id) => updatedSet.has(id))
+      return {
+        ...prev,
+        completedChapters,
+        chapterCompletions: { ...prev.chapterCompletions, [chapterId]: today },
+        dailyAssignments: { ...prev.dailyAssignments, [today]: assigned },
+        readingHistory: objectiveCompleted
+          ? { ...prev.readingHistory, [today]: true }
+          : prev.readingHistory,
+      }
     })
-  }, [])
+  }, [flatChapters])
 
   const markTodayComplete = useCallback(() => {
     setState((prev) => {
@@ -253,6 +361,7 @@ export function useBibleReading() {
     retard,
     columnProgress,
     calendarData,
+    readingReport,
     dayOfYear,
     selectPlan,
     markChapterComplete,

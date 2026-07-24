@@ -17,6 +17,7 @@ const PLAY_BEACON_AFTER_SEC = 30
 const SHARE_MIN_POSITION_SEC = 10
 const SPEEDS = [1, 1.25, 1.5, 2] as const
 const SPEED_KEY = "cecj-audio-speed"
+const VOLUME_KEY = "cecj-audio-volume"
 
 function savedPositionKey(trackId: string) {
   return `cecj-audio-pos:${trackId}`
@@ -57,6 +58,7 @@ export function GlobalAudioPlayer() {
   const listenedSecRef = useRef(0)
   const beaconSentRef = useRef(false)
   const lastTimeRef = useRef(0)
+  const lastAudibleVolumeRef = useRef(0.8)
 
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
@@ -64,6 +66,11 @@ export function GlobalAudioPlayer() {
     if (typeof window === "undefined") return 1
     const saved = Number(window.localStorage.getItem(SPEED_KEY))
     return SPEEDS.includes(saved as (typeof SPEEDS)[number]) ? saved : 1
+  })
+  const [volume, setVolume] = useState(() => {
+    if (typeof window === "undefined") return 0.8
+    const saved = Number(window.localStorage.getItem(VOLUME_KEY))
+    return Number.isFinite(saved) && saved >= 0 && saved <= 1 ? saved : 0.8
   })
   const [audioError, setAudioError] = useState(false)
 
@@ -73,10 +80,27 @@ export function GlobalAudioPlayer() {
     if (audio && !isLive) audio.playbackRate = speed
   }, [speed, sourceKey, isLive])
 
+  // Volume commun à la radio et aux enseignements, conservé entre les visites.
+  useEffect(() => {
+    const audio = audioRef.current
+    if (audio) audio.volume = volume
+    if (volume > 0) lastAudibleVolumeRef.current = volume
+  }, [volume, sourceKey])
+
   const cycleSpeed = () => {
     const nextSpeed = SPEEDS[(SPEEDS.indexOf(speed as (typeof SPEEDS)[number]) + 1) % SPEEDS.length]
     setSpeed(nextSpeed)
     window.localStorage.setItem(SPEED_KEY, String(nextSpeed))
+  }
+
+  const changeVolume = (nextVolume: number) => {
+    const normalized = Math.min(Math.max(nextVolume, 0), 1)
+    setVolume(normalized)
+    window.localStorage.setItem(VOLUME_KEY, String(normalized))
+  }
+
+  const toggleMute = () => {
+    changeVolume(volume > 0 ? 0 : lastAudibleVolumeRef.current || 0.8)
   }
 
   const trackIndex = track ? queue.findIndex((t) => t.id === track.id) : -1
@@ -397,6 +421,44 @@ export function GlobalAudioPlayer() {
           >
             <WhatsAppIcon className="h-4.5 w-4.5" />
           </button>}
+          <div className="flex shrink-0 items-center gap-1 rounded-full bg-white/5 px-1.5">
+            <button
+              type="button"
+              onClick={toggleMute}
+              aria-label={volume === 0 ? t("teachings.player.unmute") : t("teachings.player.mute")}
+              title={volume === 0 ? t("teachings.player.unmute") : t("teachings.player.mute")}
+              className="flex h-9 w-8 shrink-0 items-center justify-center rounded-full text-white/75 transition hover:bg-white/10 hover:text-white"
+            >
+              {volume === 0 ? (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 5 6 9H3v6h3l5 4V5Zm5 5 5 5m0-5-5 5" />
+                </svg>
+              ) : (
+                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M11 5 6 9H3v6h3l5 4V5Zm4.5 4.5a3.5 3.5 0 0 1 0 5m2.5-7.5a7 7 0 0 1 0 10" />
+                </svg>
+              )}
+            </button>
+            <input
+              type="range"
+              min={0}
+              max={1}
+              step={0.05}
+              value={volume}
+              onChange={(event) => changeVolume(Number(event.target.value))}
+              aria-label={t("teachings.player.volume")}
+              className="h-9 w-14 cursor-pointer appearance-none bg-transparent sm:w-20
+                [&::-webkit-slider-runnable-track]:h-1 [&::-webkit-slider-runnable-track]:rounded-full [&::-webkit-slider-runnable-track]:bg-white/25
+                [&::-webkit-slider-thumb]:-mt-1.25 [&::-webkit-slider-thumb]:h-3.5 [&::-webkit-slider-thumb]:w-3.5
+                [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-cecj-gold
+                [&::-moz-range-track]:h-1 [&::-moz-range-track]:rounded-full [&::-moz-range-track]:bg-white/25
+                [&::-moz-range-thumb]:h-3.5 [&::-moz-range-thumb]:w-3.5 [&::-moz-range-thumb]:rounded-full
+                [&::-moz-range-thumb]:border-0 [&::-moz-range-thumb]:bg-cecj-gold"
+              style={{
+                background: `linear-gradient(to right, var(--color-cecj-gold) ${volume * 100}%, transparent 0)`,
+              }}
+            />
+          </div>
         </div>
 
         {/* Temps — mr-auto pousse les contrôles à droite sur la ligne mobile */}

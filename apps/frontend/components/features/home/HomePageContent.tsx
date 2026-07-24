@@ -211,7 +211,7 @@ export function HomePageContent() {
         </div>
 
         <motion.div
-          className="relative z-10 flex flex-col items-center gap-6 max-w-3xl"
+          className="relative z-10 flex max-w-3xl flex-col items-center gap-4 pb-16 sm:gap-6 sm:pb-14"
           variants={stagger}
           initial="hidden"
           animate="visible"
@@ -251,7 +251,10 @@ export function HomePageContent() {
 
         </motion.div>
 
-        <div className="absolute bottom-5 z-20 flex items-center gap-2" aria-label="Choisir l’image du banner">
+        <div
+          className="absolute bottom-5 z-20 flex min-h-8 items-center gap-2 rounded-full bg-cecj-green/35 px-3 backdrop-blur-sm"
+          aria-label="Choisir l’image du banner"
+        >
           {HERO_SLIDES.map((src, index) => (
             <button
               key={src}
@@ -272,7 +275,7 @@ export function HomePageContent() {
       {/* ── Chiffres clés ────────────────────────────────────────────────── */}
       <section className="bg-cecj-green px-4 py-10 sm:py-12">
         <motion.div
-          className="mx-auto grid max-w-4xl grid-cols-2 gap-8 text-center sm:grid-cols-4"
+          className="mx-auto grid max-w-5xl grid-cols-2 gap-8 text-center sm:grid-cols-3 lg:grid-cols-5"
           variants={stagger}
           {...inView()}
         >
@@ -280,9 +283,10 @@ export function HomePageContent() {
             { to: 50,   suffix: "+", labelKey: "stats.churches",    count: true  },
             { to: 2000, suffix: "+", labelKey: "stats.members",     count: true  },
             { to: 20,   suffix: "+", labelKey: "stats.departments", count: true  },
+            { to: 15,   suffix: "+", labelKey: "stats.cells",       count: true  },
             { to: 2016, suffix: "",  labelKey: "stats.founded",     count: false },
           ].map((stat) => (
-            <motion.div key={stat.labelKey} variants={fadeUp}>
+            <motion.div key={stat.labelKey} variants={fadeUp} className="last:col-span-2 sm:last:col-span-1">
               <p className="text-3xl font-bold text-cecj-gold sm:text-4xl">
                 {stat.count
                   ? <CountUp to={stat.to} suffix={stat.suffix} />

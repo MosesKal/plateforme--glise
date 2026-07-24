@@ -72,6 +72,16 @@ export function useVideoTeachings(params?: PublicVideoParams, enabled = true) {
   })
 }
 
+export function useCurrentYouTubeLive() {
+  return useQuery({
+    queryKey: ["teachings", "videos", "live"],
+    queryFn: () => teachingsApi.getCurrentLive(),
+    staleTime: 60 * 1000,
+    refetchInterval: 2 * 60 * 1000,
+    refetchIntervalInBackground: false,
+  })
+}
+
 /** Équivalent vidéo de useInfiniteAudioTeachings (page vidéos publique). */
 export function useInfiniteVideoTeachings(
   params?: Omit<PublicVideoParams, "page">,
