@@ -10,7 +10,6 @@ import { getLoginUrl } from "@/lib/auth/getLoginUrl"
 export const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1",
   timeout: 10_000,
-  headers: { "Content-Type": "application/json" },
 })
 
 // ─── Request: inject Authorization header ─────────────────────────────────────
@@ -20,6 +19,14 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+
+  // Le navigateur doit générer lui-même le Content-Type multipart avec sa
+  // boundary. Un header JSON (ou multipart sans boundary) empêche Multer de
+  // lire le champ `file` et le backend répond alors « Aucun fichier reçu ».
+  if (typeof FormData !== "undefined" && config.data instanceof FormData) {
+    config.headers.delete("Content-Type")
+  }
+
   return config
 })
 

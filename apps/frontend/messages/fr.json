@@ -106,7 +106,7 @@
   "stats": {
     "churches": "Églises ouvertes",
     "members": "Fidèles",
-    "departments": "Départements et Commissions",
+    "departments": "Commissions et Départements",
     "founded": "Année de fondation"
   },
   "vision": {
@@ -130,7 +130,7 @@
   "about": {
     "badge": "Qui Sommes-Nous ?",
     "title": "Le Camp de Jésus Bel-Air Fizi",
-    "summary": "Vous recherchez une église à Lubumbashi, dans le quartier Bel-Air Fizi ? Nous sommes l’Église Le Camp de Jésus-Christ Bel-Air Fizi, l’une des paroisses de la Communauté des Églises Le Camp de Jésus-Christ. Nous proposons des cultes, des temps de prière et des enseignements bibliques à Lubumbashi. Notre communauté est aussi connue sous les appellations Camp de Jésus, Camp de Jésus-Christ Bel-Air ou Camp de Jésus-Christ Bel Air Fizi : ces noms désignent la même église locale.",
+    "summary": "Nous sommes l’église le camp de Jésus-Christ Bel-air Fizi, l’une des paroisses de la Communauté des Eglises le Camp de Jésus-Christ.",
     "p2_prefix": "Sous la direction de l'",
     "p2_apostle": "Apôtre Paulin Mambwe",
     "p2_mid": ", l'œuvre a crû pour rassembler aujourd'hui plus de",
@@ -166,7 +166,7 @@
     ]
   },
   "weeklyProgram": {
-    "title": "Ma Semaine au Camp de Jésus-Christ",
+    "title": "Ma Semaine à l’Église Camp de Jésus-Christ Bel-Air Fizi",
     "daysLabel": "Jours concernés",
     "todayBadge": "Aujourd'hui",
     "liveOnYoutube": "En direct sur YouTube",
@@ -381,7 +381,7 @@
     "link": "Nous contacter"
   },
   "footer": {
-    "tagline": "Communauté des Eglise Camps de Jésus-Christ",
+    "tagline": "Église Camp de Jésus-Christ Bel-Air Fizi",
     "rights": "Tous droits réservés.",
     "nav_title": "Navigation",
     "community_title": "Communauté",
