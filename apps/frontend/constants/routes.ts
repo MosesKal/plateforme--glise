@@ -38,6 +38,7 @@ export const ADMIN_ROUTES = {
   enseignementsVideos: "/admin/enseignements/videos",
   enseignementsEcrits: "/admin/enseignements/ecrits",
   enseignementsThemes: "/admin/enseignements/themes",
+  enseignementsRadio: "/admin/enseignements/radio",
   temoignages:   "/admin/temoignages",
   departements:  "/admin/departements",
   leaders:       "/admin/leaders",

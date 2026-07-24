@@ -15,6 +15,9 @@ import { TestimonySpotlight } from "./TestimonySpotlight"
 import { WeeklyProgramSection } from "./WeeklyProgramSection"
 import { TeachingsSection } from "./TeachingsSection"
 import { EventsSection } from "./EventsSection"
+import { usePublicRadio } from "@/hooks/useRadio"
+import { RadioHeroCta } from "@/components/features/radio/RadioHeroCta"
+import { RadioSection } from "@/components/features/radio/RadioSection"
 
 const HERO_SLIDES = [
   "/img_prg_3.jpg",
@@ -140,6 +143,7 @@ export function HomePageContent() {
     queryKey: ["public", "testimonies", "approved"],
     queryFn: adminTestimoniesApi.listApproved,
   })
+  const { data: radio } = usePublicRadio()
 
   const missionItems = t("mission.items") as string[]
   const aboutCards = t("about.cards") as Array<{ label: string; desc: string }>
@@ -239,6 +243,12 @@ export function HomePageContent() {
             <span className="ml-2 not-italic text-sm text-cecj-gold/80">— {t("hero.quoteRef")}</span>
           </motion.p>
 
+          {radio && (
+            <motion.div variants={fadeUp}>
+              <RadioHeroCta station={radio} />
+            </motion.div>
+          )}
+
         </motion.div>
 
         <div className="absolute bottom-5 z-20 flex items-center gap-2" aria-label="Choisir l’image du banner">
@@ -287,6 +297,8 @@ export function HomePageContent() {
 
       {/* ── Programme Hebdomadaire ───────────────────────────────────────── */}
       <WeeklyProgramSection />
+
+      {radio && <RadioSection station={radio} />}
 
       {/* ── Vision ───────────────────────────────────────────────────────── */}
       <section className="bg-cecj-green px-4 py-14 sm:py-20">

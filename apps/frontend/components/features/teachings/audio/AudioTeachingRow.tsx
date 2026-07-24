@@ -28,7 +28,8 @@ export function AudioTeachingRow({
   const { t, locale } = useI18n()
   const detailHref = `/${locale}/enseignements/audio/${teaching.theme.slug}/${teaching.slug}`
 
-  const { track, isPlaying, play, toggle } = usePlayerStore()
+  const { source, isPlaying, play, toggle } = usePlayerStore()
+  const track = source?.type === "teaching" ? source.teaching : null
   const isCurrent = track?.id === teaching.id
   const isActive = isCurrent && isPlaying
 

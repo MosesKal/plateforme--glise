@@ -34,16 +34,24 @@ function savedPositionKey(trackId: string) {
 export function GlobalAudioPlayer() {
   const { t, locale } = useI18n()
   const {
-    track,
+    source,
     queue,
     isPlaying,
+    playbackState,
     toggle,
     setPlaying,
+    setPlaybackState,
     next,
     previous,
     close,
     consumePendingSeek,
   } = usePlayerStore()
+  const track = source?.type === "teaching" ? source.teaching : null
+  const station = source?.type === "live-radio" ? source.station : null
+  const isLive = Boolean(station)
+  const isActuallyPlaying = playbackState === "playing"
+  const sourceKey = track?.id ?? station?.id
+  const sourceUrl = track?.fileUrl ?? station?.streamUrl
 
   const audioRef = useRef<HTMLAudioElement>(null)
   const listenedSecRef = useRef(0)
@@ -52,19 +60,18 @@ export function GlobalAudioPlayer() {
 
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
-  const [speed, setSpeed] = useState(1)
+  const [speed, setSpeed] = useState(() => {
+    if (typeof window === "undefined") return 1
+    const saved = Number(window.localStorage.getItem(SPEED_KEY))
+    return SPEEDS.includes(saved as (typeof SPEEDS)[number]) ? saved : 1
+  })
   const [audioError, setAudioError] = useState(false)
 
   // Vitesse persistée (préférence d'écoute, appliquée à chaque piste).
   useEffect(() => {
-    const saved = Number(window.localStorage.getItem(SPEED_KEY))
-    if (SPEEDS.includes(saved as (typeof SPEEDS)[number])) setSpeed(saved)
-  }, [])
-
-  useEffect(() => {
     const audio = audioRef.current
-    if (audio) audio.playbackRate = speed
-  }, [speed, track?.id])
+    if (audio && !isLive) audio.playbackRate = speed
+  }, [speed, sourceKey, isLive])
 
   const cycleSpeed = () => {
     const nextSpeed = SPEEDS[(SPEEDS.indexOf(speed as (typeof SPEEDS)[number]) + 1) % SPEEDS.length]
@@ -80,50 +87,67 @@ export function GlobalAudioPlayer() {
 
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio || !track?.fileUrl) return
+    if (!audio || !source || !sourceUrl) return
 
     listenedSecRef.current = 0
     beaconSentRef.current = false
     lastTimeRef.current = 0
-    setCurrentTime(0)
-    setDuration(track.durationSec || 0)
-    setAudioError(false)
+    setPlaybackState("connecting")
 
-    audio.src = track.fileUrl
+    audio.preload = isLive ? "none" : "metadata"
+    audio.src = sourceUrl
     // preload=metadata : seuls les en-têtes sont lus, le flux démarre au play.
     audio.load()
 
     // Priorité au lien partagé (?t=), sinon reprise de la dernière position.
-    const startAt = consumePendingSeek()
-    if (startAt != null && startAt > 0) {
-      const target = track.durationSec
-        ? Math.min(startAt, Math.max(track.durationSec - 5, 0))
-        : startAt
-      audio.currentTime = target
-      setCurrentTime(target)
-    } else {
-      const resumeAt = readSavedPosition(track.id)
-      if (resumeAt > 10 && (!track.durationSec || resumeAt < track.durationSec - 10)) {
-        audio.currentTime = resumeAt
-        setCurrentTime(resumeAt)
+    if (track) {
+      const startAt = consumePendingSeek()
+      if (startAt != null && startAt > 0) {
+        const target = track.durationSec
+          ? Math.min(startAt, Math.max(track.durationSec - 5, 0))
+          : startAt
+        audio.currentTime = target
+      } else {
+        const resumeAt = readSavedPosition(track.id)
+        if (resumeAt > 10 && (!track.durationSec || resumeAt < track.durationSec - 10)) {
+          audio.currentTime = resumeAt
+        }
       }
+      recordRecentPlay(track)
     }
 
-    recordRecentPlay(track)
-    audio.play().catch(() => setPlaying(false))
-  }, [track?.id, track?.fileUrl, track?.durationSec, setPlaying, track, consumePendingSeek])
+    audio.play().catch(() => {
+      setAudioError(true)
+      setPlaying(false)
+      setPlaybackState("error")
+    })
+  }, [
+    sourceKey,
+    sourceUrl,
+    isLive,
+    source,
+    track,
+    consumePendingSeek,
+    setPlaying,
+    setPlaybackState,
+  ])
 
   // ─── Synchronisation lecture/pause ──────────────────────────────────────────
 
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio || !track) return
+    if (!audio || !source) return
     if (isPlaying) {
-      audio.play().catch(() => setPlaying(false))
+      setPlaybackState("connecting")
+      audio.play().catch(() => {
+        setAudioError(true)
+        setPlaying(false)
+        setPlaybackState("error")
+      })
     } else {
       audio.pause()
     }
-  }, [isPlaying, track, setPlaying])
+  }, [isPlaying, source, setPlaying, setPlaybackState])
 
   // ─── Seek ───────────────────────────────────────────────────────────────────
 
@@ -166,29 +190,55 @@ export function GlobalAudioPlayer() {
   // ─── Media Session (contrôles écran verrouillé / casque) ───────────────────
 
   useEffect(() => {
-    if (!track || !("mediaSession" in navigator)) return
+    if (!source || !("mediaSession" in navigator)) return
     navigator.mediaSession.metadata = new MediaMetadata({
-      title: track.title,
-      artist: track.speaker.fullName,
-      album: track.theme.nameFr,
-      artwork: track.coverImage
-        ? [{ src: track.coverImage, sizes: "512x512" }]
+      title: track?.title ?? station?.nameFr ?? "",
+      artist: track?.speaker.fullName ?? t("radio.live"),
+      album: track?.theme.nameFr ?? t("radio.live"),
+      artwork: (track?.coverImage ?? station?.coverImage)
+        ? [{ src: (track?.coverImage ?? station?.coverImage)!, sizes: "512x512" }]
         : [],
     })
     navigator.mediaSession.setActionHandler("play", () => setPlaying(true))
     navigator.mediaSession.setActionHandler("pause", () => setPlaying(false))
-    navigator.mediaSession.setActionHandler("previoustrack", hasPrevious ? previous : null)
-    navigator.mediaSession.setActionHandler("nexttrack", hasNext ? next : null)
-    navigator.mediaSession.setActionHandler("seekbackward", (details) =>
-      seekBy(-(details.seekOffset ?? 10)),
+    navigator.mediaSession.setActionHandler(
+      "previoustrack",
+      !isLive && hasPrevious ? previous : null,
     )
-    navigator.mediaSession.setActionHandler("seekforward", (details) =>
-      seekBy(details.seekOffset ?? 30),
+    navigator.mediaSession.setActionHandler(
+      "nexttrack",
+      !isLive && hasNext ? next : null,
     )
-    navigator.mediaSession.setActionHandler("seekto", (details) => {
-      if (details.seekTime != null) seekTo(details.seekTime)
-    })
-  }, [track, hasPrevious, hasNext, next, previous, setPlaying, seekBy, seekTo])
+    navigator.mediaSession.setActionHandler(
+      "seekbackward",
+      !isLive ? (details) => seekBy(-(details.seekOffset ?? 10)) : null,
+    )
+    navigator.mediaSession.setActionHandler(
+      "seekforward",
+      !isLive ? (details) => seekBy(details.seekOffset ?? 30) : null,
+    )
+    navigator.mediaSession.setActionHandler(
+      "seekto",
+      !isLive
+        ? (details) => {
+            if (details.seekTime != null) seekTo(details.seekTime)
+          }
+        : null,
+    )
+  }, [
+    source,
+    track,
+    station,
+    isLive,
+    hasPrevious,
+    hasNext,
+    next,
+    previous,
+    setPlaying,
+    seekBy,
+    seekTo,
+    t,
+  ])
 
   // ─── Événements de l'élément audio ──────────────────────────────────────────
 
@@ -238,7 +288,7 @@ export function GlobalAudioPlayer() {
     }
   }, [track, hasNext, next, setPlaying])
 
-  if (!track) return null
+  if (!source) return null
 
   return (
     <>
@@ -252,27 +302,44 @@ export function GlobalAudioPlayer() {
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-cecj-green pb-[env(safe-area-inset-bottom)] text-white shadow-[0_-4px_20px_rgba(0,0,0,0.25)]">
       <audio
         ref={audioRef}
-        preload="metadata"
-        onTimeUpdate={handleTimeUpdate}
+        preload={isLive ? "none" : "metadata"}
+        onTimeUpdate={isLive ? undefined : handleTimeUpdate}
+        onLoadStart={() => {
+          setCurrentTime(0)
+          setDuration(track?.durationSec || 0)
+          setAudioError(false)
+        }}
         onLoadedMetadata={(e) => {
-          setDuration(e.currentTarget.duration || track.durationSec || 0)
-          updatePositionState()
+          if (track) {
+            setDuration(e.currentTarget.duration || track.durationSec || 0)
+            updatePositionState()
+          }
         }}
         onRateChange={updatePositionState}
-        onPlay={() => setPlaying(true)}
-        onPause={() => setPlaying(false)}
-        onEnded={handleEnded}
+        onPlaying={() => {
+          setAudioError(false)
+          setPlaying(true)
+        }}
+        onWaiting={() => setPlaybackState("connecting")}
+        onPause={() => {
+          // audio.load() émet parfois `pause` lors d’un changement de source.
+          // Pendant la connexion, cet événement ne doit pas annuler l’intention
+          // de lecture de la nouvelle source.
+          if (playbackState !== "connecting") setPlaying(false)
+        }}
+        onEnded={isLive ? undefined : handleEnded}
         onError={() => {
           // Fichier introuvable/corrompu : arrêt propre plutôt qu'un player figé.
           if (audioRef.current?.src) {
             setAudioError(true)
             setPlaying(false)
+            setPlaybackState("error")
           }
         }}
       />
 
       {/* Barre de progression pleine largeur */}
-      <input
+      {!isLive && <input
         type="range"
         min={0}
         max={duration || 1}
@@ -292,7 +359,7 @@ export function GlobalAudioPlayer() {
             duration ? (currentTime / duration) * 100 : 0
           }%, transparent 0)`,
         }}
-      />
+      />}
 
       {/* En mobile la barre passe sur deux lignes (flex-wrap) : les infos
           occupent toute la 1re ligne, temps + contrôles la 2e — le temps et
@@ -301,41 +368,59 @@ export function GlobalAudioPlayer() {
         {/* Infos piste + partage du moment */}
         <div className="flex w-full min-w-0 items-center gap-2 sm:w-auto sm:flex-1">
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold">{track.title}</p>
+            <p className="truncate text-sm font-semibold">
+              {track?.title ?? station?.nameFr}
+            </p>
             <p className="truncate text-xs text-white/60">
               {audioError ? (
-                <span className="text-red-300">{t("teachings.player.fileUnavailable")}</span>
+                <span className="text-red-300">
+                  {isLive ? t("radio.unavailable") : t("teachings.player.fileUnavailable")}
+                </span>
+              ) : isLive ? (
+                <span aria-live="polite">
+                  {playbackState === "connecting"
+                    ? t("radio.connecting")
+                    : playbackState === "playing"
+                      ? t("radio.nowPlaying")
+                      : t("radio.paused")}
+                </span>
               ) : (
-                <>{track.speaker.fullName} · {track.theme.nameFr}</>
+                <>{track?.speaker.fullName} · {track?.theme.nameFr}</>
               )}
             </p>
           </div>
-          <button
+          {!isLive && <button
             onClick={shareMomentOnWhatsApp}
             aria-label={t("teachings.share.shareMoment")}
             title={t("teachings.share.shareMoment")}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white/70 transition hover:bg-white/10 hover:text-white"
           >
             <WhatsAppIcon className="h-4.5 w-4.5" />
-          </button>
+          </button>}
         </div>
 
         {/* Temps — mr-auto pousse les contrôles à droite sur la ligne mobile */}
-        <span className="mr-auto shrink-0 text-[11px] tabular-nums text-white/70 sm:mr-0 sm:text-xs">
+        {!isLive && <span className="mr-auto shrink-0 text-[11px] tabular-nums text-white/70 sm:mr-0 sm:text-xs">
           {formatDuration(currentTime)} / {formatDuration(duration)}
-        </span>
+        </span>}
+        {isLive && (
+          <span className="mr-auto inline-flex items-center gap-1.5 rounded-full bg-red-600/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white sm:mr-0">
+            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+            {t("radio.live")}
+          </span>
+        )}
 
         {/* Contrôles */}
         <div className="flex shrink-0 items-center gap-1 sm:gap-1.5">
-          <button
+          {!isLive && <button
             onClick={cycleSpeed}
             aria-label={`${t("teachings.player.speed")} : ${speed}×`}
             className="flex h-9 min-w-11 items-center justify-center rounded-full border border-white/20 px-2 text-xs font-bold tabular-nums text-white/80 transition hover:bg-white/10"
           >
             {speed}×
-          </button>
+          </button>}
 
-          <button
+          {!isLive && <button
             onClick={previous}
             disabled={!hasPrevious}
             aria-label={t("teachings.player.previous")}
@@ -344,14 +429,22 @@ export function GlobalAudioPlayer() {
             <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
             </svg>
-          </button>
+          </button>}
 
           <button
             onClick={toggle}
-            aria-label={isPlaying ? t("teachings.common.pause") : t("teachings.player.play")}
+            aria-label={
+              isActuallyPlaying
+                ? t("teachings.common.pause")
+                : playbackState === "error" && isLive
+                  ? t("radio.retry")
+                  : t("teachings.player.play")
+            }
             className="flex h-11 w-11 items-center justify-center rounded-full bg-cecj-gold text-cecj-green transition hover:scale-105"
           >
-            {isPlaying ? (
+            {playbackState === "connecting" ? (
+              <span className="h-5 w-5 animate-spin rounded-full border-2 border-cecj-green/30 border-t-cecj-green motion-reduce:animate-none" />
+            ) : isActuallyPlaying ? (
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
               </svg>
@@ -362,7 +455,7 @@ export function GlobalAudioPlayer() {
             )}
           </button>
 
-          <button
+          {!isLive && <button
             onClick={next}
             disabled={!hasNext}
             aria-label={t("teachings.player.next")}
@@ -371,7 +464,7 @@ export function GlobalAudioPlayer() {
             <svg className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z" />
             </svg>
-          </button>
+          </button>}
 
           <button
             onClick={close}

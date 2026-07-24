@@ -1,5 +1,5 @@
 -- Normalise les anciennes catégories sans supprimer les événements existants.
-UPDATE "Event"
+UPDATE "events"
 SET "category" = CASE
   WHEN "category" IN ('Louange & Adoration', 'Action de graces', 'Action de grâce')
     THEN 'Action de grâces'

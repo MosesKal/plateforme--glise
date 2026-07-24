@@ -13,10 +13,12 @@ import { useWeeklySchedule } from "@/hooks/useWeeklySchedule"
 const FRENCH_WEEKDAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"]
 const DISPLAY_WEEK_DAYS = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
 const WELCOME_MESSAGES = [
-  "Karibu",
-  "Boyei malamu",
-  "Bienvenue",
-  "Welcome",
+  { text: "Kiambote",     language: "Kikongo",  lang: "kg" },
+  { text: "Boyei malamu", language: "Lingala",  lang: "ln" },
+  { text: "Karibu",       language: "Swahili",  lang: "sw" },
+  { text: "Betuabu",      language: "Tshiluba", lang: "lua" },
+  { text: "Bienvenue",    language: "Français", lang: "fr" },
+  { text: "Welcome",      language: "English",  lang: "en" },
 ] as const
 const WELCOME_ROTATION_INTERVAL_MS = 4500
 
@@ -54,7 +56,7 @@ function WelcomeRotator() {
   return (
     <motion.div variants={fadeUp}>
       <span className="sr-only">
-        {WELCOME_MESSAGES.join(", ")}
+        {WELCOME_MESSAGES.map(({ text, language }) => `${text} en ${language}`).join(", ")}
       </span>
       <span
         aria-hidden="true"
@@ -62,14 +64,15 @@ function WelcomeRotator() {
       >
         <AnimatePresence mode="wait" initial={false}>
           <motion.span
-            key={WELCOME_MESSAGES[index]}
+            key={WELCOME_MESSAGES[index].language}
+            lang={WELCOME_MESSAGES[index].lang}
             initial={shouldReduceMotion ? false : { opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={shouldReduceMotion ? undefined : { opacity: 0, y: -14 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
             className="whitespace-nowrap"
           >
-            {WELCOME_MESSAGES[index]}
+            {WELCOME_MESSAGES[index].text}
           </motion.span>
         </AnimatePresence>
       </span>
@@ -196,7 +199,7 @@ function ActivityCard({ activity, today }: { activity: ProgramActivity; today: s
 }
 
 export function WeeklyProgramSection() {
-  const { t, locale } = useI18n()
+  const { t } = useI18n()
   const today = getTodayLabel()
   const { data } = useWeeklySchedule()
   const program = data?.program ?? []

@@ -174,6 +174,19 @@
     "upcomingLive": "Le direct sera sur YouTube",
     "facebookPhotosNote": "Photos disponibles après le culte sur la page Facebook"
   },
+  "radio": {
+    "live": "Radio en direct",
+    "listenNow": "Écouter maintenant",
+    "pause": "Mettre en pause",
+    "connecting": "Connexion à la radio…",
+    "nowPlaying": "Radio en cours de lecture",
+    "paused": "Radio en pause",
+    "unavailable": "Radio temporairement indisponible",
+    "retry": "Réessayer",
+    "sectionEyebrow": "La voix de la paroisse",
+    "defaultDescription": "Découvrez les enseignements et programmes de la radio de l’Église Camp de Jésus-Christ Bel-Air Fizi.",
+    "officialWebsite": "Visiter le site officiel"
+  },
   "teachingsSection": {
     "badge": "Enseignements",
     "title": "Nourrissez votre foi par la Parole",

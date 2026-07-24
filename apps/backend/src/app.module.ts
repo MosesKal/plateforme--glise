@@ -23,6 +23,7 @@ import { JwtAuthGuard } from './common/guards/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles.guard';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { RadioModule } from './radio/radio.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { TransformInterceptor } from './common/interceptors/transform.intercepto
     PagesModule,
     StorageModule,
     TeachingsModule,
+    RadioModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },

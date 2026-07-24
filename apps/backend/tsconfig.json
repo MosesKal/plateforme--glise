@@ -20,10 +20,6 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "@cecj/shared": ["../../packages/shared/src/index.ts"],
-      "@cecj/shared/*": ["../../packages/shared/src/*"]
-    }
+    "noFallthroughCasesInSwitch": false
   }
 }

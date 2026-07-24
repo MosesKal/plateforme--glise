@@ -23,7 +23,8 @@ export function AudioTeachingDetailContent({ slug }: { slug: string }) {
   const { t, locale } = useI18n()
 
   const { data: teaching, isLoading, isError } = useAudioTeachingDetail(slug)
-  const { track, isPlaying, play, toggle } = usePlayerStore()
+  const { source, isPlaying, play, toggle } = usePlayerStore()
+  const track = source?.type === "teaching" ? source.teaching : null
   const [shareFeedback, setShareFeedback] = useState(false)
 
   const isCurrent = track?.id === teaching?.id

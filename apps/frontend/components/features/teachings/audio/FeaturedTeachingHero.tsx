@@ -18,7 +18,8 @@ export function FeaturedTeachingHero() {
   const { t, locale } = useI18n()
   const { data, isLoading } = useAudioTeachings({ sort: "recent", limit: 5 })
 
-  const { track, isPlaying, play, toggle } = usePlayerStore()
+  const { source, isPlaying, play, toggle } = usePlayerStore()
+  const track = source?.type === "teaching" ? source.teaching : null
 
   // fileUrl peut être null le temps du traitement d'un upload : on ne met
   // jamais en avant (ni en file) un enseignement encore injouable.

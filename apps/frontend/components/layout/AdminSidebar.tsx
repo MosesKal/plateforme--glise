@@ -31,6 +31,7 @@ const navItems: NavItem[] = [
       { label: "Vidéos",            href: ADMIN_ROUTES.enseignementsVideos, resource: "teachings" },
       { label: "Écrits (PDF)",      href: ADMIN_ROUTES.enseignementsEcrits, resource: "teachings" },
       { label: "Thèmes & orateurs", href: ADMIN_ROUTES.enseignementsThemes, resource: "teachings" },
+      { label: "Radio en direct",   href: ADMIN_ROUTES.enseignementsRadio,  resource: "teachings" },
     ],
   },
   {

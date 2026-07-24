@@ -21,7 +21,7 @@ module.exports = {
     {
       name: "cecj-backend",
       cwd: path.join(root, "apps/backend"),
-      script: path.join(root, "apps/backend/dist/src/main.js"),
+      script: path.join(root, "apps/backend/dist/main.js"),
       exec_mode: "fork",
       instances: 1,
       autorestart: true,

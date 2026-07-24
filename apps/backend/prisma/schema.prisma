@@ -334,6 +334,25 @@ model AudioTeachingTag {
   @@map("audio_teaching_tags")
 }
 
+// ─── RADIO EN DIRECT ─────────────────────────────────────────────────────────
+
+model RadioStation {
+  id            String   @id @default(cuid())
+  nameFr        String
+  nameEn        String?
+  descriptionFr String?  @db.Text
+  descriptionEn String?  @db.Text
+  streamUrl     String
+  websiteUrl    String?
+  coverImage    String?
+  isActive      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([isActive])
+  @@map("radio_stations")
+}
+
 // ─── ENSEIGNEMENTS VIDÉO (sync YouTube) ───────────────────────────────────────
 
 model VideoTeaching {
