@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { SITE_ROUTES } from "@/constants/routes"
 import { CHURCH_INFO } from "@/constants/church"
-import { MapPinIcon, PhoneIcon, FacebookIcon, InstagramIcon, TikTokIcon, YouTubeIcon, WhatsAppIcon, RadioIcon } from "@/components/ui/icons"
+import { MapPinIcon, PhoneIcon, FacebookIcon, InstagramIcon, TikTokIcon, YouTubeIcon, WhatsAppIcon } from "@/components/ui/icons"
 import { SocialLink } from "@/components/ui/SocialLink"
 import { useI18n } from "@/components/providers/I18nProvider"
 
@@ -127,7 +127,6 @@ export function PublicFooter() {
             <SocialLink href={CHURCH_INFO.socials.tiktok} label={t("footer.ariaTiktok")} icon={TikTokIcon} />
             <SocialLink href={CHURCH_INFO.socials.youtube} label={t("footer.ariaYoutube")} icon={YouTubeIcon} />
             <SocialLink href={CHURCH_INFO.socials.whatsappChannel} label={t("footer.ariaWhatsapp")} icon={WhatsAppIcon} />
-            <SocialLink href={CHURCH_INFO.socials.radioUrl} label={t("footer.ariaRadio")} icon={RadioIcon} />
           </div>
         </div>
       </div>
