@@ -283,7 +283,7 @@ export function HomePageContent() {
             { to: 50,   suffix: "+", labelKey: "stats.churches",    count: true  },
             { to: 2000, suffix: "+", labelKey: "stats.members",     count: true  },
             { to: 20,   suffix: "+", labelKey: "stats.departments", count: true  },
-            { to: 15,   suffix: "+", labelKey: "stats.cells",       count: true  },
+            { to: 20,   suffix: "+", labelKey: "stats.cells",       count: true  },
             { to: 2016, suffix: "",  labelKey: "stats.founded",     count: false },
           ].map((stat) => (
             <motion.div key={stat.labelKey} variants={fadeUp} className="last:col-span-2 sm:last:col-span-1">

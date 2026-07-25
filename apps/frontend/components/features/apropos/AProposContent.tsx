@@ -110,7 +110,7 @@ export function AProposContent() {
             {[
               { value: "50+",    label: t("stats.churches") },
               { value: "2 000+", label: t("stats.members") },
-              { value: "15+",    label: t("stats.cells") },
+              { value: "20+",    label: t("stats.cells") },
               { value: "2016",   label: t("stats.founded") },
             ].map((stat) => (
               <motion.div key={stat.label} variants={scaleUp} className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
