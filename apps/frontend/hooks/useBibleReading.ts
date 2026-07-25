@@ -297,16 +297,23 @@ export function useBibleReading() {
 
   // ─── Actions ────────────────────────────────────────────────────────────────
 
-  const selectPlan = useCallback((planId: ReadingPlanId) => {
+  const selectPlan = useCallback((planId: ReadingPlanId, nextChapterId?: string) => {
+    const requestedIndex = nextChapterId
+      ? flatChapters.findIndex((chapter) => chapter.chapterId === nextChapterId)
+      : 0
+    const startIndex = Math.max(0, requestedIndex)
+
     setState({
       planId,
       startDate: todayIso(),
-      completedChapters: [],
+      completedChapters: flatChapters
+        .slice(0, startIndex)
+        .map((chapter) => chapter.chapterId),
       readingHistory: {},
       chapterCompletions: {},
       dailyAssignments: {},
     })
-  }, [])
+  }, [flatChapters])
 
   const markChapterComplete = useCallback((chapterId: string) => {
     setState((prev) => {
