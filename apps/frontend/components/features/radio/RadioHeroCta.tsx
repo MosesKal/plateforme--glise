@@ -29,7 +29,7 @@ export function RadioHeroCta({ station }: { station: PublicRadioStation }) {
         {isPlaying && (
           <span className="absolute inset-0 animate-ping rounded-full border border-cecj-gold/70 motion-reduce:animate-none" />
         )}
-        <RadioIcon className="relative h-5 w-5" />
+        <RadioIcon className="relative h-5 w-5 brightness-0 invert" />
       </span>
       <span>
         <span className="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-[0.18em] text-red-700">
