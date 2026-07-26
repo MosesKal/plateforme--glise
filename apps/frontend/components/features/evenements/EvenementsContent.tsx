@@ -58,6 +58,33 @@ function eventsOnDay(events: ChurchEvent[], year: number, month: number, day: nu
   return events.filter((e) => e.startDate <= iso && e.endDate >= iso)
 }
 
+function isMultiDayEvent(event: ChurchEvent) {
+  return event.startDate !== event.endDate
+}
+
+function formatEventRange(event: ChurchEvent, locale: string) {
+  const [startYear, startMonth, startDay] = event.startDate.split("-").map(Number)
+  const [endYear, endMonth, endDay] = event.endDate.split("-").map(Number)
+  const start = new Date(startYear, startMonth - 1, startDay)
+  const end = new Date(endYear, endMonth - 1, endDay)
+  const language = locale === "en" ? "en-US" : "fr-FR"
+
+  if (!isMultiDayEvent(event)) {
+    return new Intl.DateTimeFormat(language, {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    }).format(start)
+  }
+
+  return new Intl.DateTimeFormat(language, {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).formatRange(start, end)
+}
+
 // ─── Countdown hook ───────────────────────────────────────────────────────────
 
 function useCountdown(targetIso: string | null) {
@@ -254,20 +281,27 @@ function EventCalendar({ events, locale }: { events: ChurchEvent[]; locale: stri
           const iso        = toIso(year, month, day)
           const isToday    = iso === todayIso
           const isSelected = selectedDay === day
+          const hasEvents  = dayEvents.length > 0
+          const eventNames = dayEvents.map((event) => event.title).join(", ")
           return (
             <button
               key={i}
               onClick={() => setSelectedDay(isSelected ? null : day)}
+              aria-pressed={isSelected}
+              aria-label={hasEvents ? `${day} ${MONTHS[month]} ${year} — ${eventNames}` : undefined}
+              title={hasEvents ? eventNames : undefined}
               className={cn(
                 "relative flex flex-col items-center gap-0.5 border-b border-r border-gray-50 py-2 transition-colors",
-                isSelected  ? "bg-cecj-green"      :
-                isToday     ? "bg-cecj-gold/10"    :
-                              "hover:bg-gray-50"
+                isSelected ? "bg-cecj-green" :
+                hasEvents  ? "bg-cecj-gold/70 shadow-[inset_0_0_0_1px_#ffcb32] hover:bg-cecj-gold" :
+                isToday    ? "bg-cecj-gold/10" :
+                             "hover:bg-gray-50"
               )}
             >
               <span className={cn(
                 "text-xs font-medium sm:text-sm",
                 isSelected ? "text-white"        :
+                hasEvents  ? "font-extrabold text-cecj-green" :
                 isToday    ? "font-bold text-cecj-green" :
                              "text-gray-700"
               )}>
@@ -278,7 +312,11 @@ function EventCalendar({ events, locale }: { events: ChurchEvent[]; locale: stri
                   {dayEvents.slice(0, 3).map((e, j) => (
                     <span
                       key={j}
-                      className={cn("h-1 w-1 rounded-full", isSelected ? "bg-cecj-gold" : dotColor(e.category))}
+                      className={cn(
+                        "h-1.5 rounded-full ring-1 ring-white/70",
+                        isMultiDayEvent(e) ? "w-3" : "w-1.5",
+                        isSelected ? "bg-cecj-gold" : dotColor(e.category),
+                      )}
                     />
                   ))}
                 </div>
@@ -291,7 +329,7 @@ function EventCalendar({ events, locale }: { events: ChurchEvent[]; locale: stri
       {/* Selected day detail */}
       <div className="min-h-[56px] border-t border-gray-100 p-4">
         {selectedDay === null ? (
-          <p className="text-center text-xs text-gray-300">Sélectionne un jour pour voir les événements</p>
+          <p className="text-center text-xs text-gray-300">{t("evenementsPage.select_day_hint")}</p>
         ) : selectedEvents.length === 0 ? (
           <p className="text-center text-sm text-gray-400">{t("evenementsPage.no_events_day")}</p>
         ) : (
@@ -299,8 +337,18 @@ function EventCalendar({ events, locale }: { events: ChurchEvent[]; locale: stri
             {selectedEvents.map((e) => (
               <div key={e.id} className="flex items-start gap-3">
                 <span className={cn("mt-1.5 h-2 w-2 shrink-0 rounded-full", dotColor(e.category))} />
-                <div>
-                  <p className="text-sm font-semibold text-cecj-green">{e.title}</p>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <p className="text-sm font-semibold text-cecj-green">{e.title}</p>
+                    {isMultiDayEvent(e) && (
+                      <span className="rounded-full bg-cecj-gold/20 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-cecj-green">
+                        {t("evenementsPage.multi_day_badge")}
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-0.5 text-xs font-medium text-gray-500">
+                    {formatEventRange(e, locale)}
+                  </p>
                   <p className="text-xs text-gray-400">{e.time} · {e.location.split(",")[0]}</p>
                 </div>
               </div>

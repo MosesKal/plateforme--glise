@@ -54,10 +54,13 @@ function buildDateLabel(start: Date, end: Date | null): string {
   if (isMonthLong(start, end)) {
     return `${MONTHS_LONG[start.getMonth()]} ${start.getFullYear()}`
   }
-  if (start.getMonth() === end.getMonth()) {
-    return `${start.getDate()} & ${end.getDate()} ${MONTHS_LONG[start.getMonth()]} ${start.getFullYear()}`
+  if (start.getFullYear() === end.getFullYear() && start.getMonth() === end.getMonth()) {
+    return `Du ${start.getDate()} au ${end.getDate()} ${MONTHS_LONG[start.getMonth()]} ${start.getFullYear()}`
   }
-  return `${start.getDate()} ${MONTHS_SHORT[start.getMonth()]} – ${end.getDate()} ${MONTHS_SHORT[end.getMonth()]} ${end.getFullYear()}`
+  if (start.getFullYear() === end.getFullYear()) {
+    return `Du ${start.getDate()} ${MONTHS_LONG[start.getMonth()]} au ${end.getDate()} ${MONTHS_LONG[end.getMonth()]} ${end.getFullYear()}`
+  }
+  return `Du ${start.getDate()} ${MONTHS_LONG[start.getMonth()]} ${start.getFullYear()} au ${end.getDate()} ${MONTHS_LONG[end.getMonth()]} ${end.getFullYear()}`
 }
 
 function buildDay(start: Date, end: Date | null): string {

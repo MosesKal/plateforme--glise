@@ -135,7 +135,7 @@ export function EventFormModal({ open, onClose, onSubmit, initialData }: Props) 
             <Field label="Date de début *" error={errors.startDate?.message}>
               <input {...register("startDate")} type="datetime-local" className={inputCls} />
             </Field>
-            <Field label="Date de fin">
+            <Field label="Date de fin" error={errors.endDate?.message}>
               <input {...register("endDate")} type="datetime-local" className={inputCls} />
             </Field>
           </div>

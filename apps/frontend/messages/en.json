@@ -199,9 +199,9 @@
     "retry": "Try again",
     "missionEyebrow": "More than radio",
     "missionTitle": "The Word that accompanies you every day",
-    "missionText": "C.E.C.J.C. Radio extends the life of the church beyond its walls. It supports your walk with God at home, at work or while travelling.",
+    "missionText": "Camp de Jésus-Christ Bel-Air Fizi Church Radio extends the life of the church beyond its walls. It supports your walk with God at home, at work or while travelling.",
     "benefits": [
-      { "number": "01", "title": "Grow in the Word", "description": "Clear biblical teachings to strengthen your faith and guide your daily life." }
+      { "title": "Grow in the Word", "description": "Clear biblical teachings to strengthen your faith and guide your daily life." }
     ],
     "howEyebrow": "Simple and accessible",
     "howTitle": "Your radio follows you everywhere",
@@ -529,7 +529,9 @@
     "filter_all": "All",
     "calendar_title": "Calendar",
     "categories_legend": "Categories",
+    "select_day_hint": "Select a day to view events",
     "no_events_day": "No events on this day",
+    "multi_day_badge": "Multiple days",
     "history_badge": "Past",
     "history_title": "Our latest events",
     "cta_title": "Have a question about an event?",

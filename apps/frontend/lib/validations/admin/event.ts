@@ -15,6 +15,12 @@ export const eventSchema = z.object({
   coverImage:   z.string().optional(),
   status:       z.enum(["DRAFT", "PUBLISHED", "CANCELLED"]),
   isFeatured:   z.boolean(),
-})
+}).refine(
+  ({ startDate, endDate }) => !endDate || new Date(endDate).getTime() >= new Date(startDate).getTime(),
+  {
+    message: "La date de fin doit être postérieure à la date de début",
+    path: ["endDate"],
+  },
+)
 
 export type EventFormValues = z.infer<typeof eventSchema>

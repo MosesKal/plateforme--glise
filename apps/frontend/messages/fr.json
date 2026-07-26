@@ -199,9 +199,9 @@
     "retry": "Réessayer",
     "missionEyebrow": "Plus qu’une radio",
     "missionTitle": "La Parole qui vous accompagne au quotidien",
-    "missionText": "La radio C.E.C.J.C. prolonge la vie de la paroisse au-delà de ses murs. Elle vous accompagne dans votre marche avec Dieu, à la maison, au travail ou en déplacement.",
+    "missionText": "La radio de l’Église Camp de Jésus-Christ Bel-Air Fizi prolonge la vie de la paroisse au-delà de ses murs. Elle vous accompagne dans votre marche avec Dieu, à la maison, au travail ou en déplacement.",
     "benefits": [
-      { "number": "01", "title": "Grandir dans la Parole", "description": "Des enseignements bibliques clairs pour fortifier votre foi et éclairer votre quotidien." }
+      { "title": "Grandir dans la Parole", "description": "Des enseignements bibliques clairs pour fortifier votre foi et éclairer votre quotidien." }
     ],
     "howEyebrow": "Simple et accessible",
     "howTitle": "Votre radio vous suit partout",
@@ -529,7 +529,9 @@
     "filter_all": "Tous",
     "calendar_title": "Calendrier",
     "categories_legend": "Catégories",
+    "select_day_hint": "Sélectionnez un jour pour voir les événements",
     "no_events_day": "Aucun événement ce jour",
+    "multi_day_badge": "Plusieurs jours",
     "history_badge": "Historique",
     "history_title": "Nos derniers événements",
     "cta_title": "Une question sur un événement ?",

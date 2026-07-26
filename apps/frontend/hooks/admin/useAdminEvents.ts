@@ -18,7 +18,11 @@ export function useCreateEvent() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (payload: EventPayload) => adminEventsApi.create(payload).then((r) => r.data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: QK }),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: QK }),
+        qc.invalidateQueries({ queryKey: ["events"] }),
+      ]),
   })
 }
 
@@ -27,7 +31,11 @@ export function useUpdateEvent() {
   return useMutation({
     mutationFn: ({ id, payload }: { id: string; payload: Partial<EventPayload> }) =>
       adminEventsApi.update(id, payload).then((r) => r.data),
-    onSuccess: () => qc.invalidateQueries({ queryKey: QK }),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: QK }),
+        qc.invalidateQueries({ queryKey: ["events"] }),
+      ]),
   })
 }
 
@@ -35,6 +43,10 @@ export function useDeleteEvent() {
   const qc = useQueryClient()
   return useMutation({
     mutationFn: (id: string) => adminEventsApi.remove(id),
-    onSuccess: () => qc.invalidateQueries({ queryKey: QK }),
+    onSuccess: () =>
+      Promise.all([
+        qc.invalidateQueries({ queryKey: QK }),
+        qc.invalidateQueries({ queryKey: ["events"] }),
+      ]),
   })
 }
