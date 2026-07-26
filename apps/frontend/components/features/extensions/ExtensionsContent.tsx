@@ -245,13 +245,6 @@ export function ExtensionsContent() {
   const [geoLoading, setGeoLoading] = useState(false)
   const [geoError,   setGeoError]   = useState(false)
 
-  // Stats calculées depuis les données réelles
-  const stats = useMemo(() => ({
-    extensions: extensions.length,
-    countries:  new Set(extensions.map((e) => e.countryCode)).size,
-    continents: new Set(extensions.map((e) => e.continent)).size,
-  }), [extensions])
-
   // Geolocation
   const handleLocate = () => {
     if (!navigator.geolocation) { setGeoError(true); return }
@@ -335,12 +328,11 @@ export function ExtensionsContent() {
               {t("extensionsPage.hero_subtitle")}
             </motion.p>
 
-            {/* Stats live */}
+            {/* Network stats */}
             <motion.div variants={stagger} className="flex justify-center gap-6 pt-2 sm:gap-12">
               {[
-                { value: `${stats.extensions}+`, label: t("extensionsPage.stat_extensions") },
-                { value: `${stats.countries}+`,  label: t("extensionsPage.stat_countries")  },
-                { value: `${stats.continents}`,  label: t("extensionsPage.stat_continents") },
+                { value: "80+", label: t("extensionsPage.stat_extensions") },
+                { value: "1",   label: t("extensionsPage.stat_continents") },
               ].map(({ value, label }) => (
                 <motion.div key={label as string} variants={fadeUp} className="text-center">
                   <p className="text-3xl font-bold text-cecj-gold sm:text-4xl">{value}</p>

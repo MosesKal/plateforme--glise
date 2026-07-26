@@ -165,6 +165,7 @@ export function Navbar() {
   ]
 
   const exploreLinks: NavLink[] = [
+    { label: t("nav.radio"),       href: lp(SITE_ROUTES.radio),           isActive: isLinkActive(lp(SITE_ROUTES.radio)) },
     { label: t("nav.galerie"),     href: lp(SITE_ROUTES.galerie),         isActive: isLinkActive(lp(SITE_ROUTES.galerie)) },
     { label: t("nav.temoignages"), href: lp(SITE_ROUTES.temoignages),     isActive: isLinkActive(lp(SITE_ROUTES.temoignages)) },
     { label: t("nav.contact"),     href: lp(SITE_ROUTES.contact),         isActive: isLinkActive(lp(SITE_ROUTES.contact)) },

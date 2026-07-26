@@ -15,6 +15,7 @@ export const SITE_ROUTES = {
   enseignementsEcrits: "/enseignements/ecrits",
   evenements:      "/evenements",
   temoignages:     "/temoignages",
+  radio:           "/radio",
   departements:    "/departements",
   contact:         "/contact",
   lectureBiblique: "/lecture-biblique",

@@ -157,6 +157,16 @@ export const PUBLIC_PAGE_SEO: Record<string, SeoCopy> = {
     fr: { title: "Présentation de l'église", description: "Découvrez l'histoire, l'identité et la doctrine du Camp de Jésus-Christ Bel-Air Fizi, église chrétienne à Lubumbashi." },
     en: { title: "About our church", description: "Discover the history, identity and doctrine of Camp de Jésus-Christ Bel-Air Fizi, a Christian church in Lubumbashi." },
   },
+  "/radio": {
+    fr: {
+      title: "Radio chrétienne en direct",
+      description: "Écoutez en direct la radio de l’Église Camp de Jésus-Christ Bel-Air Fizi : enseignements bibliques, prière et programmes chrétiens.",
+    },
+    en: {
+      title: "Live Christian radio",
+      description: "Listen live to Camp de Jésus-Christ Bel-Air Fizi Church radio: Bible teachings, prayer and Christian programs.",
+    },
+  },
   "/temoignages": {
     fr: { title: "Témoignages chrétiens", description: "Découvrez des témoignages de foi et de transformation vécus au Camp de Jésus-Christ Bel-Air Fizi, et partagez le vôtre." },
     en: { title: "Christian testimonies", description: "Read stories of faith and transformed lives at Camp de Jésus-Christ Bel-Air Fizi, and share your own testimony." },

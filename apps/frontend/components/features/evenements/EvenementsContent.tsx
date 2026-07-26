@@ -20,6 +20,8 @@ const DOW_EN    = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"]
 
 const CATEGORY_DOT: Record<string, string> = {
   "Action de grâces":   "bg-amber-400",
+  "Conférences":        "bg-sky-500",
+  "Consécration":       "bg-rose-500",
   "Ecole de tyrannus":  "bg-indigo-500",
   "Concours biblique":  "bg-purple-500",
   "Culte spécial":      "bg-cecj-green",
@@ -27,6 +29,8 @@ const CATEGORY_DOT: Record<string, string> = {
 
 const CATEGORY_BADGE: Record<string, string> = {
   "Action de grâces":   "bg-amber-400/10 text-amber-700 border-amber-200",
+  "Conférences":        "bg-sky-500/10 text-sky-700 border-sky-200",
+  "Consécration":       "bg-rose-500/10 text-rose-700 border-rose-200",
   "Ecole de tyrannus":  "bg-indigo-500/10 text-indigo-700 border-indigo-200",
   "Concours biblique":  "bg-purple-500/10 text-purple-700 border-purple-200",
   "Culte spécial":      "bg-cecj-green/10 text-cecj-green border-cecj-green/20",
