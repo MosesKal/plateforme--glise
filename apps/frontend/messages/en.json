@@ -185,14 +185,11 @@
     "paused": "Radio paused",
     "unavailable": "Radio temporarily unavailable",
     "retry": "Try again",
-    "sectionEyebrow": "The voice of our church",
     "defaultDescription": "Discover the teachings and programs of Camp de Jésus-Christ Bel-Air Fizi Church radio.",
     "officialWebsite": "Visit the official website"
   },
   "radioPage": {
-    "eyebrow": "The voice of our church",
-    "title": "A radio station that strengthens your faith, wherever you are",
-    "subtitle": "Listen live to teachings, prayer moments and programs from Camp de Jésus-Christ Bel-Air Fizi Church.",
+    "subtitle": "Listen live to teachings from Camp de Jésus-Christ Bel-Air Fizi Church.",
     "onAir": "Live now",
     "listen": "Listen to the radio",
     "pause": "Pause",
@@ -204,9 +201,7 @@
     "missionTitle": "The Word that accompanies you every day",
     "missionText": "C.E.C.J.C. Radio extends the life of the church beyond its walls. It supports your walk with God at home, at work or while travelling.",
     "benefits": [
-      { "number": "01", "title": "Grow in the Word", "description": "Clear biblical teachings to strengthen your faith and guide your daily life." },
-      { "number": "02", "title": "Pray together", "description": "Times of prayer and encouragement to stay connected with the community." },
-      { "number": "03", "title": "Live in fellowship", "description": "Programs sharing the life, vision and news of our church." }
+      { "number": "01", "title": "Grow in the Word", "description": "Clear biblical teachings to strengthen your faith and guide your daily life." }
     ],
     "howEyebrow": "Simple and accessible",
     "howTitle": "Your radio follows you everywhere",

@@ -185,14 +185,11 @@
     "paused": "Radio en pause",
     "unavailable": "Radio temporairement indisponible",
     "retry": "Réessayer",
-    "sectionEyebrow": "La voix de la paroisse",
     "defaultDescription": "Découvrez les enseignements et programmes de la radio de l’Église Camp de Jésus-Christ Bel-Air Fizi.",
     "officialWebsite": "Visiter le site officiel"
   },
   "radioPage": {
-    "eyebrow": "La voix de la paroisse",
-    "title": "Une radio qui nourrit votre foi, partout où vous êtes",
-    "subtitle": "Écoutez en direct les enseignements, les temps de prière et les programmes de l’Église Camp de Jésus-Christ Bel-Air Fizi.",
+    "subtitle": "Écoutez en direct les enseignements de l’Église Camp de Jésus-Christ Bel-Air Fizi.",
     "onAir": "En direct maintenant",
     "listen": "Écouter la radio",
     "pause": "Mettre en pause",
@@ -204,9 +201,7 @@
     "missionTitle": "La Parole qui vous accompagne au quotidien",
     "missionText": "La radio C.E.C.J.C. prolonge la vie de la paroisse au-delà de ses murs. Elle vous accompagne dans votre marche avec Dieu, à la maison, au travail ou en déplacement.",
     "benefits": [
-      { "number": "01", "title": "Grandir dans la Parole", "description": "Des enseignements bibliques clairs pour fortifier votre foi et éclairer votre quotidien." },
-      { "number": "02", "title": "Prier ensemble", "description": "Des moments de prière et d’édification pour rester connecté à la communauté." },
-      { "number": "03", "title": "Vivre la communion", "description": "Des programmes qui partagent la vie, la vision et les nouvelles de la paroisse." }
+      { "number": "01", "title": "Grandir dans la Parole", "description": "Des enseignements bibliques clairs pour fortifier votre foi et éclairer votre quotidien." }
     ],
     "howEyebrow": "Simple et accessible",
     "howTitle": "Votre radio vous suit partout",

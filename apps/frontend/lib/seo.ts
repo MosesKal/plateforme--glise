@@ -160,11 +160,11 @@ export const PUBLIC_PAGE_SEO: Record<string, SeoCopy> = {
   "/radio": {
     fr: {
       title: "Radio chrétienne en direct",
-      description: "Écoutez en direct la radio de l’Église Camp de Jésus-Christ Bel-Air Fizi : enseignements bibliques, prière et programmes chrétiens.",
+      description: "Écoutez en direct les enseignements de l’Église Camp de Jésus-Christ Bel-Air Fizi.",
     },
     en: {
       title: "Live Christian radio",
-      description: "Listen live to Camp de Jésus-Christ Bel-Air Fizi Church radio: Bible teachings, prayer and Christian programs.",
+      description: "Listen live to teachings from Camp de Jésus-Christ Bel-Air Fizi Church.",
     },
   },
   "/temoignages": {

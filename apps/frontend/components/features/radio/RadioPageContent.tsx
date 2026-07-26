@@ -69,16 +69,9 @@ export function RadioPageContent() {
           className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]"
         >
           <div>
-            <motion.p variants={fadeUp} className="mb-5 flex items-center gap-3 text-xs font-bold uppercase tracking-[0.24em] text-cecj-gold">
-              <span className="h-px w-8 bg-cecj-gold" />
-              {t("radioPage.eyebrow")}
-            </motion.p>
             <motion.h1 variants={fadeUp} className="max-w-3xl text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-6xl">
-              {t("radioPage.title")}
-            </motion.h1>
-            <motion.p variants={fadeUp} className="mt-6 max-w-2xl text-base leading-8 text-white/70 sm:text-lg">
               {t("radioPage.subtitle")}
-            </motion.p>
+            </motion.h1>
 
             <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-3 text-xs font-semibold text-white/65">
               <span className="rounded-full border border-white/15 bg-white/5 px-4 py-2">
@@ -182,7 +175,7 @@ export function RadioPageContent() {
             </p>
           </motion.div>
 
-          <motion.div variants={stagger} className="mt-10 grid gap-5 md:grid-cols-3">
+          <motion.div variants={stagger} className="mt-10 max-w-2xl">
             {benefits.map((benefit) => (
               <motion.article
                 key={benefit.number}
