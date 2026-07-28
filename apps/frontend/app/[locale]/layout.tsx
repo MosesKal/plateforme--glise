@@ -16,6 +16,7 @@ import { ReactQueryProvider } from "@/components/providers/ReactQueryProvider"
 import { AuthInitializer } from "@/components/auth/AuthInitializer"
 import { SplashLoader } from "@/components/ui/SplashLoader"
 import { GlobalAudioPlayer } from "@/components/features/teachings/player/GlobalAudioPlayer"
+import { GoogleAnalytics } from "@/components/analytics/GoogleAnalytics"
 import "../globals.css"
 
 const montserrat = Montserrat({
@@ -160,6 +161,9 @@ export default async function LocaleLayout({
           </I18nProvider>
         </ReactQueryProvider>
       </body>
+      {process.env.NODE_ENV === "production" && CONFIG.googleAnalyticsId ? (
+        <GoogleAnalytics measurementId={CONFIG.googleAnalyticsId} />
+      ) : null}
     </html>
   )
 }

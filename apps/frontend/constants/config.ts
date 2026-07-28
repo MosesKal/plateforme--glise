@@ -11,4 +11,6 @@ export const CONFIG = {
   apiUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:3001/api/v1",
   googleSiteVerification:
     process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+  googleAnalyticsId:
+    process.env.NEXT_PUBLIC_GA_ID ?? "G-88L71J3C04",
 } as const
