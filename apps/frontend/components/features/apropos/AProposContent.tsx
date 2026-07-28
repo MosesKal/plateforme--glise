@@ -256,7 +256,7 @@ export function AProposContent() {
           >
             <Image
               src="/eglise/633758773_122197796450573866_866679131900775809_n.jpg"
-              alt="Église Camp de Jésus-Christ Bel-Air Fizi"
+              alt="Église Le Camp de Jésus-Christ Bel-Air Fizi"
               fill
               className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 80vw"

@@ -6,7 +6,7 @@
     "presentation": "Présentation",
     "vision": "Vision",
     "mission": "Mission",
-    "extensions": "Réseau d’Églises",
+    "extensions": "Réseau des églises",
     "adhesion": "Adhésion",
     "evenements": "Événements",
     "galerie": "Galerie",
@@ -53,7 +53,7 @@
     "meta_desc": "Découvrez l'histoire, la mission, la vision et les valeurs du Camp de Jésus-Christ Bel-Air Fizi.",
     "hero_badge": "Qui Sommes-Nous ?",
     "hero_title": "Le Camp de Jésus-Christ Bel-Air Fizi",
-    "hero_subtitle": "Une communauté fondée sur la saine doctrine du Seigneur Jésus-Christ — qui forme, transforme, aime et vit par la foi.",
+    "hero_subtitle": "Une église fondée sur la saine doctrine du Seigneur Jésus-Christ — qui forme, transforme, aime et vit par la foi.",
     "nav_apotre": "L'Apôtre",
     "nav_histoire": "Histoire",
     "nav_mission": "Mission",
@@ -97,7 +97,7 @@
   },
   "hero": {
     "title": "Bienvenue au Camp de Jésus-Christ Bel-Air Fizi",
-    "subtitle": "Une église ayant pour fondement la saine doctrine du Seigneur Jésus-Christ — une communauté qui forme, transforme, aime et vit par la foi.",
+    "subtitle": "Une église ayant pour fondement la saine doctrine du Seigneur Jésus-Christ — une église qui forme, transforme, aime et vit par la foi.",
     "quote": "Allez, faites de toutes les nations des disciples, les baptisant au nom du Père, du Fils et du Saint-Esprit, et enseignez-leur à observer tout ce que je vous ai prescrit. Et voici, je suis avec vous tous les jours, jusqu'à la fin du monde.",
     "quoteRef": "Matthieu 28:19-20",
     "cta_discover": "Découvrir l'Église",
@@ -168,7 +168,7 @@
     ]
   },
   "weeklyProgram": {
-    "title": "Ma Semaine à l’Église Camp de Jésus-Christ Bel-Air Fizi",
+    "title": "Ma Semaine à l’Église Le Camp de Jésus-Christ Bel-Air Fizi",
     "daysLabel": "Jours concernés",
     "todayBadge": "Aujourd'hui",
     "liveOnYoutube": "En direct sur YouTube",
@@ -185,11 +185,11 @@
     "paused": "Radio en pause",
     "unavailable": "Radio temporairement indisponible",
     "retry": "Réessayer",
-    "defaultDescription": "Découvrez les enseignements et programmes de la radio de l’Église Camp de Jésus-Christ Bel-Air Fizi.",
+    "defaultDescription": "Découvrez les enseignements et programmes de la radio de l’Église Le Camp de Jésus-Christ Bel-Air Fizi.",
     "officialWebsite": "Visiter le site officiel"
   },
   "radioPage": {
-    "subtitle": "Écoutez en direct les enseignements de l’Église Camp de Jésus-Christ Bel-Air Fizi.",
+    "subtitle": "Écoutez en direct les enseignements de l’Église Le Camp de Jésus-Christ Bel-Air Fizi.",
     "onAir": "En direct maintenant",
     "listen": "Écouter la radio",
     "pause": "Mettre en pause",
@@ -199,7 +199,7 @@
     "retry": "Réessayer",
     "missionEyebrow": "Plus qu’une radio",
     "missionTitle": "La Parole qui vous accompagne au quotidien",
-    "missionText": "La radio de l’Église Camp de Jésus-Christ Bel-Air Fizi prolonge la vie de la paroisse au-delà de ses murs. Elle vous accompagne dans votre marche avec Dieu, à la maison, au travail ou en déplacement.",
+    "missionText": "La radio de l’Église Le Camp de Jésus-Christ Bel-Air Fizi prolonge la vie de la paroisse au-delà de ses murs. Elle vous accompagne dans votre marche avec Dieu partout où vous êtes : à la maison, au travail ou en déplacement.",
     "benefits": [
       { "title": "Grandir dans la Parole", "description": "Des enseignements bibliques clairs pour fortifier votre foi et éclairer votre quotidien." }
     ],
@@ -339,7 +339,7 @@
   "events": {
     "badge": "Événements",
     "title": "Nos Événements",
-    "subtitle": "Action de grâces · Ecole de tyrannus · Concours biblique · Culte spécial",
+    "subtitle": "Actions · Ecole de tyrannus · Concours biblique · Culte spécial",
     "upcomingBadge": "Prochain événement",
     "pastTitle": "Nos derniers événements",
     "finishedBadge": "Terminé",
@@ -427,7 +427,7 @@
     "link": "Nous contacter"
   },
   "footer": {
-    "tagline": "Église Camp de Jésus-Christ Bel-Air Fizi",
+    "tagline": "Église Le Camp de Jésus-Christ Bel-Air Fizi",
     "rights": "Tous droits réservés.",
     "nav_title": "Navigation",
     "community_title": "Communauté",
@@ -452,7 +452,7 @@
     "meta_title": "Adhésion — Rejoignez la famille",
     "meta_desc": "Devenez membre du Camp de Jésus-Christ Bel-Air Fizi. Découvrez les critères, le processus et les engagements de l'adhésion.",
     "hero_badge": "Devenir Membre",
-    "hero_title": "Rejoignez la famille du Camp de Jésus-Christ",
+    "hero_title": "Rejoignez la famille du Camp de Jésus-Christ Bel-Air Fizi",
     "hero_subtitle": "L'adhésion est une étape décisive dans votre marche avec Dieu. Elle vous engage dans une communauté, une vision et une mission communes.",
     "why_badge": "Pourquoi adhérer",
     "why_title": "Ce que l'adhésion vous apporte",
@@ -520,7 +520,7 @@
     "meta_desc": "Découvrez les événements à venir et passés de la Communauté des Églises Le Camp de Jésus-Christ.",
     "hero_badge": "Événements",
     "hero_title": "Nos Événements",
-    "hero_subtitle": "Action de grâces · Ecole de tyrannus · Concours biblique · Culte spécial",
+    "hero_subtitle": "Actions · Ecole de tyrannus · Concours biblique · Culte spécial",
     "countdown_label": "Prochain événement",
     "days": "Jours",
     "hours": "Heures",

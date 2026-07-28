@@ -15,7 +15,7 @@ export type SeoLocale = (typeof SEO_LOCALES)[number]
  * conserve une identité stable pendant toute la navigation publique.
  */
 export const SITE_TAB_TITLES: Record<SeoLocale, string> = {
-  fr: "Église Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi",
+  fr: "Église Le Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi",
   en: "Camp de Jésus-Christ Bel-Air Fizi Church in Lubumbashi",
 }
 
@@ -32,7 +32,7 @@ export const BRAND_SEARCH_VARIANTS = [
   "Camp de Jésus-Christ Bel Air",
   "Camp de Jésus-Christ Bel-Air Fizi",
   "Camp de Jésus-Christ Bel Air Fizi",
-  "Église Camp de Jésus-Christ Bel-Air Fizi",
+  "Église Le Camp de Jésus-Christ Bel-Air Fizi",
   "CECJC Bel-Air Fizi",
   "C.E.C.J.C. Bel-Air Fizi",
 ] as const
@@ -160,7 +160,7 @@ export const PUBLIC_PAGE_SEO: Record<string, SeoCopy> = {
   "/radio": {
     fr: {
       title: "Radio chrétienne en direct",
-      description: "Écoutez en direct les enseignements de l’Église Camp de Jésus-Christ Bel-Air Fizi.",
+      description: "Écoutez en direct les enseignements de l’Église Le Camp de Jésus-Christ Bel-Air Fizi.",
     },
     en: {
       title: "Live Christian radio",

@@ -24,7 +24,7 @@ export interface ChurchInfo {
 }
 
 export const CHURCH_INFO: ChurchInfo = {
-  name: "Église Camp de Jésus-Christ Bel-Air Fizi",
+  name: "Église Le Camp de Jésus-Christ Bel-Air Fizi",
   slogan: "Jésus-Christ revient bientôt",
   welcomeMessage: "Karibu !",
   location: {
@@ -37,7 +37,7 @@ export const CHURCH_INFO: ChurchInfo = {
     phone: "+243 810 531 035",
   },
   socials: {
-    facebookName: "Église Camp de Jésus-Christ Bel-Air Fizi",
+    facebookName: "Église Le Camp de Jésus-Christ Bel-Air Fizi",
     facebookUrl: "https://www.facebook.com/profile.php?id=61567215980367&mibextid=rS40aB7S9Ucbxw6v",
     instagram: "https://www.instagram.com/eglisecampdejesusbelair",
     tiktok: "https://www.tiktok.com/@camp_de_jesusbel_air",

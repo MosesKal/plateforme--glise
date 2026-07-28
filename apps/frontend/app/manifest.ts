@@ -11,10 +11,10 @@ import type { MetadataRoute } from "next"
  */
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Église Camp de Jésus-Christ Bel-Air Fizi",
+    name: "Église Le Camp de Jésus-Christ Bel-Air Fizi",
     short_name: "Camp de Jésus-Christ Bel-Air Fizi",
     description:
-      "Enseignements, événements et vie de l'Église Camp de Jésus-Christ Bel-Air Fizi.",
+      "Enseignements, événements et vie de l'Église Le Camp de Jésus-Christ Bel-Air Fizi.",
     start_url: "/",
     display: "standalone",
     background_color: "#024339",

@@ -502,7 +502,7 @@ export function HomePageContent() {
               </h2>
               <p className="text-base text-white/70 leading-relaxed">
                 Vos témoignages encouragent d&apos;autres croyants et glorifient Dieu.
-                Rejoignez l&apos;Église Camp de Jésus-Christ Bel-Air Fizi et partagez ce que le Seigneur a accompli dans votre vie.
+                Rejoignez l&apos;Église Le Camp de Jésus-Christ Bel-Air Fizi et partagez ce que le Seigneur a accompli dans votre vie.
               </p>
               <AnimatedVerse />
             </motion.div>

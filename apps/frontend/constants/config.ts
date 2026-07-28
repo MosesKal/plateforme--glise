@@ -1,6 +1,6 @@
 export const CONFIG = {
   appName: "C.E.C.J.C.",
-  appFullName: "Église Camp de Jésus-Christ Bel-Air Fizi",
+  appFullName: "Église Le Camp de Jésus-Christ Bel-Air Fizi",
   siteUrl:
     process.env.NEXT_PUBLIC_SITE_URL ??
     (process.env.NODE_ENV === "production"

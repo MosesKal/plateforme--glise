@@ -17,11 +17,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     path: "/",
     title:
       locale === "fr"
-        ? "Église Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi"
+        ? "Église Le Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi"
         : "Camp de Jésus-Christ Bel-Air Fizi Church in Lubumbashi",
     description:
       locale === "fr"
-        ? "Site officiel de l'Église Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi : enseignements bibliques, événements, programme, extensions et vie de l'église."
+        ? "Site officiel de l'Église Le Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi : enseignements bibliques, événements, programme, extensions et vie de l'église."
         : "Official website of Camp de Jésus-Christ Bel-Air Fizi Church in Lubumbashi: Bible teachings, events, weekly program, extensions and church life.",
   })
 

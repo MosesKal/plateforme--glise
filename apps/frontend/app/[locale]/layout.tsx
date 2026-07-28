@@ -40,7 +40,7 @@ const HOME_SEO = {
   fr: {
     title: SITE_TAB_TITLES.fr,
     description:
-      "Site officiel de l'Église Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi : enseignements bibliques, événements, programme, extensions et vie de l'église.",
+      "Site officiel de l'Église Le Camp de Jésus-Christ Bel-Air Fizi à Lubumbashi : enseignements bibliques, événements, programme, extensions et vie de l'église.",
   },
   en: {
     title: SITE_TAB_TITLES.en,

@@ -219,8 +219,8 @@ const INFO_ITEMS = [
         <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
       </svg>
     ),
-    label: "Cultes",
-    value: "Dimanche 09h00 & 11h00",
+    label: "Culte",
+    value: "Dimanche 08h00 - 11h00",
     link: null,
   },
 ]
