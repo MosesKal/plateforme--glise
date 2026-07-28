@@ -11,6 +11,7 @@ import {
 import { Public } from '../common/decorators/public.decorator';
 import { Roles } from '../common/decorators/roles.decorator';
 import { CreateTestimonyDto } from './dto/create-testimony.dto';
+import { EditTestimonyContentDto } from './dto/edit-testimony-content.dto';
 import { UpdateTestimonyDto } from './dto/update-testimony.dto';
 import { TestimoniesQueryDto } from './dto/testimonies-query.dto';
 import { TestimoniesService } from './testimonies.service';
@@ -41,6 +42,12 @@ export class TestimoniesController {
   @Patch(':id/status')
   updateStatus(@Param('id') id: string, @Body() dto: UpdateTestimonyDto) {
     return this.testimoniesService.updateStatus(id, dto);
+  }
+
+  @Roles('Super Admin', 'Administrateur Général', 'Modérateur')
+  @Patch(':id/content')
+  updateContent(@Param('id') id: string, @Body() dto: EditTestimonyContentDto) {
+    return this.testimoniesService.updateContent(id, dto);
   }
 
   @Roles('Super Admin', 'Administrateur Général')

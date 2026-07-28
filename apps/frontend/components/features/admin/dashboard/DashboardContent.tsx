@@ -333,7 +333,9 @@ export function DashboardContent() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-medium text-gray-900">{t.fullName}</p>
-                <p className="line-clamp-1 text-xs text-gray-400">{t.content}</p>
+                <p className="line-clamp-1 text-xs text-gray-400">
+                  {t.editedContent ?? t.originalContent}
+                </p>
               </div>
               <span className="shrink-0 text-xs text-gray-300">{formatDate(t.createdAt)}</span>
             </div>

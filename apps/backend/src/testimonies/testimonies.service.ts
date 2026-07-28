@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { TestimonyStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateTestimonyDto } from './dto/create-testimony.dto';
+import { EditTestimonyContentDto } from './dto/edit-testimony-content.dto';
 import { UpdateTestimonyDto } from './dto/update-testimony.dto';
 import { TestimoniesQueryDto } from './dto/testimonies-query.dto';
 
@@ -15,7 +16,10 @@ export class TestimoniesService {
 
     const where: { status?: TestimonyStatus } = {};
 
-    if (status && Object.values(TestimonyStatus).includes(status as TestimonyStatus)) {
+    if (
+      status &&
+      Object.values(TestimonyStatus).includes(status as TestimonyStatus)
+    ) {
       where.status = status as TestimonyStatus;
     } else if (!status || status === 'all') {
       // no filter for admin
@@ -36,33 +40,68 @@ export class TestimoniesService {
     return { items, total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
-  findApproved(limit = 20) {
-    return this.prisma.testimony.findMany({
+  async findApproved(limit = 20) {
+    const testimonies = await this.prisma.testimony.findMany({
       where: { status: TestimonyStatus.APPROVED },
       orderBy: { createdAt: 'desc' },
       take: limit,
-      // Le numéro sert uniquement à la modération et ne doit jamais être
-      // exposé dans la liste publique des témoignages approuvés.
+      // Le numéro et les deux versions internes servent uniquement à la
+      // modération et ne doivent jamais être exposés publiquement.
       select: {
         id: true,
         fullName: true,
-        content: true,
+        originalContent: true,
+        editedContent: true,
         photoUrl: true,
         status: true,
         createdAt: true,
         updatedAt: true,
       },
     });
+
+    return testimonies.map(
+      ({ originalContent, editedContent, ...testimony }) => ({
+        ...testimony,
+        content: editedContent ?? originalContent,
+      }),
+    );
   }
 
   async create(dto: CreateTestimonyDto) {
-    return this.prisma.testimony.create({ data: dto });
+    return this.prisma.testimony.create({
+      data: {
+        fullName: dto.fullName,
+        phone: dto.phone,
+        originalContent: dto.content,
+        photoUrl: dto.photoUrl,
+      },
+    });
   }
 
   async updateStatus(id: string, dto: UpdateTestimonyDto) {
     const testimony = await this.prisma.testimony.findUnique({ where: { id } });
     if (!testimony) throw new NotFoundException('Testimony not found');
-    return this.prisma.testimony.update({ where: { id }, data: { status: dto.status } });
+    return this.prisma.testimony.update({
+      where: { id },
+      data: { status: dto.status },
+    });
+  }
+
+  async updateContent(id: string, dto: EditTestimonyContentDto) {
+    const testimony = await this.prisma.testimony.findUnique({ where: { id } });
+    if (!testimony) throw new NotFoundException('Testimony not found');
+
+    const editedContent = dto.editedContent?.trim() ?? null;
+    const keepsCorrection =
+      editedContent !== null && editedContent !== testimony.originalContent;
+
+    return this.prisma.testimony.update({
+      where: { id },
+      data: {
+        editedContent: keepsCorrection ? editedContent : null,
+        editedAt: keepsCorrection ? new Date() : null,
+      },
+    });
   }
 
   async remove(id: string) {

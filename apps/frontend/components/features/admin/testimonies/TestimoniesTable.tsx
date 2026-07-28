@@ -1,6 +1,6 @@
 "use client"
 
-import type { Testimony, TestimonyStatus } from "@/lib/api/admin/testimonies"
+import type { AdminTestimony, TestimonyStatus } from "@/lib/api/admin/testimonies"
 
 const STATUS_STYLES: Record<TestimonyStatus, { label: string; cls: string }> = {
   PENDING:  { label: "En attente", cls: "bg-amber-50 text-amber-700"  },
@@ -9,13 +9,20 @@ const STATUS_STYLES: Record<TestimonyStatus, { label: string; cls: string }> = {
 }
 
 interface Props {
-  testimonies: Testimony[]
+  testimonies: AdminTestimony[]
+  onReview: (testimony: AdminTestimony) => void
   onApprove: (id: string) => void
   onReject:  (id: string) => void
   onDelete:  (id: string) => void
 }
 
-export function TestimoniesTable({ testimonies, onApprove, onReject, onDelete }: Props) {
+export function TestimoniesTable({
+  testimonies,
+  onReview,
+  onApprove,
+  onReject,
+  onDelete,
+}: Props) {
   if (testimonies.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-gray-200 py-16 text-center">
@@ -28,6 +35,7 @@ export function TestimoniesTable({ testimonies, onApprove, onReject, onDelete }:
     <div className="space-y-3">
       {testimonies.map((t) => {
         const { label, cls } = STATUS_STYLES[t.status]
+        const displayedContent = t.editedContent ?? t.originalContent
         return (
           <div key={t.id} className="group rounded-xl border border-gray-100 bg-white p-4 transition-shadow hover:shadow-sm">
             <div className="flex items-start justify-between gap-3">
@@ -41,6 +49,11 @@ export function TestimoniesTable({ testimonies, onApprove, onReject, onDelete }:
                     <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${cls}`}>
                       {label}
                     </span>
+                    {t.editedContent && (
+                      <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-blue-700">
+                        Corrigé
+                      </span>
+                    )}
                     <span className="text-xs text-gray-400">
                       {new Date(t.createdAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" })}
                     </span>
@@ -53,11 +66,20 @@ export function TestimoniesTable({ testimonies, onApprove, onReject, onDelete }:
                       {t.phone}
                     </a>
                   )}
-                  <p className="mt-1.5 text-sm leading-relaxed text-gray-600 line-clamp-3">{t.content}</p>
+                  <p className="mt-1.5 line-clamp-3 whitespace-pre-wrap text-sm leading-relaxed text-gray-600">
+                    {displayedContent}
+                  </p>
                 </div>
               </div>
 
-              <div className="flex shrink-0 items-center gap-1">
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-1">
+                <button
+                  onClick={() => onReview(t)}
+                  title="Voir le message complet et le corriger"
+                  className="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-cecj-green transition-colors hover:bg-cecj-green/5"
+                >
+                  Voir et corriger
+                </button>
                 {t.status !== "APPROVED" && (
                   <button
                     onClick={() => onApprove(t.id)}

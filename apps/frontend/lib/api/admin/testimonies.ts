@@ -5,7 +5,6 @@ export type TestimonyStatus = "PENDING" | "APPROVED" | "REJECTED"
 export interface Testimony {
   id: string
   fullName: string
-  phone?: string | null
   content: string
   photoUrl?: string | null
   status: TestimonyStatus
@@ -13,8 +12,21 @@ export interface Testimony {
   updatedAt: string
 }
 
+export interface AdminTestimony {
+  id: string
+  fullName: string
+  phone?: string | null
+  originalContent: string
+  editedContent?: string | null
+  editedAt?: string | null
+  photoUrl?: string | null
+  status: TestimonyStatus
+  createdAt: string
+  updatedAt: string
+}
+
 export interface TestimoniesResponse {
-  items: Testimony[]
+  items: AdminTestimony[]
   total: number
   page: number
   limit: number
@@ -36,10 +48,13 @@ export const adminTestimoniesApi = {
     api.get<Testimony[]>("/testimonies/approved").then((r) => r.data),
 
   submit: (payload: SubmitTestimonyPayload) =>
-    api.post<Testimony>("/testimonies", payload).then((r) => r.data),
+    api.post<AdminTestimony>("/testimonies", payload).then((r) => r.data),
 
   updateStatus: (id: string, status: TestimonyStatus) =>
-    api.patch<Testimony>(`/testimonies/${id}/status`, { status }).then((r) => r.data),
+    api.patch<AdminTestimony>(`/testimonies/${id}/status`, { status }).then((r) => r.data),
+
+  updateContent: (id: string, editedContent: string | null) =>
+    api.patch<AdminTestimony>(`/testimonies/${id}/content`, { editedContent }).then((r) => r.data),
 
   remove: (id: string) =>
     api.delete(`/testimonies/${id}`).then((r) => r.data),
