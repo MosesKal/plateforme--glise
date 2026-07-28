@@ -1,5 +1,5 @@
 export const EVENT_CATEGORIES = [
-  "Action de grâces",
+  "Actions",
   "Conférences",
   "Consécration",
   "Ecole de tyrannus",
@@ -10,9 +10,10 @@ export const EVENT_CATEGORIES = [
 export type EventCategory = (typeof EVENT_CATEGORIES)[number]
 
 const LEGACY_EVENT_CATEGORY_MAP: Record<string, EventCategory> = {
-  "Action de graces": "Action de grâces",
-  "Action de grâce": "Action de grâces",
-  "Louange & Adoration": "Action de grâces",
+  "Action de graces": "Actions",
+  "Action de grâce": "Actions",
+  "Action de grâces": "Actions",
+  "Louange & Adoration": "Actions",
   "École de Tyrannus": "Ecole de tyrannus",
   "Ecole de Tyrannus": "Ecole de tyrannus",
   "Concours Biblique": "Concours biblique",

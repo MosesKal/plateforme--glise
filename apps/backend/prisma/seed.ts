@@ -184,7 +184,7 @@ async function main() {
       {
         titleFr: "Action Affranchis 2",
         descriptionFr: "Soiree de Louange & Adoration organisee par Le Chantre Agreable de Christ.",
-        category:  "Action de grâces",
+        category:  "Actions",
         organizer: "Le Chantre Agreable de Christ",
         startDate: new Date("2026-07-12T14:30:00"),
         endDate:   new Date("2026-07-12T18:00:00"),
