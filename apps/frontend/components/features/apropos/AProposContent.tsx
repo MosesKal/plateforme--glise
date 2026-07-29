@@ -106,10 +106,11 @@ export function AProposContent() {
             </p>
           </motion.div>
 
-          <motion.div {...inView()} variants={stagger} className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <motion.div {...inView()} variants={stagger} className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {[
               { value: "50+",    label: t("stats.churches") },
               { value: "2 000+", label: t("stats.members") },
+              { value: "20+",    label: t("stats.departments") },
               { value: "20+",    label: t("stats.cells") },
               { value: "2016",   label: t("stats.founded") },
             ].map((stat) => (
