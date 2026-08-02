@@ -7,6 +7,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Prisma } from '@prisma/client';
 
 /**
  * Filtre catch-all : toute erreur (HttpException OU crash inattendu) sort avec
@@ -24,15 +25,36 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
     let status: number = HttpStatus.INTERNAL_SERVER_ERROR;
     let message: string | string[] = 'Internal server error';
+    let code: string | undefined;
 
     if (exception instanceof HttpException) {
       status = exception.getStatus();
       const exceptionResponse = exception.getResponse();
-      message =
-        typeof exceptionResponse === 'object' &&
-        'message' in (exceptionResponse as object)
-          ? (exceptionResponse as { message: string | string[] }).message
-          : exception.message;
+      if (typeof exceptionResponse === 'object') {
+        const body = exceptionResponse as {
+          message?: string | string[];
+          code?: string;
+        };
+        message = body.message ?? exception.message;
+        code = body.code;
+      } else {
+        message = exception.message;
+      }
+      if (status === 413) code ??= 'FILE_TOO_LARGE';
+    } else if (
+      exception instanceof Prisma.PrismaClientKnownRequestError &&
+      exception.code === 'P2002'
+    ) {
+      status = HttpStatus.CONFLICT;
+      code = 'UNIQUE_CONSTRAINT';
+      message = 'Une donnée identique existe déjà';
+    } else if (
+      exception instanceof Error &&
+      (exception as NodeJS.ErrnoException).code === 'ENOSPC'
+    ) {
+      status = HttpStatus.INSUFFICIENT_STORAGE;
+      code = 'STORAGE_FULL';
+      message = 'Espace de stockage insuffisant';
     } else {
       // Erreur non prévue : loggée côté serveur, jamais exposée au client.
       this.logger.error(
@@ -46,6 +68,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message,
       timestamp: new Date().toISOString(),
       path: request.url,
+      ...(code && { code }),
+      requestId: (request as Request & { requestId?: string }).requestId,
     });
   }
 }

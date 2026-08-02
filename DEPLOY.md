@@ -116,26 +116,26 @@ Créer le fichier `ecosystem.config.js` à la racine :
 module.exports = {
   apps: [
     {
-      name: 'cecj-backend',
-      script: 'apps/backend/dist/main.js',
-      cwd: '/chemin/vers/cecj',
+      name: "cecj-backend",
+      script: "apps/backend/dist/main.js",
+      cwd: "/chemin/vers/cecj",
       env: {
-        NODE_ENV: 'production',
+        NODE_ENV: "production",
         PORT: 3001,
       },
     },
     {
-      name: 'cecj-frontend',
-      script: 'node_modules/.bin/next',
-      args: 'start',
-      cwd: '/chemin/vers/cecj/apps/frontend',
+      name: "cecj-frontend",
+      script: "node_modules/.bin/next",
+      args: "start",
+      cwd: "/chemin/vers/cecj/apps/frontend",
       env: {
-        NODE_ENV: 'production',
+        NODE_ENV: "production",
         PORT: 3000,
       },
     },
   ],
-}
+};
 ```
 
 ---
@@ -176,12 +176,12 @@ curl -I http://localhost:3000
 
 ## Nouveautés récentes à ne pas oublier
 
-| Commit | Impact déploiement |
-|---|---|
-| `feat(upload)` — Multer + fichiers statiques | Le dossier `apps/backend/uploads/` doit être accessible. S'assurer que le répertoire existe et que le processus a les droits d'écriture. |
-| `feat(cms)` — Gestion des pages | Migration `add_site_pages` sera appliquée par `prisma migrate deploy`. |
-| `feat(gallery)` — Upload image couverture album | Même dossier `uploads/` que ci-dessus. |
-| `feat(teachings)` — Module Enseignements audio | Voir la section dédiée ci-dessous (MEDIA_ROOT, ffmpeg, Nginx `/media/`). |
+| Commit                                          | Impact déploiement                                                                                                                       |
+| ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `feat(upload)` — Multer + fichiers statiques    | Le dossier `apps/backend/uploads/` doit être accessible. S'assurer que le répertoire existe et que le processus a les droits d'écriture. |
+| `feat(cms)` — Gestion des pages                 | Migration `add_site_pages` sera appliquée par `prisma migrate deploy`.                                                                   |
+| `feat(gallery)` — Upload image couverture album | Même dossier `uploads/` que ci-dessus.                                                                                                   |
+| `feat(teachings)` — Module Enseignements audio  | Voir la section dédiée ci-dessous (MEDIA_ROOT, ffmpeg, Caddy `/media/`).                                                                 |
 
 ---
 
@@ -190,14 +190,15 @@ curl -I http://localhost:3000
 ### 1. Prérequis serveur
 
 ```bash
-# ffprobe : extraction de la durée à l'upload
+# ffprobe : validation du flux, du format et extraction des métadonnées.
+#           Il est obligatoire : sans lui, tout nouvel upload est refusé (503).
 # ffmpeg  : transcodage async AAC-LC 96 kbps (+faststart) après chaque upload.
-#           S'il est absent, les fichiers sont servis tels quels (aucun blocage),
-#           mais on perd la compression et le démarrage rapide de la lecture.
+#           S'il est absent, l'original reste écoutable mais le job passe FAILED
+#           après ses retries et peut être relancé depuis le backoffice.
 sudo apt install -y ffmpeg
 
 # Répertoire des médias HORS de l'arborescence applicative
-# (survit aux redéploiements ; servi directement par Nginx)
+# (survit aux redéploiements ; servi directement par Caddy)
 sudo mkdir -p /var/lib/cecj/media
 sudo chown <user_pm2>:<user_pm2> /var/lib/cecj/media
 ```
@@ -205,8 +206,9 @@ sudo chown <user_pm2>:<user_pm2> /var/lib/cecj/media
 ### 2. Variables d'environnement backend (`apps/backend/.env`)
 
 ```env
-# Racine du stockage des médias (défaut si absent : ./media dans le cwd)
+# Racine du stockage des médias (obligatoire en production)
 MEDIA_ROOT=/var/lib/cecj/media
+MEDIA_TEMP_ROOT=/var/lib/cecj/.cecj-media-tmp
 
 # Optionnel : origine publique des URLs médias (défaut : domaine public backend)
 # MEDIA_BASE_URL=https://api.campdejesusbelairfizi.com
@@ -214,6 +216,11 @@ MEDIA_ROOT=/var/lib/cecj/media
 # Optionnel : chemins de ffprobe/ffmpeg s'ils ne sont pas dans le PATH
 # FFPROBE_PATH=/usr/bin/ffprobe
 # FFMPEG_PATH=/usr/bin/ffmpeg
+
+# Réception des gros uploads par Node (45 min, borné)
+UPLOAD_REQUEST_TIMEOUT_MS=2700000
+# Supérieur au keepalive upstream Caddy configuré à 60 s
+HTTP_KEEP_ALIVE_TIMEOUT_MS=65000
 
 # Sync YouTube (enseignements vidéo) — clé API « YouTube Data API v3 »
 # créée sur console.cloud.google.com, et ID de la chaîne (commence par UC…,
@@ -223,35 +230,37 @@ YOUTUBE_API_KEY=
 YOUTUBE_CHANNEL_ID=
 ```
 
-Le transcodage tourne dans le processus Node (file en mémoire, un fichier à la
-fois) : au redémarrage de l'app, les jobs interrompus reprennent automatiquement
-via la colonne `processing` (PENDING/PROCESSING). Un échec de transcodage passe
-l'enseignement en `FAILED` mais conserve le fichier original, qui reste écoutable.
+Le transcodage tourne dans le processus Node, un fichier à la fois. La file en
+mémoire ne sert que de signal : l'état durable, les tentatives et la lease sont
+stockés dans `audio_media_assets`. Un redémarrage, un reload PM2 ou une lease
+expirée ne perd donc pas le job. Après trois échecs, l'original reste écoutable
+et l'administrateur peut relancer l'optimisation depuis le backoffice.
 
-### 3. Nginx — servir l'audio SANS passer par Node (critique pour la lecture)
+### 3. Caddy — média statique, uploads privés et reverse proxy
 
-Ajouter dans le bloc `server` du domaine backend, AVANT le `location /` qui
-proxifie vers Node :
+La production utilise Caddy. Le fichier versionné
+`deploy/Caddyfile.example` est la référence à adapter sur le serveur. Il assure :
 
-```nginx
-location /media/ {
-    alias /var/lib/cecj/media/;
-    add_header Cache-Control "public, max-age=31536000, immutable";
-    access_log off;
+- le service direct de `/media/*` avec Range ;
+- le refus de `/media/audio/staged/*` ;
+- le streaming du multipart vers Multer, qui applique la limite de 500 MiB ;
+- un keepalive upstream de 60 s, inférieur aux 65 s de Node.
+
+```caddyfile
+handle /media/audio/staged/* {
+    respond 404
+}
+
+handle_path /media/* {
+    root * /var/lib/cecj/media
+    header Cache-Control "public, max-age=31536000, immutable"
+    file_server
 }
 ```
 
-Nginx gère nativement les requêtes Range (seek instantané) et `sendfile`.
-Sans ce bloc, le fallback Express de main.ts sert quand même les fichiers
-(fonctionnel mais moins performant).
-
-Pour les uploads volumineux (fichiers audio jusqu'à 500 Mo), dans le même bloc
-`server` :
-
-```nginx
-client_max_body_size 512m;
-proxy_request_buffering off;
-```
+Caddy gère nativement les requêtes Range. Sans ce bloc, le fallback Express
+sert les fichiers publics, mais les performances sont inférieures. Ne pas
+bufferiser 500 MB en mémoire dans Caddy : le body est streamé vers Multer.
 
 ### 4. Vérification
 
@@ -317,6 +326,7 @@ PODCAST_AUTHOR=C.E.C.J.C.
 ```
 
 Soumission (une seule fois, gratuite) :
+
 - **Spotify** : https://creators.spotify.com → « Ajouter votre podcast » → coller l'URL du flux
 - **Apple Podcasts** : https://podcastsconnect.apple.com (nécessite `PODCAST_OWNER_EMAIL` — Apple envoie un code de vérification à cette adresse)
 - **YouTube Music** : https://studio.youtube.com → Créer → « Nouveau podcast » → « Envoyer un flux RSS »
@@ -330,6 +340,7 @@ de soumettre.
 ## En cas de problème
 
 ### Prisma : erreur de migration
+
 ```bash
 cd apps/backend
 npx prisma migrate status   # voir l'état
@@ -337,12 +348,14 @@ npx prisma migrate deploy   # appliquer ce qui manque
 ```
 
 ### Port déjà utilisé
+
 ```bash
 lsof -i :3001   # voir quel process utilise le port
 pm2 delete cecj-backend && pm2 start ecosystem.config.js --only cecj-backend
 ```
 
 ### Build frontend qui échoue (mémoire)
+
 ```bash
 NODE_OPTIONS="--max-old-space-size=4096" pnpm --filter @cecj/frontend build
 ```

@@ -42,10 +42,22 @@
     "fonctionnement_title": "How we operate",
     "fonctionnement_subtitle": "The church is governed according to biblical principles, with a clear separation of responsibilities.",
     "fonctionnement_items": [
-      { "titre": "Spiritual governance", "desc": "Doctrinal and pastoral decisions rest with the Apostle and the Elders." },
-      { "titre": "Department coordination", "desc": "Each department leader reports directly to the Lead Pastor." },
-      { "titre": "Members assembly", "desc": "Active members participate in important decisions of church life." },
-      { "titre": "Financial transparency", "desc": "Finances are managed by a management committee under pastoral supervision." }
+      {
+        "titre": "Spiritual governance",
+        "desc": "Doctrinal and pastoral decisions rest with the Apostle and the Elders."
+      },
+      {
+        "titre": "Department coordination",
+        "desc": "Each department leader reports directly to the Lead Pastor."
+      },
+      {
+        "titre": "Members assembly",
+        "desc": "Active members participate in important decisions of church life."
+      },
+      {
+        "titre": "Financial transparency",
+        "desc": "Finances are managed by a management committee under pastoral supervision."
+      }
     ]
   },
   "apropos": {
@@ -143,10 +155,19 @@
     "cta_history": "Our story",
     "cta_mission": "Our mission",
     "cards": [
-      { "label": "Founded in 2016",      "desc": "Born from a biblical conference in Bel-Air Fizi" },
-      { "label": "2,000+ Members",       "desc": "A community in constant growth" },
-      { "label": "50+ Churches planted", "desc": "Present in the DRC and abroad" },
-      { "label": "Sound Doctrine",       "desc": "Founded on the teaching of Jesus Christ" }
+      {
+        "label": "Founded in 2016",
+        "desc": "Born from a biblical conference in Bel-Air Fizi"
+      },
+      { "label": "2,000+ Members", "desc": "A community in constant growth" },
+      {
+        "label": "50+ Churches planted",
+        "desc": "Present in the DRC and abroad"
+      },
+      {
+        "label": "Sound Doctrine",
+        "desc": "Founded on the teaching of Jesus Christ"
+      }
     ]
   },
   "values": {
@@ -154,17 +175,44 @@
     "subtitle": "What guides our every step",
     "link": "Discover all our values →",
     "items": [
-      { "label": "Faithfulness to the Word",  "desc": "The Bible is the foundation of the doctrine of Jesus" },
-      { "label": "Abundant teaching",          "desc": "We faithfully transmit the teaching of Jesus" },
-      { "label": "Continuous prayer",          "desc": "Intense personal and collective prayer life" },
-      { "label": "Spiritual discipline",       "desc": "Daily reading of the Bible" },
-      { "label": "Doctrinal purity",           "desc": "The doctrine of Jesus Christ without compromise" },
-      { "label": "Brotherly fellowship",       "desc": "Love, unity and mutual service" },
-      { "label": "Compassion",                 "desc": "Support in social events and life situations" },
-      { "label": "Passion for souls",          "desc": "Proclaiming Jesus Christ with compassion" },
-      { "label": "Expansion",                  "desc": "Training and sending disciples" },
-      { "label": "Excellence in service",      "desc": "Serving God with diligence" },
-      { "label": "Global mission",             "desc": "The Church called to impact the nations" }
+      {
+        "label": "Faithfulness to the Word",
+        "desc": "The Bible is the foundation of the doctrine of Jesus"
+      },
+      {
+        "label": "Abundant teaching",
+        "desc": "We faithfully transmit the teaching of Jesus"
+      },
+      {
+        "label": "Continuous prayer",
+        "desc": "Intense personal and collective prayer life"
+      },
+      { "label": "Spiritual discipline", "desc": "Daily reading of the Bible" },
+      {
+        "label": "Doctrinal purity",
+        "desc": "The doctrine of Jesus Christ without compromise"
+      },
+      {
+        "label": "Brotherly fellowship",
+        "desc": "Love, unity and mutual service"
+      },
+      {
+        "label": "Compassion",
+        "desc": "Support in social events and life situations"
+      },
+      {
+        "label": "Passion for souls",
+        "desc": "Proclaiming Jesus Christ with compassion"
+      },
+      { "label": "Expansion", "desc": "Training and sending disciples" },
+      {
+        "label": "Excellence in service",
+        "desc": "Serving God with diligence"
+      },
+      {
+        "label": "Global mission",
+        "desc": "The Church called to impact the nations"
+      }
     ]
   },
   "weeklyProgram": {
@@ -201,7 +249,10 @@
     "missionTitle": "The Word that accompanies you every day",
     "missionText": "Camp de Jésus-Christ Bel-Air Fizi Church Radio extends the life of the church beyond its walls. It supports your walk with God at home, at work or while travelling.",
     "benefits": [
-      { "title": "Grow in the Word", "description": "Clear biblical teachings to strengthen your faith and guide your daily life." }
+      {
+        "title": "Grow in the Word",
+        "description": "Clear biblical teachings to strengthen your faith and guide your daily life."
+      }
     ],
     "howEyebrow": "Simple and accessible",
     "howTitle": "Your radio follows you everywhere",
@@ -266,7 +317,18 @@
     "audios": {
       "badge": "Audio library",
       "title": "Audio teachings",
-      "intro": "Listen to the church's teachings, organised by theme. Start playing and keep browsing — the audio follows you."
+      "intro": "Listen to the church's teachings, organised by theme. Start playing and keep browsing — the audio follows you.",
+      "themePlural": "themes",
+      "themeFilter": "Filter by theme",
+      "allThemes": "All themes",
+      "catalogBadge": "Catalogue",
+      "libraryTitle": "The complete library",
+      "sortLabel": "Sort by",
+      "recentFirst": "Most recent",
+      "filteredView": "Filtered view",
+      "openTheme": "Open theme page",
+      "clearFilters": "Reset filters",
+      "loadError": "The library cannot be loaded right now."
     },
     "ecrits": {
       "badge": "Written library",
@@ -280,6 +342,7 @@
     "theme": {
       "notFound": "This theme does not exist or is no longer available.",
       "searchPlaceholder": "Search within this theme…",
+      "editorialOrder": "Theme order",
       "noMatch": "No teaching matches this search.",
       "empty": "No teaching in this theme yet."
     },
@@ -457,10 +520,22 @@
     "why_badge": "Why join",
     "why_title": "What membership brings you",
     "benefits": [
-      { "title": "A spiritual family", "desc": "Be surrounded by brothers and sisters committed to the same faith and sharing the same vision." },
-      { "title": "Pastoral support", "desc": "Benefit from the guidance of the senior pastor and the church elders." },
-      { "title": "Active service", "desc": "Participate in the life of the church through its departments and ministries." },
-      { "title": "Ongoing training", "desc": "Access in-depth teachings, seminars and biblical training programs." }
+      {
+        "title": "A spiritual family",
+        "desc": "Be surrounded by brothers and sisters committed to the same faith and sharing the same vision."
+      },
+      {
+        "title": "Pastoral support",
+        "desc": "Benefit from the guidance of the senior pastor and the church elders."
+      },
+      {
+        "title": "Active service",
+        "desc": "Participate in the life of the church through its departments and ministries."
+      },
+      {
+        "title": "Ongoing training",
+        "desc": "Access in-depth teachings, seminars and biblical training programs."
+      }
     ],
     "criteria_badge": "Open doors",
     "criteria_title": "Everyone is welcome",
@@ -468,10 +543,26 @@
     "steps_badge": "Process",
     "steps_title": "How to join the church?",
     "steps": [
-      { "num": "01", "title": "Attend services", "desc": "Start by regularly attending Sunday services and the weekly activities of the church." },
-      { "num": "02", "title": "Integration course", "desc": "Complete the integration course organized to better understand the church's vision, doctrine and structure." },
-      { "num": "03", "title": "Pastoral interview", "desc": "Meet with the pastor or an elder for a follow-up and spiritual guidance interview." },
-      { "num": "04", "title": "Formal commitment", "desc": "Fill in your membership form and officially join the family of Camp de Jésus-Christ." }
+      {
+        "num": "01",
+        "title": "Attend services",
+        "desc": "Start by regularly attending Sunday services and the weekly activities of the church."
+      },
+      {
+        "num": "02",
+        "title": "Integration course",
+        "desc": "Complete the integration course organized to better understand the church's vision, doctrine and structure."
+      },
+      {
+        "num": "03",
+        "title": "Pastoral interview",
+        "desc": "Meet with the pastor or an elder for a follow-up and spiritual guidance interview."
+      },
+      {
+        "num": "04",
+        "title": "Formal commitment",
+        "desc": "Fill in your membership form and officially join the family of Camp de Jésus-Christ."
+      }
     ],
     "commitment_badge": "Commitments",
     "commitment_title": "Your commitments as a member",

@@ -20,7 +20,9 @@ export class ThemesService {
       include: {
         _count: {
           select: {
-            audioTeachings: { where: { status: 'PUBLISHED' } },
+            audioTeachings: {
+              where: { status: 'PUBLISHED', fileKey: { not: null } },
+            },
           },
         },
       },
@@ -41,7 +43,9 @@ export class ThemesService {
       include: {
         _count: {
           select: {
-            audioTeachings: { where: { status: 'PUBLISHED' } },
+            audioTeachings: {
+              where: { status: 'PUBLISHED', fileKey: { not: null } },
+            },
           },
         },
       },

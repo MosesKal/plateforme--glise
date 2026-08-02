@@ -42,10 +42,22 @@
     "fonctionnement_title": "Comment nous fonctionnons",
     "fonctionnement_subtitle": "L'église est gouvernée selon les principes bibliques, avec une séparation claire des responsabilités.",
     "fonctionnement_items": [
-      { "titre": "Gouvernance spirituelle", "desc": "Les décisions doctrinales et pastorales relèvent de l'Apôtre et des Anciens." },
-      { "titre": "Coordination des départements", "desc": "Chaque responsable de département rend compte directement au Pasteur principal." },
-      { "titre": "Assemblée des membres", "desc": "Les membres actifs participent aux décisions importantes de la vie de l'église." },
-      { "titre": "Transparence financière", "desc": "La gestion des finances est assurée par un comité de gestion sous supervision pastorale." }
+      {
+        "titre": "Gouvernance spirituelle",
+        "desc": "Les décisions doctrinales et pastorales relèvent de l'Apôtre et des Anciens."
+      },
+      {
+        "titre": "Coordination des départements",
+        "desc": "Chaque responsable de département rend compte directement au Pasteur principal."
+      },
+      {
+        "titre": "Assemblée des membres",
+        "desc": "Les membres actifs participent aux décisions importantes de la vie de l'église."
+      },
+      {
+        "titre": "Transparence financière",
+        "desc": "La gestion des finances est assurée par un comité de gestion sous supervision pastorale."
+      }
     ]
   },
   "apropos": {
@@ -143,10 +155,22 @@
     "cta_history": "Notre histoire",
     "cta_mission": "Notre mission",
     "cards": [
-      { "label": "Fondée en 2016",       "desc": "Née d'une conférence biblique à Bel-Air Fizi" },
-      { "label": "2 000+ Fidèles",       "desc": "Une communauté en constante croissance" },
-      { "label": "50+ Églises ouvertes", "desc": "Présence en RDC et à l'étranger" },
-      { "label": "Saine Doctrine",       "desc": "Fondés sur l'enseignement de Jésus-Christ" }
+      {
+        "label": "Fondée en 2016",
+        "desc": "Née d'une conférence biblique à Bel-Air Fizi"
+      },
+      {
+        "label": "2 000+ Fidèles",
+        "desc": "Une communauté en constante croissance"
+      },
+      {
+        "label": "50+ Églises ouvertes",
+        "desc": "Présence en RDC et à l'étranger"
+      },
+      {
+        "label": "Saine Doctrine",
+        "desc": "Fondés sur l'enseignement de Jésus-Christ"
+      }
     ]
   },
   "values": {
@@ -154,17 +178,47 @@
     "subtitle": "Ce qui guide chacun de nos pas",
     "link": "Voir toutes nos valeurs →",
     "items": [
-      { "label": "Fidélité à la parole",          "desc": "La Bible est la fondation de la doctrine de Jésus" },
-      { "label": "Abondance dans l'enseignement", "desc": "Nous transmettons fidèlement l'enseignement de Jésus" },
-      { "label": "Prière continue",               "desc": "Vie de prière personnelle et collective intense" },
-      { "label": "Discipline spirituelle",        "desc": "Lecture quotidienne de la Bible" },
-      { "label": "Pureté doctrinale",             "desc": "Doctrine de Jésus-Christ sans compromis" },
-      { "label": "Communion fraternelle",         "desc": "Amour, unité et service mutuel" },
-      { "label": "Compassion",                    "desc": "Accompagnement dans les événements sociaux" },
-      { "label": "Passion pour les âmes",         "desc": "Annonce de Jésus-Christ avec compassion" },
-      { "label": "Expansion",                      "desc": "Former et envoyer des disciples" },
-      { "label": "Excellence dans le service",    "desc": "Servir Dieu avec diligence" },
-      { "label": "Mission globale",               "desc": "L'Église appelée à impacter les nations" }
+      {
+        "label": "Fidélité à la parole",
+        "desc": "La Bible est la fondation de la doctrine de Jésus"
+      },
+      {
+        "label": "Abondance dans l'enseignement",
+        "desc": "Nous transmettons fidèlement l'enseignement de Jésus"
+      },
+      {
+        "label": "Prière continue",
+        "desc": "Vie de prière personnelle et collective intense"
+      },
+      {
+        "label": "Discipline spirituelle",
+        "desc": "Lecture quotidienne de la Bible"
+      },
+      {
+        "label": "Pureté doctrinale",
+        "desc": "Doctrine de Jésus-Christ sans compromis"
+      },
+      {
+        "label": "Communion fraternelle",
+        "desc": "Amour, unité et service mutuel"
+      },
+      {
+        "label": "Compassion",
+        "desc": "Accompagnement dans les événements sociaux"
+      },
+      {
+        "label": "Passion pour les âmes",
+        "desc": "Annonce de Jésus-Christ avec compassion"
+      },
+      { "label": "Expansion", "desc": "Former et envoyer des disciples" },
+      {
+        "label": "Excellence dans le service",
+        "desc": "Servir Dieu avec diligence"
+      },
+      {
+        "label": "Mission globale",
+        "desc": "L'Église appelée à impacter les nations"
+      }
     ]
   },
   "weeklyProgram": {
@@ -201,7 +255,10 @@
     "missionTitle": "La Parole qui vous accompagne au quotidien",
     "missionText": "La radio de l’Église Le Camp de Jésus-Christ Bel-Air Fizi prolonge la vie de la paroisse au-delà de ses murs. Elle vous accompagne dans votre marche avec Dieu partout où vous êtes : à la maison, au travail ou en déplacement.",
     "benefits": [
-      { "title": "Grandir dans la Parole", "description": "Des enseignements bibliques clairs pour fortifier votre foi et éclairer votre quotidien." }
+      {
+        "title": "Grandir dans la Parole",
+        "description": "Des enseignements bibliques clairs pour fortifier votre foi et éclairer votre quotidien."
+      }
     ],
     "howEyebrow": "Simple et accessible",
     "howTitle": "Votre radio vous suit partout",
@@ -266,7 +323,18 @@
     "audios": {
       "badge": "Bibliothèque audio",
       "title": "Enseignements audio",
-      "intro": "Écoutez les enseignements de l'église, organisés par thèmes. Lancez la lecture et continuez votre navigation — l'écoute vous suit."
+      "intro": "Écoutez les enseignements de l'église, organisés par thèmes. Lancez la lecture et continuez votre navigation — l'écoute vous suit.",
+      "themePlural": "thèmes",
+      "themeFilter": "Filtrer par thème",
+      "allThemes": "Tous les thèmes",
+      "catalogBadge": "Catalogue",
+      "libraryTitle": "Toute la bibliothèque",
+      "sortLabel": "Trier par",
+      "recentFirst": "Les plus récents",
+      "filteredView": "Vue filtrée",
+      "openTheme": "Ouvrir la page du thème",
+      "clearFilters": "Réinitialiser les filtres",
+      "loadError": "La bibliothèque ne peut pas être chargée pour le moment."
     },
     "ecrits": {
       "badge": "Bibliothèque écrite",
@@ -280,6 +348,7 @@
     "theme": {
       "notFound": "Ce thème n'existe pas ou n'est plus disponible.",
       "searchPlaceholder": "Rechercher dans ce thème…",
+      "editorialOrder": "Ordre du thème",
       "noMatch": "Aucun enseignement ne correspond à cette recherche.",
       "empty": "Aucun enseignement dans ce thème pour le moment."
     },
@@ -457,10 +526,22 @@
     "why_badge": "Pourquoi adhérer",
     "why_title": "Ce que l'adhésion vous apporte",
     "benefits": [
-      { "title": "Une famille spirituelle", "desc": "Être entouré de frères et sœurs engagés dans la même foi et portant la même vision." },
-      { "title": "Un accompagnement pastoral", "desc": "Bénéficier du suivi du pasteur titulaire et des anciens de l'église." },
-      { "title": "Un service actif", "desc": "Participer à la vie de l'église à travers ses départements et ministères." },
-      { "title": "Une formation continue", "desc": "Accéder aux enseignements approfondis, séminaires et formations bibliques." }
+      {
+        "title": "Une famille spirituelle",
+        "desc": "Être entouré de frères et sœurs engagés dans la même foi et portant la même vision."
+      },
+      {
+        "title": "Un accompagnement pastoral",
+        "desc": "Bénéficier du suivi du pasteur titulaire et des anciens de l'église."
+      },
+      {
+        "title": "Un service actif",
+        "desc": "Participer à la vie de l'église à travers ses départements et ministères."
+      },
+      {
+        "title": "Une formation continue",
+        "desc": "Accéder aux enseignements approfondis, séminaires et formations bibliques."
+      }
     ],
     "criteria_badge": "Portes ouvertes",
     "criteria_title": "Tout le monde est le bienvenu",
@@ -468,10 +549,26 @@
     "steps_badge": "Processus",
     "steps_title": "Comment rejoindre l'église ?",
     "steps": [
-      { "num": "01", "title": "Assister aux cultes", "desc": "Commencez par participer régulièrement aux cultes dominicaux et aux activités hebdomadaires de l'église." },
-      { "num": "02", "title": "Cours d'intégration", "desc": "Suivez le cours d'intégration organisé pour mieux connaître la vision, la doctrine et le fonctionnement de l'église." },
-      { "num": "03", "title": "Entretien pastoral", "desc": "Rencontrez le pasteur ou un ancien pour un entretien de suivi et d'accompagnement spirituel." },
-      { "num": "04", "title": "Engagement formel", "desc": "Remplissez votre fiche d'adhésion et rejoignez officiellement la famille du Camp de Jésus-Christ." }
+      {
+        "num": "01",
+        "title": "Assister aux cultes",
+        "desc": "Commencez par participer régulièrement aux cultes dominicaux et aux activités hebdomadaires de l'église."
+      },
+      {
+        "num": "02",
+        "title": "Cours d'intégration",
+        "desc": "Suivez le cours d'intégration organisé pour mieux connaître la vision, la doctrine et le fonctionnement de l'église."
+      },
+      {
+        "num": "03",
+        "title": "Entretien pastoral",
+        "desc": "Rencontrez le pasteur ou un ancien pour un entretien de suivi et d'accompagnement spirituel."
+      },
+      {
+        "num": "04",
+        "title": "Engagement formel",
+        "desc": "Remplissez votre fiche d'adhésion et rejoignez officiellement la famille du Camp de Jésus-Christ."
+      }
     ],
     "commitment_badge": "Engagements",
     "commitment_title": "Vos engagements en tant que membre",

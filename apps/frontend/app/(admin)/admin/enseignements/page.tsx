@@ -4,6 +4,7 @@ import Link from "next/link"
 import { PageHeader } from "@/components/shared/PageHeader"
 import { ADMIN_ROUTES } from "@/constants/routes"
 import { formatFileSize } from "@/components/features/teachings/format"
+import { AudioMediaHealthPanel } from "@/components/features/admin/teachings/AudioMediaHealthPanel"
 import {
   useAdminSpeakers,
   useAdminThemes,
@@ -139,6 +140,8 @@ export default function AdminEnseignementsPage() {
           loading={loadingThemes}
         />
       </div>
+
+      {stats && <AudioMediaHealthPanel stats={stats} />}
 
       {/* Stockage + top écoutes — préoccupations transverses du module */}
       {stats && (

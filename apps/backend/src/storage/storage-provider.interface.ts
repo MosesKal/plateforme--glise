@@ -10,8 +10,14 @@ export interface StorageProvider {
   /** Déplace un fichier temporaire vers le stockage définitif sous la clé donnée. */
   save(tempPath: string, key: string): Promise<void>;
 
+  /** Déplace atomiquement une clé existante vers une nouvelle clé. */
+  move(sourceKey: string, targetKey: string): Promise<void>;
+
   /** Supprime le fichier associé à la clé (silencieux si absent). */
   delete(key: string): Promise<void>;
+
+  /** Vérifie l'existence d'une clé sans exposer son chemin physique. */
+  exists(key: string): Promise<boolean>;
 
   /** Résout l'URL publique d'une clé de stockage. */
   getPublicUrl(key: string): string;

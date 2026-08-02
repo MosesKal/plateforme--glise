@@ -33,14 +33,14 @@ import type { StorageProvider } from '../storage/storage-provider.interface';
 import { getUploadTmpDir } from '../storage/storage.config';
 import { AUDIO_ALLOWED_EXTENSIONS } from '../teachings/audio/audio-upload.options';
 import { AudioTeachingsService } from '../teachings/audio/audio-teachings.service';
+import {
+  AudioUploadsService,
+  extensionForAudioMimeType,
+} from '../teachings/audio/audio-uploads.service';
 import { TeachingStatusDto } from '../teachings/audio/dto/create-audio-teaching.dto';
 import { MediaProbeService } from '../teachings/audio/media-probe.service';
 import { slugify } from '../teachings/common/slug.util';
-import {
-  mimeTypeForExtension,
-  parseImportArgs,
-  titleFromFilename,
-} from './import-audio.helpers';
+import { parseImportArgs, titleFromFilename } from './import-audio.helpers';
 
 interface PlannedFile {
   path: string;
@@ -105,45 +105,6 @@ async function scanLibrary(
   return { themes, warnings };
 }
 
-/**
- * Clé de stockage libre au format `audio/<année>/<slug>.<ext>` : on vérifie
- * qu'aucun fichier n'occupe déjà la clé NI sa variante transcodée `-96k.m4a`
- * (l'original étant supprimé après transcodage, seul le .m4a peut subsister
- * d'un import précédent du même nom de fichier).
- */
-async function resolveFreeKey(
-  storage: StorageProvider,
-  prisma: PrismaService,
-  baseSlug: string,
-  ext: string,
-): Promise<string> {
-  const year = new Date().getFullYear();
-
-  for (let i = 1; ; i++) {
-    const slug = i === 1 ? baseSlug : `${baseSlug}-${i}`;
-    const key = `audio/${year}/${slug}${ext}`;
-    const transcodedKey = `audio/${year}/${slug}-96k.m4a`;
-
-    const inDb = await prisma.audioTeaching.findFirst({
-      where: { fileKey: { in: [key, transcodedKey] } },
-      select: { id: true },
-    });
-    if (inDb) continue;
-
-    const localPath = storage.getLocalPath(key);
-    if (localPath) {
-      const taken = await Promise.any(
-        [localPath, storage.getLocalPath(transcodedKey)!].map((p) =>
-          fs.access(p).then(() => true),
-        ),
-      ).catch(() => false);
-      if (taken) continue;
-    }
-
-    return key;
-  }
-}
-
 async function main(): Promise<void> {
   const options = parseImportArgs(process.argv.slice(2));
 
@@ -164,6 +125,7 @@ async function main(): Promise<void> {
   try {
     const prisma = app.get(PrismaService);
     const teachings = app.get(AudioTeachingsService);
+    const uploads = app.get(AudioUploadsService);
     const probe = app.get(MediaProbeService);
     const storage = app.get<StorageProvider>(STORAGE_PROVIDER);
 
@@ -236,30 +198,49 @@ async function main(): Promise<void> {
         }
 
         try {
-          const ext = extname(file.filename).toLowerCase();
-          const [stat, probed, fileKey] = await Promise.all([
+          const [stat, probed] = await Promise.all([
             fs.stat(file.path),
             probe.probe(file.path),
-            resolveFreeKey(storage, prisma, slugify(file.title), ext),
           ]);
+
+          if (!probed) {
+            throw new Error('Le fichier ne contient pas de flux audio valide');
+          }
+          const extension = extensionForAudioMimeType(probed.mimeType);
+          if (!extension) {
+            throw new Error(
+              'Le conteneur audio détecté n’est pas pris en charge',
+            );
+          }
+          const stagingKey = `audio/staged/import/${new Date().getUTCFullYear()}/${randomUUID()}${extension}`;
 
           // Copie vers le tmp d'upload puis save() : même volume que
           // MEDIA_ROOT, le déplacement final est un rename atomique.
-          const tmpPath = join(getUploadTmpDir(), `${randomUUID()}${ext}`);
+          const tmpPath = join(
+            getUploadTmpDir(),
+            `${randomUUID()}${extension}`,
+          );
           await fs.mkdir(getUploadTmpDir(), { recursive: true });
           await fs.copyFile(file.path, tmpPath);
-          await storage.save(tmpPath, fileKey);
-
-          const created = await teachings.create({
-            title: file.title,
-            themeId: theme!.id,
-            speakerId: speaker!.id,
-            status: options.status as TeachingStatusDto,
-            fileKey,
+          await storage.save(tmpPath, stagingKey);
+          const { uploadId } = await uploads.registerStoredStaged({
+            stagingKey,
+            originalName: file.filename,
+            detectedMimeType: probed.mimeType,
             fileSize: stat.size,
-            mimeType: mimeTypeForExtension(ext),
-            durationSec: probed?.durationSec ?? 0,
+            durationSec: probed.durationSec,
           });
+
+          const created = await teachings.create(
+            {
+              title: file.title,
+              themeId: theme!.id,
+              speakerId: speaker!.id,
+              status: options.status as TeachingStatusDto,
+              uploadId,
+            },
+            'system-import',
+          );
 
           importedIds.push(created.id);
           summary.imported++;

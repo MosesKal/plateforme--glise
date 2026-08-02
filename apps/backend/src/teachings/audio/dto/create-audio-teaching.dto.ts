@@ -1,14 +1,11 @@
-import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDateString,
   IsEnum,
-  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
-  Matches,
-  Min,
+  IsUUID,
 } from 'class-validator';
 
 export enum TeachingStatusDto {
@@ -18,9 +15,9 @@ export enum TeachingStatusDto {
 }
 
 /**
- * Le fichier est uploadé au préalable via POST /teachings/audio/upload qui
- * renvoie fileKey/fileSize/mimeType/durationSec — repris tels quels ici.
- * Le pattern strict sur fileKey neutralise toute traversée de chemin.
+ * Le fichier est uploadé au préalable via POST /teachings/audio/upload.
+ * Seul l'identifiant opaque est accepté : taille, MIME, durée et clé de
+ * stockage restent exclusivement sous le contrôle du serveur.
  */
 export class CreateAudioTeachingDto {
   @IsString()
@@ -56,25 +53,7 @@ export class CreateAudioTeachingDto {
   @IsOptional()
   status?: TeachingStatusDto;
 
-  @Matches(/^audio\/\d{4}\/[a-z0-9][a-z0-9-]*\.[a-z0-9]+$/i, {
-    message: 'fileKey invalide',
-  })
+  @IsUUID('4')
   @IsOptional()
-  fileKey?: string;
-
-  @Type(() => Number)
-  @IsInt()
-  @Min(0)
-  @IsOptional()
-  fileSize?: number;
-
-  @IsString()
-  @IsOptional()
-  mimeType?: string;
-
-  @Type(() => Number)
-  @IsInt()
-  @Min(0)
-  @IsOptional()
-  durationSec?: number;
+  uploadId?: string;
 }

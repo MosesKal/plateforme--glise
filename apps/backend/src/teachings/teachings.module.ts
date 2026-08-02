@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { AudioTeachingsController } from './audio/audio-teachings.controller';
 import { AudioTeachingsService } from './audio/audio-teachings.service';
 import { AudioTranscodeService } from './audio/audio-transcode.service';
+import { AudioUploadsService } from './audio/audio-uploads.service';
+import { AudioMediaCleanupService } from './audio/audio-media-cleanup.service';
 import { MediaProbeService } from './audio/media-probe.service';
 import { PodcastController } from './podcast/podcast.controller';
 import { PodcastService } from './podcast/podcast.service';
@@ -33,7 +35,9 @@ import { YouTubeSyncService } from './videos/youtube-sync.service';
     SpeakersService,
     TagsService,
     AudioTeachingsService,
+    AudioUploadsService,
     AudioTranscodeService,
+    AudioMediaCleanupService,
     MediaProbeService,
     VideoTeachingsService,
     YouTubeSyncService,

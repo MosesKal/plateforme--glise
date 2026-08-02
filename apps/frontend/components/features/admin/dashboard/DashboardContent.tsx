@@ -8,6 +8,7 @@ import { useAdminGalleryItems } from "@/hooks/admin/useAdminGallery"
 import { useAdminTestimonies } from "@/hooks/admin/useAdminTestimonies"
 import { useAdminContact } from "@/hooks/admin/useAdminContact"
 import { useAdminVideoTeachings, useTeachingsStats } from "@/hooks/admin/useAdminTeachings"
+import { AudioMediaHealthPanel } from "@/components/features/admin/teachings/AudioMediaHealthPanel"
 import { useAuthStore } from "@/store/auth.store"
 import { ADMIN_ROUTES } from "@/constants/routes"
 import { canAccess, type AdminResource } from "@/lib/permissions"
@@ -156,6 +157,7 @@ export function DashboardContent() {
   const pendingList      = (pendingData?.items ?? []).slice(0, 4)
   const unreadMessages   = messages.filter((m) => m.status === "UNREAD")
   const unreadCount      = unreadMessages.length
+  const audioIssueCount  = (teachingsStats?.mediaHealth?.failed ?? 0) + (teachingsStats?.mediaHealth?.missing ?? 0)
   const recentUnread     = unreadMessages.slice(0, 4)
   const upcomingEvents   = events
     .filter((e) => e.status === "PUBLISHED" && new Date(e.startDate) >= new Date())
@@ -227,12 +229,12 @@ export function DashboardContent() {
                 value={teachingsStats?.published ?? 0}
                 sub={
                   teachingsStats
-                    ? `${teachingsStats.totalPlays} écoute${teachingsStats.totalPlays > 1 ? "s" : ""} cumulée${teachingsStats.totalPlays > 1 ? "s" : ""}${teachingsStats.draft > 0 ? ` · ${teachingsStats.draft} brouillon${teachingsStats.draft > 1 ? "s" : ""}` : ""}`
+                    ? `${teachingsStats.totalPlays} écoute${teachingsStats.totalPlays > 1 ? "s" : ""} cumulée${teachingsStats.totalPlays > 1 ? "s" : ""}${audioIssueCount > 0 ? ` · ${audioIssueCount} à vérifier` : teachingsStats.draft > 0 ? ` · ${teachingsStats.draft} brouillon${teachingsStats.draft > 1 ? "s" : ""}` : ""}`
                     : undefined
                 }
                 iconPath={ICONS.audio}
                 href={ADMIN_ROUTES.enseignementsAudios}
-                accent={teachingsStats && teachingsStats.draft > 0 ? "gold" : "default"}
+                accent={audioIssueCount > 0 ? "red" : teachingsStats && teachingsStats.draft > 0 ? "gold" : "default"}
                 loading={loadingTeach}
               />
               <StatCard
@@ -281,6 +283,10 @@ export function DashboardContent() {
             vous pensez que c&apos;est une erreur.
           </p>
         </div>
+      )}
+
+      {can("teachings") && teachingsStats && (
+        <AudioMediaHealthPanel stats={teachingsStats} />
       )}
 
       {/* ── Activity ── */}

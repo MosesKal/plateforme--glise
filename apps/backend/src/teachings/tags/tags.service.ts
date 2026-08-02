@@ -13,14 +13,24 @@ export class TagsService {
     const tags = await this.prisma.teachingTag.findMany({
       where: {
         audioTeachings: {
-          some: { audioTeaching: { status: 'PUBLISHED' } },
+          some: {
+            audioTeaching: {
+              status: 'PUBLISHED',
+              fileKey: { not: null },
+            },
+          },
         },
       },
       include: {
         _count: {
           select: {
             audioTeachings: {
-              where: { audioTeaching: { status: 'PUBLISHED' } },
+              where: {
+                audioTeaching: {
+                  status: 'PUBLISHED',
+                  fileKey: { not: null },
+                },
+              },
             },
           },
         },

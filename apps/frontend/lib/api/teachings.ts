@@ -1,112 +1,122 @@
-import { api } from "@/lib/api/client"
+import { api } from "@/lib/api/client";
 
 // ─── Types publics du module Enseignements (audio) ────────────────────────────
 
 export interface TeachingTheme {
-  id: string
-  slug: string
-  nameFr: string
-  nameEn?: string | null
-  descriptionFr?: string | null
-  coverImage?: string | null
-  position: number
-  isActive: boolean
-  _count: { audioTeachings: number }
+  id: string;
+  slug: string;
+  nameFr: string;
+  nameEn?: string | null;
+  descriptionFr?: string | null;
+  coverImage?: string | null;
+  position: number;
+  isActive: boolean;
+  _count: { audioTeachings: number };
 }
 
 export interface TeachingTagRef {
-  id: string
-  slug: string
-  name: string
+  id: string;
+  slug: string;
+  name: string;
 }
 
 export interface AudioTeaching {
-  id: string
-  slug: string
-  title: string
-  description?: string | null
-  preachedAt?: string | null
-  durationSec: number
-  fileSize: number
-  fileUrl: string | null
-  coverImage?: string | null
-  playCount: number
-  position: number
+  id: string;
+  slug: string;
+  title: string;
+  description?: string | null;
+  preachedAt?: string | null;
+  durationSec: number;
+  fileSize: number;
+  fileUrl: string | null;
+  coverImage?: string | null;
+  playCount: number;
+  position: number;
   /** Date d'ajout à la plateforme (badge « Nouveau ») — ≠ preachedAt. */
-  createdAt: string
-  theme: { id: string; slug: string; nameFr: string }
-  speaker: { id: string; slug: string; fullName: string; title?: string | null }
-  tags: TeachingTagRef[]
+  createdAt: string;
+  theme: { id: string; slug: string; nameFr: string; nameEn?: string | null };
+  speaker: {
+    id: string;
+    slug: string;
+    fullName: string;
+    title?: string | null;
+  };
+  tags: TeachingTagRef[];
 }
 
 /** Détail public : l'enseignement + ses similaires (même thème ou tags communs). */
 export interface AudioTeachingDetail extends AudioTeaching {
-  related: AudioTeaching[]
+  related: AudioTeaching[];
 }
 
 export interface PublicTag {
-  id: string
-  slug: string
-  name: string
-  count: number
+  id: string;
+  slug: string;
+  name: string;
+  count: number;
 }
 
 export interface PaginatedAudioTeachings {
-  items: AudioTeaching[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
+  items: AudioTeaching[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface PublicAudioParams {
-  themeSlug?: string
-  speakerSlug?: string
-  tag?: string
-  search?: string
-  sort?: "recent" | "popular"
-  page?: number
-  limit?: number
+  themeSlug?: string;
+  speakerSlug?: string;
+  tag?: string;
+  search?: string;
+  sort?: "recent" | "popular";
+  page?: number;
+  limit?: number;
 }
 
 // ─── Types publics vidéos (miroir YouTube) ────────────────────────────────────
 
 export interface VideoTeaching {
-  id: string
-  youtubeId: string
-  title: string
-  description?: string | null
-  thumbnailUrl?: string | null
-  durationSec: number
-  publishedAt: string
-  theme?: { id: string; slug: string; nameFr: string } | null
-  speaker?: { id: string; slug: string; fullName: string; title?: string | null } | null
+  id: string;
+  youtubeId: string;
+  title: string;
+  description?: string | null;
+  thumbnailUrl?: string | null;
+  durationSec: number;
+  publishedAt: string;
+  theme?: { id: string; slug: string; nameFr: string } | null;
+  speaker?: {
+    id: string;
+    slug: string;
+    fullName: string;
+    title?: string | null;
+  } | null;
 }
 
 export interface YouTubeLive {
-  youtubeId: string
-  title: string
-  description?: string | null
-  thumbnailUrl?: string | null
-  channelTitle?: string | null
-  startedAt?: string | null
-  concurrentViewers?: number | null
+  youtubeId: string;
+  title: string;
+  description?: string | null;
+  thumbnailUrl?: string | null;
+  channelTitle?: string | null;
+  startedAt?: string | null;
+  concurrentViewers?: number | null;
 }
 
 export interface PaginatedVideoTeachings {
-  items: VideoTeaching[]
-  total: number
-  page: number
-  limit: number
-  totalPages: number
+  items: VideoTeaching[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
 }
 
 export interface PublicVideoParams {
-  themeSlug?: string
-  speakerSlug?: string
-  search?: string
-  page?: number
-  limit?: number
+  themeSlug?: string;
+  speakerSlug?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
 }
 
 // ─── Endpoints publics ────────────────────────────────────────────────────────
@@ -124,10 +134,11 @@ export const teachingsApi = {
       .then((r) => r.data),
 
   getAudio: (slug: string) =>
-    api.get<AudioTeachingDetail>(`/teachings/audio/${slug}`).then((r) => r.data),
+    api
+      .get<AudioTeachingDetail>(`/teachings/audio/${slug}`)
+      .then((r) => r.data),
 
-  listTags: () =>
-    api.get<PublicTag[]>("/teachings/tags").then((r) => r.data),
+  listTags: () => api.get<PublicTag[]>("/teachings/tags").then((r) => r.data),
 
   listVideos: (params?: PublicVideoParams) =>
     api
@@ -140,4 +151,4 @@ export const teachingsApi = {
   /** Beacon d'écoute (déclenché après ~30 s de lecture réelle). */
   registerPlay: (id: string) =>
     api.post(`/teachings/audio/${id}/play`).catch(() => undefined),
-}
+};

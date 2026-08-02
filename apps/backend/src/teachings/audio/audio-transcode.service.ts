@@ -1,9 +1,12 @@
 import {
+  ConflictException,
   Inject,
   Injectable,
   Logger,
+  NotFoundException,
   OnApplicationBootstrap,
 } from '@nestjs/common';
+import { Interval } from '@nestjs/schedule';
 import { execFile } from 'child_process';
 import { randomUUID } from 'crypto';
 import { promises as fs } from 'fs';
@@ -16,58 +19,117 @@ import { getUploadTmpDir } from '../../storage/storage.config';
 import { MediaProbeService } from './media-probe.service';
 
 const execFileAsync = promisify(execFile);
-
-/** Suffixe des fichiers produits par le pipeline — sert aussi de marqueur « déjà optimisé ». */
 const OPTIMIZED_SUFFIX = '-96k.m4a';
-
-/** 20 min : marge large pour une prédication de 2 h sur un petit VPS. */
 const FFMPEG_TIMEOUT_MS = 20 * 60 * 1000;
+const PROCESSING_LEASE_MS = 25 * 60 * 1000;
+const RECOVERY_INTERVAL_MS = 60_000;
+const MAX_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 15 * 60 * 1000;
 
 /**
- * Pipeline de transcodage audio asynchrone (phase 2 du module Enseignements).
- *
- * À la création/remplacement d'un fichier, l'original est servi immédiatement
- * (processing=PENDING) pendant qu'un worker le ré-encode en AAC-LC 96 kbps
- * (`-movflags +faststart` : les métadonnées passent en tête de fichier, la
- * lecture démarre sans télécharger la fin). Une fois prêt, le fileKey bascule
- * vers le .m4a et l'original est supprimé.
- *
- * Choix assumés (voir roadmap) :
- * - File FIFO en mémoire, concurrence 1 — pas de Redis/BullMQ. La colonne
- *   `processing` en DB est la source de vérité : au redémarrage, les lignes
- *   PENDING/PROCESSING sont ré-enfilées, donc aucun job n'est perdu.
- * - Échec ffmpeg → FAILED mais le fileKey original reste en place : un
- *   enseignement « non optimisé » reste écoutable, jamais cassé.
- * - ffmpeg absent (poste de dev Windows) → READY sur l'original, simple warn.
+ * Worker audio durable : la file locale ne sert qu'à réveiller le worker. Le
+ * verrou réel est une lease atomique stockée dans PostgreSQL, ce qui empêche
+ * deux processus (reload PM2, déploiement progressif, future réplication) de
+ * transcoder ou supprimer le même média simultanément.
  */
 @Injectable()
 export class AudioTranscodeService implements OnApplicationBootstrap {
   private readonly logger = new Logger(AudioTranscodeService.name);
   private readonly ffmpegPath = process.env.FFMPEG_PATH?.trim() || 'ffmpeg';
-
   private readonly queue: string[] = [];
   private draining = false;
-  private ffmpegAvailable?: boolean;
+  private ffmpegAvailable = false;
 
   constructor(
-    private prisma: PrismaService,
-    private mediaProbe: MediaProbeService,
-    @Inject(STORAGE_PROVIDER) private storage: StorageProvider,
+    private readonly prisma: PrismaService,
+    private readonly mediaProbe: MediaProbeService,
+    @Inject(STORAGE_PROVIDER) private readonly storage: StorageProvider,
   ) {}
 
-  onApplicationBootstrap() {
-    // Sans await : la reprise des jobs interrompus ne doit pas retarder le boot.
-    void this.recoverInterrupted();
+  onApplicationBootstrap(): void {
+    void this.recoverRunnableJobs();
   }
 
-  /** Enfile un enseignement à transcoder (idempotent tant qu'il est en file). */
   enqueue(teachingId: string): void {
     if (this.queue.includes(teachingId)) return;
     this.queue.push(teachingId);
     void this.drain();
   }
 
-  // ─── Worker ─────────────────────────────────────────────────────────────────
+  async retry(teachingId: string): Promise<{ ok: true }> {
+    const teaching = await this.prisma.audioTeaching.findUnique({
+      where: { id: teachingId },
+      select: { mediaAssetId: true, mediaAsset: { select: { status: true } } },
+    });
+    const mediaAssetId = teaching?.mediaAssetId;
+    if (!mediaAssetId) {
+      throw new NotFoundException('Média audio introuvable');
+    }
+    if (teaching.mediaAsset?.status !== 'FAILED') {
+      throw new ConflictException(
+        'Seul un transcodage en échec peut être relancé manuellement',
+      );
+    }
+    await this.prisma.$transaction(async (tx) => {
+      const reset = await tx.audioMediaAsset.updateMany({
+        where: { id: mediaAssetId, status: 'FAILED' },
+        data: {
+          status: 'PENDING',
+          attempts: 0,
+          lastError: null,
+          nextAttemptAt: null,
+          leaseId: null,
+          leaseExpiresAt: null,
+        },
+      });
+      if (reset.count === 0) {
+        throw new ConflictException(
+          'Le statut du transcodage a changé, rechargez la page',
+        );
+      }
+      await tx.audioTeaching.update({
+        where: { id: teachingId },
+        data: { processing: 'PENDING' },
+      });
+    });
+    this.enqueue(teachingId);
+    return { ok: true };
+  }
+
+  @Interval(RECOVERY_INTERVAL_MS)
+  async recoverRunnableJobs(): Promise<void> {
+    const now = new Date();
+    try {
+      await this.finalizeExhaustedLeases(now);
+      const assets = await this.prisma.audioMediaAsset.findMany({
+        where: {
+          teaching: { isNot: null },
+          OR: [
+            { status: 'PENDING', attempts: { lt: MAX_ATTEMPTS } },
+            {
+              status: 'FAILED',
+              attempts: { lt: MAX_ATTEMPTS },
+              OR: [{ nextAttemptAt: null }, { nextAttemptAt: { lte: now } }],
+            },
+            {
+              status: 'PROCESSING',
+              attempts: { lt: MAX_ATTEMPTS },
+              OR: [{ leaseExpiresAt: null }, { leaseExpiresAt: { lte: now } }],
+            },
+          ],
+        },
+        select: { teaching: { select: { id: true } } },
+        orderBy: { updatedAt: 'asc' },
+      });
+      for (const asset of assets) {
+        if (asset.teaching) this.enqueue(asset.teaching.id);
+      }
+    } catch (error) {
+      this.logger.error(
+        `Récupération des transcodages impossible : ${this.errorMessage(error)}`,
+      );
+    }
+  }
 
   private async drain(): Promise<void> {
     if (this.draining) return;
@@ -77,9 +139,10 @@ export class AudioTranscodeService implements OnApplicationBootstrap {
       while ((id = this.queue.shift()) !== undefined) {
         try {
           await this.processOne(id);
-        } catch (err) {
-          // processOne gère ses erreurs ; ceci ne protège que la boucle elle-même.
-          this.logger.error(`Job de transcodage ${id} interrompu : ${err}`);
+        } catch (error) {
+          this.logger.error(
+            `Job de transcodage ${id} interrompu : ${this.errorMessage(error)}`,
+          );
         }
       }
     } finally {
@@ -87,145 +150,339 @@ export class AudioTranscodeService implements OnApplicationBootstrap {
     }
   }
 
-  private async processOne(id: string): Promise<void> {
+  private async processOne(teachingId: string): Promise<void> {
     const teaching = await this.prisma.audioTeaching.findUnique({
-      where: { id },
-      select: { id: true, fileKey: true, processing: true },
+      where: { id: teachingId },
+      select: {
+        id: true,
+        mediaAsset: true,
+      },
     });
-    // Supprimé entre-temps, sans fichier, ou déjà traité : rien à faire.
-    if (!teaching?.fileKey) return;
-    if (teaching.processing === 'READY' || teaching.processing === 'FAILED') {
-      return;
-    }
+    const asset = teaching?.mediaAsset;
+    if (!teaching || !asset?.storageKey) return;
 
-    const sourceKey = teaching.fileKey;
+    const now = new Date();
+    const leaseId = randomUUID();
+    const { count } = await this.prisma.audioMediaAsset.updateMany({
+      where: {
+        id: asset.id,
+        OR: [
+          { status: 'PENDING', attempts: { lt: MAX_ATTEMPTS } },
+          {
+            status: 'FAILED',
+            attempts: { lt: MAX_ATTEMPTS },
+            OR: [{ nextAttemptAt: null }, { nextAttemptAt: { lte: now } }],
+          },
+          {
+            status: 'PROCESSING',
+            attempts: { lt: MAX_ATTEMPTS },
+            OR: [{ leaseExpiresAt: null }, { leaseExpiresAt: { lte: now } }],
+          },
+        ],
+      },
+      data: {
+        status: 'PROCESSING',
+        leaseId,
+        leaseExpiresAt: new Date(now.getTime() + PROCESSING_LEASE_MS),
+        attempts: { increment: 1 },
+        lastError: null,
+        nextAttemptAt: null,
+      },
+    });
+    if (count === 0) return;
 
-    // Déjà au format cible : reprise après un redémarrage survenu juste après le swap.
+    const sourceKey = asset.storageKey;
     if (sourceKey.endsWith(OPTIMIZED_SUFFIX)) {
-      await this.setProcessing(id, sourceKey, 'READY');
+      await this.markReadyOnOriginal(asset.id, teaching.id, sourceKey, leaseId);
       return;
     }
 
     if (!(await this.isFfmpegAvailable())) {
-      await this.setProcessing(id, sourceKey, 'READY');
+      await this.markFailure(
+        asset.id,
+        teaching.id,
+        sourceKey,
+        leaseId,
+        asset.attempts + 1,
+        new Error('ffmpeg indisponible'),
+      );
       return;
     }
 
     const sourcePath = this.storage.getLocalPath(sourceKey);
     if (!sourcePath) {
-      // Provider sans accès disque (futur S3/R2) : le transcodage devra
-      // télécharger la source — hors périmètre tant que le stockage est local.
-      this.logger.warn(
-        `Transcodage ignoré pour "${sourceKey}" : provider sans chemin local`,
+      await this.markFailure(
+        asset.id,
+        teaching.id,
+        sourceKey,
+        leaseId,
+        asset.attempts + 1,
+        new Error('Le provider ne fournit pas de chemin local'),
       );
-      await this.setProcessing(id, sourceKey, 'READY');
       return;
     }
 
-    await this.setProcessing(id, sourceKey, 'PROCESSING');
-
     const tmpDir = getUploadTmpDir();
     const tmpOut = join(tmpDir, `${randomUUID()}.m4a`);
+    const targetKey = `${sourceKey.replace(/\.[a-z0-9]+$/i, '')}-${leaseId}${OPTIMIZED_SUFFIX}`;
+    let targetSaved = false;
 
     try {
       await fs.mkdir(tmpDir, { recursive: true });
-      // -vn écarte les pochettes embarquées (flux vidéo parasite en MP4).
       await execFileAsync(
         this.ffmpegPath,
-        ['-hide_banner', '-loglevel', 'error', '-y', '-i', sourcePath,
-          '-vn', '-map_metadata', '0', '-c:a', 'aac', '-b:a', '96k',
-          '-movflags', '+faststart', tmpOut],
-        { timeout: FFMPEG_TIMEOUT_MS },
+        [
+          '-hide_banner',
+          '-loglevel',
+          'error',
+          '-y',
+          '-i',
+          sourcePath,
+          '-vn',
+          '-map_metadata',
+          '0',
+          '-c:a',
+          'aac',
+          '-b:a',
+          '96k',
+          '-movflags',
+          '+faststart',
+          tmpOut,
+        ],
+        { timeout: FFMPEG_TIMEOUT_MS, windowsHide: true },
       );
 
       const [probe, stat] = await Promise.all([
         this.mediaProbe.probe(tmpOut),
         fs.stat(tmpOut),
       ]);
+      if (!probe) throw new Error('Le fichier transcodé est invalide');
 
-      const targetKey =
-        sourceKey.replace(/\.[a-z0-9]+$/i, '') + OPTIMIZED_SUFFIX;
       await this.storage.save(tmpOut, targetKey);
+      targetSaved = true;
 
-      // Swap guardé sur le fileKey source : si l'admin a remplacé le fichier
-      // pendant le transcodage, le résultat est obsolète et doit être jeté.
-      const { count } = await this.prisma.audioTeaching.updateMany({
-        where: { id, fileKey: sourceKey },
-        data: {
-          fileKey: targetKey,
-          mimeType: 'audio/mp4',
-          fileSize: stat.size,
-          ...(probe && probe.durationSec > 0
-            ? { durationSec: probe.durationSec }
-            : {}),
-          processing: 'READY',
-        },
+      const swapped = await this.prisma.$transaction(async (tx) => {
+        const claimed = await tx.audioMediaAsset.updateMany({
+          where: { id: asset.id, status: 'PROCESSING', leaseId },
+          data: {
+            storageKey: targetKey,
+            obsoleteStorageKey: sourceKey,
+            detectedMimeType: 'audio/mp4',
+            fileSize: stat.size,
+            durationSec: probe.durationSec,
+            status: 'READY',
+            leaseId: null,
+            leaseExpiresAt: null,
+            lastError: null,
+            nextAttemptAt: null,
+          },
+        });
+        if (claimed.count === 0) return false;
+
+        await tx.audioTeaching.updateMany({
+          where: { id: teaching.id, mediaAssetId: asset.id },
+          data: {
+            fileKey: targetKey,
+            mimeType: 'audio/mp4',
+            fileSize: stat.size,
+            durationSec: probe.durationSec,
+            processing: 'READY',
+          },
+        });
+        return true;
       });
 
-      if (count === 0) {
-        await this.storage.delete(targetKey);
+      if (!swapped) {
+        await this.storage
+          .delete(targetKey)
+          .catch((error) =>
+            this.logger.warn(
+              `Cible de lease expirée à nettoyer (${targetKey}) : ${this.errorMessage(error)}`,
+            ),
+          );
         return;
       }
 
-      // L'original n'est supprimé qu'une fois le swap DB confirmé.
-      await this.storage.delete(sourceKey);
+      // Le swap DB est confirmé : une impossibilité de supprimer l'original
+      // ne doit jamais provoquer la suppression compensatoire de la cible.
+      targetSaved = false;
+      await this.deleteObsoleteIfUnreferenced(asset.id, targetKey, sourceKey);
       this.logger.log(`Transcodage terminé : ${sourceKey} → ${targetKey}`);
-    } catch (err) {
+    } catch (error) {
       await fs.unlink(tmpOut).catch(() => undefined);
-      this.logger.error(`Transcodage échoué pour "${sourceKey}" : ${err}`);
-      // FAILED = « non optimisé » : l'original reste servi, jamais de trou de lecture.
-      await this.setProcessing(id, sourceKey, 'FAILED');
-    }
-  }
-
-  // ─── Helpers ────────────────────────────────────────────────────────────────
-
-  /** Reprend les jobs interrompus par un redémarrage (PENDING/PROCESSING avec fichier). */
-  private async recoverInterrupted(): Promise<void> {
-    try {
-      const interrupted = await this.prisma.audioTeaching.findMany({
-        where: {
-          processing: { in: ['PENDING', 'PROCESSING'] },
-          fileKey: { not: null },
-        },
-        select: { id: true },
-        orderBy: { updatedAt: 'asc' },
-      });
-      if (interrupted.length === 0) return;
-
-      this.logger.log(
-        `Reprise de ${interrupted.length} transcodage(s) interrompu(s)`,
+      if (targetSaved) {
+        await this.storage
+          .delete(targetKey)
+          .catch((cleanupError) =>
+            this.logger.warn(
+              `Cible partielle à nettoyer (${targetKey}) : ${this.errorMessage(cleanupError)}`,
+            ),
+          );
+      }
+      await this.markFailure(
+        asset.id,
+        teaching.id,
+        sourceKey,
+        leaseId,
+        asset.attempts + 1,
+        error,
       );
-      for (const { id } of interrupted) this.enqueue(id);
-    } catch (err) {
-      this.logger.error(`Reprise des transcodages impossible : ${err}`);
     }
   }
 
-  /** MàJ conditionnée au fileKey attendu — ne clobber jamais un fichier remplacé entre-temps. */
-  private async setProcessing(
-    id: string,
-    expectedFileKey: string,
-    status: 'PROCESSING' | 'READY' | 'FAILED',
+  private async markReadyOnOriginal(
+    assetId: string,
+    teachingId: string,
+    sourceKey: string,
+    leaseId: string,
   ): Promise<void> {
-    await this.prisma.audioTeaching.updateMany({
-      where: { id, fileKey: expectedFileKey },
-      data: { processing: status },
+    await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.audioMediaAsset.updateMany({
+        where: { id: assetId, storageKey: sourceKey, leaseId },
+        data: {
+          status: 'READY',
+          leaseId: null,
+          leaseExpiresAt: null,
+          nextAttemptAt: null,
+        },
+      });
+      if (updated.count > 0) {
+        await tx.audioTeaching.updateMany({
+          where: { id: teachingId, mediaAssetId: assetId },
+          data: { processing: 'READY' },
+        });
+      }
+    });
+  }
+
+  private async finalizeExhaustedLeases(now: Date): Promise<void> {
+    const exhausted = await this.prisma.audioMediaAsset.findMany({
+      where: {
+        status: 'PROCESSING',
+        attempts: { gte: MAX_ATTEMPTS },
+        OR: [{ leaseExpiresAt: null }, { leaseExpiresAt: { lte: now } }],
+        teaching: { isNot: null },
+      },
+      select: { id: true, leaseId: true, teaching: { select: { id: true } } },
+    });
+
+    for (const asset of exhausted) {
+      const teachingId = asset.teaching?.id;
+      if (!teachingId) continue;
+      await this.prisma.$transaction(async (tx) => {
+        const failed = await tx.audioMediaAsset.updateMany({
+          where: {
+            id: asset.id,
+            status: 'PROCESSING',
+            leaseId: asset.leaseId,
+            attempts: { gte: MAX_ATTEMPTS },
+            OR: [{ leaseExpiresAt: null }, { leaseExpiresAt: { lte: now } }],
+          },
+          data: {
+            status: 'FAILED',
+            leaseId: null,
+            leaseExpiresAt: null,
+            nextAttemptAt: null,
+            lastError: 'Worker interrompu pendant la dernière tentative',
+          },
+        });
+        if (failed.count > 0) {
+          await tx.audioTeaching.updateMany({
+            where: { id: teachingId, mediaAssetId: asset.id },
+            data: { processing: 'FAILED' },
+          });
+        }
+      });
+    }
+  }
+
+  private async deleteObsoleteIfUnreferenced(
+    assetId: string,
+    currentKey: string,
+    obsoleteKey: string,
+  ): Promise<void> {
+    try {
+      const [otherAssets, teachings] = await Promise.all([
+        this.prisma.audioMediaAsset.count({
+          where: {
+            id: { not: assetId },
+            OR: [
+              { storageKey: obsoleteKey },
+              { stagingKey: obsoleteKey },
+              { obsoleteStorageKey: obsoleteKey },
+            ],
+          },
+        }),
+        this.prisma.audioTeaching.count({ where: { fileKey: obsoleteKey } }),
+      ]);
+      if (otherAssets === 0 && teachings === 0) {
+        await this.storage.delete(obsoleteKey);
+      }
+      await this.prisma.audioMediaAsset.updateMany({
+        where: {
+          id: assetId,
+          storageKey: currentKey,
+          obsoleteStorageKey: obsoleteKey,
+        },
+        data: { obsoleteStorageKey: null },
+      });
+    } catch (error) {
+      this.logger.warn(
+        `Original à nettoyer ultérieurement (${obsoleteKey}) : ${this.errorMessage(error)}`,
+      );
+    }
+  }
+
+  private async markFailure(
+    assetId: string,
+    teachingId: string,
+    sourceKey: string,
+    leaseId: string,
+    attempt: number,
+    error: unknown,
+  ): Promise<void> {
+    const retryAt =
+      attempt < MAX_ATTEMPTS
+        ? new Date(Date.now() + RETRY_DELAY_MS * attempt)
+        : null;
+    const message = this.errorMessage(error).slice(0, 2000);
+    this.logger.error(`Transcodage échoué pour "${sourceKey}" : ${message}`);
+
+    await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.audioMediaAsset.updateMany({
+        where: { id: assetId, storageKey: sourceKey, leaseId },
+        data: {
+          status: 'FAILED',
+          lastError: message,
+          nextAttemptAt: retryAt,
+          leaseId: null,
+          leaseExpiresAt: null,
+        },
+      });
+      if (updated.count > 0) {
+        await tx.audioTeaching.updateMany({
+          where: { id: teachingId, mediaAssetId: assetId },
+          data: { processing: 'FAILED' },
+        });
+      }
     });
   }
 
   private async isFfmpegAvailable(): Promise<boolean> {
-    if (this.ffmpegAvailable === undefined) {
-      try {
-        await execFileAsync(this.ffmpegPath, ['-version']);
-        this.ffmpegAvailable = true;
-      } catch {
-        this.ffmpegAvailable = false;
-        this.logger.warn(
-          'ffmpeg introuvable : les fichiers seront servis sans transcodage (READY sur l’original)',
-        );
-      }
+    if (this.ffmpegAvailable) return true;
+    try {
+      await execFileAsync(this.ffmpegPath, ['-version'], {
+        timeout: 5_000,
+        windowsHide: true,
+      });
+      this.ffmpegAvailable = true;
+    } catch {
+      this.ffmpegAvailable = false;
     }
     return this.ffmpegAvailable;
+  }
+
+  private errorMessage(error: unknown): string {
+    return error instanceof Error ? error.message : String(error);
   }
 }

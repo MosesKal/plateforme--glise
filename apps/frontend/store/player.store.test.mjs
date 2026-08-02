@@ -1,6 +1,13 @@
 import assert from "node:assert/strict"
 import { beforeEach, describe, it } from "node:test"
 import { isLiveRadioPlaying, usePlayerStore } from "./player.store.ts"
+import {
+  DEFAULT_PLAYER_VOLUME,
+  normalizePlayerVolume,
+  playerVolumeLevel,
+  playerVolumePercent,
+  readStoredPlayerVolume,
+} from "../components/features/teachings/player/volume.ts"
 
 const station = {
   id: "radio-1",
@@ -57,5 +64,24 @@ describe("player store", () => {
     assert.equal(isLiveRadioPlaying(source, "paused", station.id), false)
     assert.equal(isLiveRadioPlaying(source, "error", station.id), false)
     assert.equal(isLiveRadioPlaying(source, "playing", station.id), true)
+  })
+})
+
+describe("volume du player", () => {
+  it("utilise 80 % lorsqu'aucune préférence n'est enregistrée", () => {
+    assert.equal(readStoredPlayerVolume(null), DEFAULT_PLAYER_VOLUME)
+    assert.equal(readStoredPlayerVolume(""), DEFAULT_PLAYER_VOLUME)
+  })
+
+  it("normalise toujours le volume entre 0 et 100 %", () => {
+    assert.equal(normalizePlayerVolume(-0.25), 0)
+    assert.equal(normalizePlayerVolume(1.25), 1)
+    assert.equal(playerVolumePercent(1), 100)
+  })
+
+  it("synchronise le niveau de l'icône avec la valeur du curseur", () => {
+    assert.equal(playerVolumeLevel(0), "muted")
+    assert.equal(playerVolumeLevel(0.25), "low")
+    assert.equal(playerVolumeLevel(0.8), "high")
   })
 })

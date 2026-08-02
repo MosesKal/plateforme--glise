@@ -1,90 +1,117 @@
-"use client"
+"use client";
 
-import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import {
   adminTeachingsApi,
+  type AdminAudioMediaFilter,
   type AudioTeachingPayload,
   type SpeakerPayload,
   type TeachingStatus,
   type ThemePayload,
   type VideoTeachingPayload,
-} from "@/lib/api/admin/teachings"
+} from "@/lib/api/admin/teachings";
 
-const THEMES_KEY = ["admin", "teachings", "themes"] as const
-const SPEAKERS_KEY = ["admin", "teachings", "speakers"] as const
-const AUDIO_KEY = ["admin", "teachings", "audio"] as const
-const VIDEOS_KEY = ["admin", "teachings", "videos"] as const
+const THEMES_KEY = ["admin", "teachings", "themes"] as const;
+const SPEAKERS_KEY = ["admin", "teachings", "speakers"] as const;
+const AUDIO_KEY = ["admin", "teachings", "audio"] as const;
+const VIDEOS_KEY = ["admin", "teachings", "videos"] as const;
 
 // ─── Thèmes ───────────────────────────────────────────────────────────────────
 
 export function useAdminThemes() {
-  return useQuery({ queryKey: THEMES_KEY, queryFn: adminTeachingsApi.listThemes })
+  return useQuery({
+    queryKey: THEMES_KEY,
+    queryFn: adminTeachingsApi.listThemes,
+  });
 }
 
 export function useCreateTheme() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: (payload: ThemePayload) => adminTeachingsApi.createTheme(payload),
+    mutationFn: (payload: ThemePayload) =>
+      adminTeachingsApi.createTheme(payload),
     onSuccess: () => qc.invalidateQueries({ queryKey: THEMES_KEY }),
-  })
+  });
 }
 
 export function useUpdateTheme() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: Partial<ThemePayload> }) =>
-      adminTeachingsApi.updateTheme(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: Partial<ThemePayload>;
+    }) => adminTeachingsApi.updateTheme(id, payload),
     onSuccess: () => qc.invalidateQueries({ queryKey: THEMES_KEY }),
-  })
+  });
 }
 
 export function useDeleteTheme() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => adminTeachingsApi.deleteTheme(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: THEMES_KEY }),
-  })
+  });
 }
 
 // ─── Orateurs ─────────────────────────────────────────────────────────────────
 
 export function useAdminSpeakers() {
-  return useQuery({ queryKey: SPEAKERS_KEY, queryFn: adminTeachingsApi.listSpeakers })
+  return useQuery({
+    queryKey: SPEAKERS_KEY,
+    queryFn: adminTeachingsApi.listSpeakers,
+  });
 }
 
 export function useCreateSpeaker() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: (payload: SpeakerPayload) => adminTeachingsApi.createSpeaker(payload),
+    mutationFn: (payload: SpeakerPayload) =>
+      adminTeachingsApi.createSpeaker(payload),
     onSuccess: () => qc.invalidateQueries({ queryKey: SPEAKERS_KEY }),
-  })
+  });
 }
 
 export function useUpdateSpeaker() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: Partial<SpeakerPayload> }) =>
-      adminTeachingsApi.updateSpeaker(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: Partial<SpeakerPayload>;
+    }) => adminTeachingsApi.updateSpeaker(id, payload),
     onSuccess: () => qc.invalidateQueries({ queryKey: SPEAKERS_KEY }),
-  })
+  });
 }
 
 export function useDeleteSpeaker() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => adminTeachingsApi.deleteSpeaker(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: SPEAKERS_KEY }),
-  })
+  });
 }
 
 // ─── Enseignements audio ──────────────────────────────────────────────────────
 
 export function useAdminAudioTeachings(params?: {
-  themeId?: string
-  status?: TeachingStatus
-  search?: string
-  page?: number
-  limit?: number
+  themeId?: string;
+  speakerId?: string;
+  status?: TeachingStatus;
+  processing?: AdminAudioMediaFilter;
+  search?: string;
+  sort?: "recent" | "oldest" | "title" | "popular" | "manual";
+  page?: number;
+  limit?: number;
 }) {
   return useQuery({
     queryKey: [...AUDIO_KEY, params],
@@ -96,46 +123,61 @@ export function useAdminAudioTeachings(params?: {
     // pour voir les fichiers passer en READY sans recharger la page.
     refetchInterval: (query) =>
       query.state.data?.items.some(
-        (t) => t.fileKey && (t.processing === "PENDING" || t.processing === "PROCESSING"),
+        (t) =>
+          t.fileKey &&
+          (t.processing === "PENDING" || t.processing === "PROCESSING"),
       )
         ? 5000
         : false,
-  })
+  });
 }
 
 export function useCreateAudioTeaching() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (payload: AudioTeachingPayload) =>
       adminTeachingsApi.createAudio(payload),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: AUDIO_KEY })
-      qc.invalidateQueries({ queryKey: THEMES_KEY }) // compteurs par thème
+      qc.invalidateQueries({ queryKey: AUDIO_KEY });
+      qc.invalidateQueries({ queryKey: THEMES_KEY }); // compteurs par thème
     },
-  })
+  });
 }
 
 export function useUpdateAudioTeaching() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: Partial<AudioTeachingPayload> }) =>
-      adminTeachingsApi.updateAudio(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: Partial<AudioTeachingPayload>;
+    }) => adminTeachingsApi.updateAudio(id, payload),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: AUDIO_KEY })
-      qc.invalidateQueries({ queryKey: THEMES_KEY })
+      qc.invalidateQueries({ queryKey: AUDIO_KEY });
+      qc.invalidateQueries({ queryKey: THEMES_KEY });
     },
-  })
+  });
 }
 
 export function useDeleteAudioTeaching() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => adminTeachingsApi.deleteAudio(id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: AUDIO_KEY })
-      qc.invalidateQueries({ queryKey: THEMES_KEY })
+      qc.invalidateQueries({ queryKey: AUDIO_KEY });
+      qc.invalidateQueries({ queryKey: THEMES_KEY });
     },
-  })
+  });
+}
+
+export function useRetryAudioProcessing() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => adminTeachingsApi.retryAudioProcessing(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: AUDIO_KEY }),
+  });
 }
 
 export function useTeachingsStats(enabled = true) {
@@ -143,18 +185,18 @@ export function useTeachingsStats(enabled = true) {
     queryKey: [...AUDIO_KEY, "stats"],
     queryFn: adminTeachingsApi.stats,
     enabled,
-  })
+  });
 }
 
 // ─── Enseignements vidéo (miroir YouTube) ─────────────────────────────────────
 
 export function useAdminVideoTeachings(
   params?: {
-    themeId?: string
-    status?: TeachingStatus
-    search?: string
-    page?: number
-    limit?: number
+    themeId?: string;
+    status?: TeachingStatus;
+    search?: string;
+    page?: number;
+    limit?: number;
   },
   enabled = true,
 ) {
@@ -163,49 +205,54 @@ export function useAdminVideoTeachings(
     queryFn: () => adminTeachingsApi.listVideos(params),
     placeholderData: keepPreviousData,
     enabled,
-  })
+  });
 }
 
 export function useUpdateVideoTeaching() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, payload }: { id: string; payload: VideoTeachingPayload }) =>
-      adminTeachingsApi.updateVideo(id, payload),
+    mutationFn: ({
+      id,
+      payload,
+    }: {
+      id: string;
+      payload: VideoTeachingPayload;
+    }) => adminTeachingsApi.updateVideo(id, payload),
     onSuccess: () => qc.invalidateQueries({ queryKey: VIDEOS_KEY }),
-  })
+  });
 }
 
 export function useDeleteVideoTeaching() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => adminTeachingsApi.deleteVideo(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: VIDEOS_KEY }),
-  })
+  });
 }
 
 export function useSyncVideos() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: () => adminTeachingsApi.syncVideos(),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: VIDEOS_KEY })
-      qc.invalidateQueries({ queryKey: [...VIDEOS_KEY, "sync-status"] })
+      qc.invalidateQueries({ queryKey: VIDEOS_KEY });
+      qc.invalidateQueries({ queryKey: [...VIDEOS_KEY, "sync-status"] });
     },
-  })
+  });
 }
 
 export function useVideoSyncStatus() {
   return useQuery({
     queryKey: [...VIDEOS_KEY, "sync-status"],
     queryFn: adminTeachingsApi.videoSyncStatus,
-  })
+  });
 }
 
 export function useReorderAudioTeachings() {
-  const qc = useQueryClient()
+  const qc = useQueryClient();
   return useMutation({
     mutationFn: (items: { id: string; position: number }[]) =>
       adminTeachingsApi.reorderAudio(items),
     onSuccess: () => qc.invalidateQueries({ queryKey: AUDIO_KEY }),
-  })
+  });
 }

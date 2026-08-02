@@ -36,7 +36,12 @@ export const audioUploadOptions: MulterOptions = {
       cb(null, `${randomUUID()}${extname(file.originalname).toLowerCase()}`);
     },
   }),
-  limits: { fileSize: AUDIO_MAX_FILE_SIZE },
+  limits: {
+    fileSize: AUDIO_MAX_FILE_SIZE,
+    files: 1,
+    fields: 0,
+    parts: 1,
+  },
   fileFilter: (_req, file, cb) => {
     const extOk = AUDIO_ALLOWED_EXTENSIONS.test(extname(file.originalname));
     const mimeOk = AUDIO_ALLOWED_MIMETYPES.test(file.mimetype);

@@ -1,11 +1,14 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { useI18n } from "@/components/providers/I18nProvider"
-import { usePlayerStore } from "@/store/player.store"
-import { TeachingBadge } from "@/components/features/teachings/audio/TeachingBadge"
-import { formatDuration, formatTeachingDate } from "@/components/features/teachings/format"
-import type { AudioTeaching } from "@/lib/api/teachings"
+import Link from "next/link";
+import { useI18n } from "@/components/providers/I18nProvider";
+import { usePlayerStore } from "@/store/player.store";
+import { TeachingBadge } from "@/components/features/teachings/audio/TeachingBadge";
+import {
+  formatDuration,
+  formatTeachingDate,
+} from "@/components/features/teachings/format";
+import type { AudioTeaching } from "@/lib/api/teachings";
 
 /**
  * Ligne d'enseignement audio : lance la lecture dans le player global avec la
@@ -19,27 +22,29 @@ export function AudioTeachingRow({
   queue,
   index,
   variant = "card",
+  showTheme = false,
 }: {
-  teaching: AudioTeaching
-  queue: AudioTeaching[]
-  index: number
-  variant?: "card" | "flush"
+  teaching: AudioTeaching;
+  queue: AudioTeaching[];
+  index: number;
+  variant?: "card" | "flush";
+  showTheme?: boolean;
 }) {
-  const { t, locale } = useI18n()
-  const detailHref = `/${locale}/enseignements/audio/${teaching.theme.slug}/${teaching.slug}`
+  const { t, locale } = useI18n();
+  const detailHref = `/${locale}/enseignements/audio/${teaching.theme.slug}/${teaching.slug}`;
 
-  const { source, isPlaying, play, toggle } = usePlayerStore()
-  const track = source?.type === "teaching" ? source.teaching : null
-  const isCurrent = track?.id === teaching.id
-  const isActive = isCurrent && isPlaying
+  const { source, isPlaying, play, toggle } = usePlayerStore();
+  const track = source?.type === "teaching" ? source.teaching : null;
+  const isCurrent = track?.id === teaching.id;
+  const isActive = isCurrent && isPlaying;
 
   const handleClick = () => {
     if (isCurrent) {
-      toggle()
+      toggle();
     } else {
-      play(teaching, queue)
+      play(teaching, queue);
     }
-  }
+  };
 
   const containerClasses =
     variant === "flush"
@@ -48,7 +53,7 @@ export function AudioTeachingRow({
           isCurrent
             ? "border-cecj-green/30 bg-cecj-green/5"
             : "border-gray-100 bg-white hover:border-cecj-green/20 hover:bg-gray-50/60"
-        }`
+        }`;
 
   return (
     <div
@@ -58,7 +63,9 @@ export function AudioTeachingRow({
       <button
         onClick={handleClick}
         aria-label={`${
-          isActive ? t("teachings.player.pauseTrack") : t("teachings.common.listen")
+          isActive
+            ? t("teachings.player.pauseTrack")
+            : t("teachings.common.listen")
         } ${teaching.title}`}
         className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition ${
           isCurrent
@@ -71,7 +78,11 @@ export function AudioTeachingRow({
             <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
           </svg>
         ) : (
-          <svg className="ml-0.5 h-4.5 w-4.5" viewBox="0 0 24 24" fill="currentColor">
+          <svg
+            className="ml-0.5 h-4.5 w-4.5"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
             <path d="M8 5v14l11-7z" />
           </svg>
         )}
@@ -107,6 +118,14 @@ export function AudioTeachingRow({
             variant === "flush" ? "text-cecj-ink-dim" : "text-gray-400"
           }`}
         >
+          {showTheme && (
+            <>
+              {locale === "en" && teaching.theme.nameEn
+                ? teaching.theme.nameEn
+                : teaching.theme.nameFr}
+              {" · "}
+            </>
+          )}
           {teaching.speaker.fullName}
           {teaching.preachedAt && (
             <>
@@ -126,5 +145,5 @@ export function AudioTeachingRow({
         {formatDuration(teaching.durationSec)}
       </span>
     </div>
-  )
+  );
 }

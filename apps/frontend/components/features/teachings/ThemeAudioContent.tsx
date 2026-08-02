@@ -1,24 +1,33 @@
-"use client"
+"use client";
 
-import { useMemo, useState } from "react"
-import Link from "next/link"
-import { motion } from "framer-motion"
-import { stagger, fadeUp, inView } from "@/lib/motion"
-import { useI18n } from "@/components/providers/I18nProvider"
-import { useDebounce } from "@/hooks/useDebounce"
-import { useInfiniteAudioTeachings, useTeachingTheme } from "@/hooks/useTeachings"
-import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow"
-import { LoadMoreButton } from "@/components/shared/LoadMoreButton"
+import { useMemo, useState } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { stagger, fadeUp, inView } from "@/lib/motion";
+import { useI18n } from "@/components/providers/I18nProvider";
+import { useDebounce } from "@/hooks/useDebounce";
+import {
+  useInfiniteAudioTeachings,
+  useTeachingTheme,
+} from "@/hooks/useTeachings";
+import { AudioTeachingRow } from "@/components/features/teachings/audio/AudioTeachingRow";
+import { LoadMoreButton } from "@/components/shared/LoadMoreButton";
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 20;
+type ThemeSort = "manual" | "recent" | "popular";
 
 export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
-  const { t, locale } = useI18n()
+  const { t, locale } = useI18n();
 
-  const { data: theme, isLoading: themeLoading, isError } = useTeachingTheme(themeSlug)
+  const {
+    data: theme,
+    isLoading: themeLoading,
+    isError,
+  } = useTeachingTheme(themeSlug);
 
-  const [filter, setFilter] = useState("")
-  const debouncedFilter = useDebounce(filter.trim(), 300)
+  const [filter, setFilter] = useState("");
+  const [sort, setSort] = useState<ThemeSort>("manual");
+  const debouncedFilter = useDebounce(filter.trim(), 300);
 
   // Recherche côté serveur : un thème peut dépasser 200 audios, un filtre
   // client sur la page chargée raterait tout ce qui n'est pas encore chargé.
@@ -30,24 +39,28 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
   } = useInfiniteAudioTeachings({
     themeSlug,
     search: debouncedFilter.length >= 2 ? debouncedFilter : undefined,
+    sort: sort === "manual" ? undefined : sort,
     limit: PAGE_SIZE,
-  })
+  });
 
-  const teachings = useMemo(() => audio?.pages.flatMap((p) => p.items) ?? [], [audio])
-  const total = audio?.pages[0]?.total ?? 0
+  const teachings = useMemo(
+    () => audio?.pages.flatMap((p) => p.items) ?? [],
+    [audio],
+  );
+  const total = audio?.pages[0]?.total ?? 0;
 
   if (isError) {
     return (
       <div className="mx-auto max-w-3xl px-4 py-24 text-center">
         <p className="text-gray-500">{t("teachings.theme.notFound")}</p>
         <Link
-          href={`/${locale}/enseignements`}
+          href={`/${locale}/enseignements/audio`}
           className="mt-4 inline-block text-sm font-bold text-cecj-green underline underline-offset-4"
         >
           {t("teachings.common.backToTeachings")}
         </Link>
       </div>
-    )
+    );
   }
 
   return (
@@ -61,11 +74,21 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
           <motion.div {...inView()} variants={stagger} className="space-y-4">
             <motion.div variants={fadeUp}>
               <Link
-                href={`/${locale}/enseignements`}
+                href={`/${locale}/enseignements/audio`}
                 className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-cecj-gold hover:opacity-80"
               >
-                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+                <svg
+                  className="h-3.5 w-3.5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M7 16l-4-4m0 0l4-4m-4 4h18"
+                  />
                 </svg>
                 {t("teachings.hub.title")}
               </Link>
@@ -75,15 +98,26 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
               <div className="h-10 w-64 animate-pulse rounded bg-white/10" />
             ) : theme ? (
               <>
-                <motion.h1 variants={fadeUp} className="text-3xl font-bold text-white md:text-4xl">
-                  {theme.nameFr}
+                <motion.h1
+                  variants={fadeUp}
+                  className="text-3xl font-bold text-white md:text-4xl"
+                >
+                  {locale === "en" && theme.nameEn
+                    ? theme.nameEn
+                    : theme.nameFr}
                 </motion.h1>
                 {theme.descriptionFr && (
-                  <motion.p variants={fadeUp} className="max-w-2xl text-white/70 leading-relaxed">
+                  <motion.p
+                    variants={fadeUp}
+                    className="max-w-2xl text-white/70 leading-relaxed"
+                  >
                     {theme.descriptionFr}
                   </motion.p>
                 )}
-                <motion.p variants={fadeUp} className="text-sm font-semibold text-cecj-gold">
+                <motion.p
+                  variants={fadeUp}
+                  className="text-sm font-semibold text-cecj-gold"
+                >
                   {theme._count.audioTeachings}{" "}
                   {theme._count.audioTeachings > 1
                     ? t("teachings.common.teachingPlural")
@@ -98,20 +132,37 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
       {/* Liste */}
       <section className="mx-auto max-w-4xl px-4 py-10 lg:px-8">
         {((theme?._count.audioTeachings ?? 0) > 8 || filter) && (
-          <div className="mb-6">
+          <div className="mb-6 flex flex-col gap-2 rounded-2xl border border-gray-200 bg-gray-50 p-3 sm:flex-row">
             <input
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
               placeholder={t("teachings.theme.searchPlaceholder")}
-              className="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-base outline-none transition focus:border-cecj-green focus:bg-white focus:ring-2 focus:ring-cecj-green/15 sm:max-w-sm sm:text-sm"
+              className="min-w-0 flex-1 rounded-xl border border-gray-200 bg-white px-4 py-3 text-base outline-none transition focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/15 sm:text-sm"
             />
+            <select
+              value={sort}
+              onChange={(event) => setSort(event.target.value as ThemeSort)}
+              aria-label={t("teachings.audios.sortLabel")}
+              className="rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 outline-none focus:border-cecj-green"
+            >
+              <option value="manual">
+                {t("teachings.theme.editorialOrder")}
+              </option>
+              <option value="recent">
+                {t("teachings.audios.recentFirst")}
+              </option>
+              <option value="popular">{t("teachings.hub.mostPlayed")}</option>
+            </select>
           </div>
         )}
 
         {audioLoading ? (
           <div className="space-y-3">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-[74px] animate-pulse rounded-xl bg-gray-100" />
+              <div
+                key={i}
+                className="h-[74px] animate-pulse rounded-xl bg-gray-100"
+              />
             ))}
           </div>
         ) : teachings.length === 0 ? (
@@ -120,13 +171,14 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
           </p>
         ) : (
           <>
-            <div className="space-y-3">
+            <div className="divide-y divide-gray-100 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
               {teachings.map((teaching, index) => (
                 <AudioTeachingRow
                   key={teaching.id}
                   teaching={teaching}
                   queue={teachings}
                   index={index}
+                  variant="flush"
                 />
               ))}
             </div>
@@ -139,5 +191,5 @@ export function ThemeAudioContent({ themeSlug }: { themeSlug: string }) {
         )}
       </section>
     </div>
-  )
+  );
 }

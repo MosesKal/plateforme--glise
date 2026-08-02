@@ -29,11 +29,23 @@ export class AdminAudioQueryDto extends PaginationDto {
   @IsOptional()
   themeId?: string;
 
+  @IsString()
+  @IsOptional()
+  speakerId?: string;
+
   @IsEnum(TeachingStatusDto)
   @IsOptional()
   status?: TeachingStatusDto;
 
+  @IsIn(['PENDING', 'PROCESSING', 'READY', 'FAILED', 'MISSING'])
+  @IsOptional()
+  processing?: 'PENDING' | 'PROCESSING' | 'READY' | 'FAILED' | 'MISSING';
+
   @IsString()
   @IsOptional()
   search?: string;
+
+  @IsIn(['recent', 'oldest', 'title', 'popular', 'manual'])
+  @IsOptional()
+  sort?: 'recent' | 'oldest' | 'title' | 'popular' | 'manual';
 }
