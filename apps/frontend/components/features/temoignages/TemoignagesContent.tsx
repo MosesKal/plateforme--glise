@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -8,7 +8,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { adminTestimoniesApi, type Testimony } from "@/lib/api/admin/testimonies"
-import { TestimonyCard } from "@/components/features/home/TestimonialsMarquee"
+import { ExpandableTestimonyCard } from "@/components/features/temoignages/ExpandableTestimonyCard"
 import { stagger, fadeUp, inView } from "@/lib/motion"
 
 const inputCls = "w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
@@ -46,6 +46,7 @@ function SkeletonCard() {
 
 export function TemoignagesContent() {
   const [submitted, setSubmitted] = useState(false)
+  const [expandedId, setExpandedId] = useState<string | null>(null)
   const qc = useQueryClient()
 
   const { data: testimonies = [], isLoading } = useQuery<Testimony[]>({
@@ -77,6 +78,33 @@ export function TemoignagesContent() {
     }
   }
 
+  useEffect(() => {
+    if (testimonies.length === 0) return
+
+    const anchor = window.location.hash.slice(1)
+    if (!anchor.startsWith("testimony-")) return
+
+    const testimonyId = anchor.replace("testimony-", "")
+    if (!testimonies.some((testimony) => testimony.id === testimonyId)) return
+
+    const frame = window.requestAnimationFrame(() => {
+      setExpandedId(testimonyId)
+      document.getElementById(anchor)?.scrollIntoView({ block: "start" })
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [testimonies])
+
+  const toggleTestimony = (id: string) => {
+    const next = expandedId === id ? null : id
+    const url = next
+      ? `${window.location.pathname}${window.location.search}#testimony-${next}`
+      : `${window.location.pathname}${window.location.search}`
+
+    window.history.replaceState(null, "", url)
+    setExpandedId(next)
+  }
+
   return (
     <div className="bg-white">
       {/* Hero */}
@@ -94,7 +122,7 @@ export function TemoignagesContent() {
               Témoignages
             </motion.h1>
             <motion.p variants={fadeUp} className="mx-auto max-w-xl text-lg text-white/70">
-              Découvrez comment Dieu transforme des vies au sein de l'Église Le Camp de Jésus-Christ Bel-Air Fizi. Partagez votre propre témoignage.
+              Découvrez comment Dieu transforme des vies au sein de l&apos;Église Le Camp de Jésus-Christ Bel-Air Fizi. Partagez votre propre témoignage.
             </motion.p>
             <motion.div variants={fadeUp} className="pt-2">
               <span className="text-3xl font-bold text-cecj-gold">{testimonies.length}</span>
@@ -184,12 +212,12 @@ export function TemoignagesContent() {
           {/* Grille des témoignages approuvés */}
           <div className="lg:col-span-2">
             <h2 className="mb-6 text-xl font-bold text-cecj-green">
-              Témoignages de l'Église
+              Témoignages de l&apos;Église
             </h2>
 
             {isLoading ? (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+              <div className="space-y-6">
+                {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
               </div>
             ) : testimonies.length === 0 ? (
               <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-gray-50">
@@ -199,16 +227,15 @@ export function TemoignagesContent() {
               <motion.div
                 {...inView()}
                 variants={stagger}
-                className={cn(
-                  "grid gap-6",
-                  testimonies.length === 1 && "max-w-md",
-                  testimonies.length >= 2  && "sm:grid-cols-2",
-                  testimonies.length >= 4  && "lg:grid-cols-3",
-                )}
+                className="space-y-6"
               >
                 {testimonies.map((t) => (
                   <motion.div key={t.id} variants={fadeUp}>
-                    <TestimonyCard item={t} className="w-full" truncate={false} />
+                    <ExpandableTestimonyCard
+                      item={t}
+                      isExpanded={expandedId === t.id}
+                      onToggle={() => toggleTestimony(t.id)}
+                    />
                   </motion.div>
                 ))}
               </motion.div>
