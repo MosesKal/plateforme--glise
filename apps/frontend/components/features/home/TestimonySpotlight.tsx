@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import { useCallback, useEffect, useState } from "react"
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion"
 import type { Testimony } from "@/lib/api/admin/testimonies"
 
 function initials(fullName: string): string {
@@ -15,94 +15,114 @@ interface TestimonySpotlightProps {
 }
 
 export function TestimonySpotlight({ items }: TestimonySpotlightProps) {
+  const shouldReduceMotion = useReducedMotion()
   const [idx, setIdx] = useState(0)
   const [dir, setDir] = useState(1)
+  const [isPaused, setIsPaused] = useState(false)
 
-  const goTo = useCallback((next: number) => {
-    setDir(next > idx ? 1 : -1)
-    setIdx(next)
-  }, [idx])
+  const goTo = useCallback(
+    (next: number, direction: number) => {
+      setDir(direction)
+      setIdx((next + items.length) % items.length)
+    },
+    [items.length],
+  )
 
   useEffect(() => {
-    if (items.length <= 1) return
-    const id = setInterval(() => {
-      setDir(1)
-      setIdx((i) => (i + 1) % items.length)
-    }, 6000)
-    return () => clearInterval(id)
-  }, [items.length])
+    if (items.length <= 1 || shouldReduceMotion || isPaused) return
 
-  const item = items[idx]
+    const id = window.setInterval(() => {
+      setDir(1)
+      setIdx((current) => (current + 1) % items.length)
+    }, 7000)
+
+    return () => window.clearInterval(id)
+  }, [isPaused, items.length, shouldReduceMotion])
+
+  const safeIdx = Math.min(idx, Math.max(items.length - 1, 0))
+  const item = items[safeIdx]
+
   if (!item) return null
 
   return (
-    <div className="mx-auto max-w-4xl px-4 lg:px-8">
-      {/* Quote block */}
-      <div className="overflow-hidden">
+    <div
+      className="relative mx-auto flex min-h-[25rem] w-[calc(100%-2rem)] max-w-4xl flex-col overflow-hidden rounded-[2rem] border border-cecj-rule bg-cecj-panel p-6 shadow-[0_24px_80px_rgba(2,67,57,0.08)] sm:p-10"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onFocusCapture={() => setIsPaused(true)}
+      onBlurCapture={() => setIsPaused(false)}
+    >
+      <div className="pointer-events-none absolute right-8 top-6 font-serif text-[9rem] leading-none text-cecj-gold/15" aria-hidden="true">
+        &ldquo;
+      </div>
+
+      <div className="relative flex items-center justify-between gap-4">
+        <span className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-[0.18em] text-cecj-green/60">
+          <span className="h-2 w-2 rounded-full bg-cecj-gold" />
+          Témoignage publié
+        </span>
+        <span className="text-xs font-semibold tabular-nums text-cecj-ink-dim">
+          {String(safeIdx + 1).padStart(2, "0")} / {String(items.length).padStart(2, "0")}
+        </span>
+      </div>
+
+      <div className="relative mt-8 flex flex-1 items-center overflow-hidden sm:mt-10">
         <AnimatePresence mode="wait">
           <motion.div
-            key={idx}
-            initial={{ opacity: 0, x: dir * 48 }}
+            key={safeIdx}
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: dir * 32 }}
             animate={{ opacity: 1, x: 0, transition: { duration: 0.55, ease: [0.16, 1, 0.3, 1] } }}
-            exit={{ opacity: 0, x: dir * -48, transition: { duration: 0.3 } }}
-            className="flex flex-col items-center text-center"
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: dir * -32, transition: { duration: 0.25 } }}
+            className="w-full"
           >
-            {/* Decorative quote mark */}
-            <div
-              className="mb-5 font-serif select-none leading-none"
-              style={{ fontSize: "6rem", color: "rgba(255,203,50,0.45)", lineHeight: 1 }}
-              aria-hidden
-            >
-              &ldquo;
-            </div>
-
-            {/* Testimony text */}
-            <p className="mb-8 text-xl font-medium italic leading-relaxed text-cecj-ink sm:text-2xl lg:text-[1.75rem]">
+            <blockquote className="line-clamp-6 text-xl font-medium leading-relaxed text-cecj-ink sm:text-2xl sm:leading-relaxed">
               {item.content}
-            </p>
-
-            {/* Separator */}
-            <div className="mb-6 h-px w-14" style={{ background: "rgba(255,203,50,0.6)" }} />
-
-            {/* Author */}
-            <div className="flex items-center gap-3">
-              <div
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
-                style={{ background: "#024339" }}
-              >
-                {initials(item.fullName)}
-              </div>
-              <div className="text-left">
-                <p className="font-bold text-cecj-green">{item.fullName}</p>
-                <p className="text-sm text-cecj-ink-dim">
-                  {new Date(item.createdAt).toLocaleDateString("fr-FR", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
-              </div>
-            </div>
+            </blockquote>
           </motion.div>
         </AnimatePresence>
       </div>
 
-      {/* Dot navigation */}
-      {items.length > 1 && (
-        <div className="mt-10 flex justify-center gap-2">
-          {items.map((_, i) => (
-            <button
-              key={i}
-              onClick={() => goTo(i)}
-              aria-label={`Témoignage ${i + 1}`}
-              className="h-2 rounded-full transition-all duration-300"
-              style={{
-                width: i === idx ? "2rem" : "0.5rem",
-                background: i === idx ? "#024339" : "rgba(2,67,57,0.2)",
-              }}
-            />
-          ))}
+      <div className="relative mt-8 flex flex-wrap items-center justify-between gap-5 border-t border-cecj-rule pt-6">
+        <div className="flex items-center gap-3">
+          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cecj-green text-sm font-bold text-white">
+            {initials(item.fullName)}
+          </div>
+          <div>
+            <p className="font-bold text-cecj-green">{item.fullName}</p>
+            <p className="text-xs capitalize text-cecj-ink-dim">
+              {new Date(item.createdAt).toLocaleDateString("fr-FR", {
+                month: "long",
+                year: "numeric",
+              })}
+            </p>
+          </div>
         </div>
-      )}
+
+        {items.length > 1 && (
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => goTo(safeIdx - 1, -1)}
+              aria-label="Afficher le témoignage précédent"
+              className="flex h-11 w-11 items-center justify-center rounded-full border border-cecj-rule text-cecj-green transition-colors hover:border-cecj-green hover:bg-cecj-green hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cecj-green"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m15 18-6-6 6-6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={() => goTo(safeIdx + 1, 1)}
+              aria-label="Afficher le témoignage suivant"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-cecj-green text-white transition-colors hover:bg-cecj-gold hover:text-cecj-green focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cecj-green"
+            >
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="m9 18 6-6-6-6" />
+              </svg>
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
