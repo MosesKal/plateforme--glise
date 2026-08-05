@@ -11,7 +11,7 @@ import { adminTestimoniesApi, type Testimony } from "@/lib/api/admin/testimonies
 import { ExpandableTestimonyCard } from "@/components/features/temoignages/ExpandableTestimonyCard"
 import { stagger, fadeUp, inView } from "@/lib/motion"
 
-const inputCls = "w-full rounded-xl border border-gray-200 px-4 py-3 text-sm outline-none transition focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10"
+const inputCls = "w-full min-w-0 rounded-xl border border-gray-200 px-4 py-3 text-base outline-none transition focus:border-cecj-green focus:ring-2 focus:ring-cecj-green/10 sm:text-sm"
 
 const schema = z.object({
   fullName: z.string().min(2, "Votre nom est requis").max(100),
@@ -106,38 +106,38 @@ export function TemoignagesContent() {
   }
 
   return (
-    <div className="bg-white">
+    <div className="min-w-0 overflow-x-clip bg-white">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-cecj-green py-20 md:py-24">
+      <section className="relative overflow-hidden bg-cecj-green py-14 sm:py-20 md:py-24">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-white/5 blur-3xl" />
           <div className="absolute -bottom-16 right-0 h-80 w-80 rounded-full bg-cecj-gold/10 blur-3xl" />
         </div>
         <div className="relative mx-auto max-w-4xl px-4 text-center lg:px-8">
-          <motion.div {...inView()} variants={stagger} className="space-y-5">
-            <motion.span variants={fadeUp} className="inline-block rounded-full border border-cecj-gold/40 bg-cecj-gold/10 px-3 py-1 text-xs font-semibold uppercase tracking-widest text-cecj-gold">
+          <motion.div {...inView()} variants={stagger} className="space-y-4 sm:space-y-5">
+            <motion.span variants={fadeUp} className="inline-block max-w-full rounded-full border border-cecj-gold/40 bg-cecj-gold/10 px-3 py-1 text-[0.6875rem] font-semibold uppercase leading-5 tracking-widest text-cecj-gold sm:text-xs">
               La grâce de Dieu à l&apos;œuvre
             </motion.span>
-            <motion.h1 variants={fadeUp} className="text-4xl font-bold text-white md:text-5xl">
+            <motion.h1 variants={fadeUp} className="text-3xl font-bold text-white sm:text-4xl md:text-5xl">
               Témoignages
             </motion.h1>
-            <motion.p variants={fadeUp} className="mx-auto max-w-xl text-lg text-white/70">
+            <motion.p variants={fadeUp} className="mx-auto max-w-xl text-base leading-7 text-white/70 sm:text-lg">
               Découvrez comment Dieu transforme des vies au sein de l&apos;Église Le Camp de Jésus-Christ Bel-Air Fizi. Partagez votre propre témoignage.
             </motion.p>
-            <motion.div variants={fadeUp} className="pt-2">
+            <motion.div variants={fadeUp} className="flex flex-wrap items-baseline justify-center gap-x-2 gap-y-1 pt-2">
               <span className="text-3xl font-bold text-cecj-gold">{testimonies.length}</span>
-              <span className="ml-2 text-sm font-semibold uppercase tracking-widest text-white/50">Témoignages partagés</span>
+              <span className="text-xs font-semibold uppercase tracking-widest text-white/50 sm:text-sm">Témoignages partagés</span>
             </motion.div>
           </motion.div>
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-4 py-14 sm:py-20 lg:px-8">
-        <div className="grid gap-14 lg:grid-cols-3">
+      <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
+        <div className="grid min-w-0 gap-10 lg:grid-cols-3 lg:gap-14">
 
           {/* Formulaire de soumission */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24">
+          <div className="min-w-0 lg:col-span-1">
+            <div className="lg:sticky lg:top-24">
               <h2 className="mb-1 text-xl font-bold text-cecj-green">Partagez votre témoignage</h2>
               <p className="mb-6 text-sm text-gray-500">
                 Votre témoignage sera examiné par notre équipe avant publication.
@@ -210,7 +210,7 @@ export function TemoignagesContent() {
           </div>
 
           {/* Grille des témoignages approuvés */}
-          <div className="lg:col-span-2">
+          <div className="min-w-0 lg:col-span-2">
             <h2 className="mb-6 text-xl font-bold text-cecj-green">
               Témoignages de l&apos;Église
             </h2>
@@ -220,7 +220,7 @@ export function TemoignagesContent() {
                 {Array.from({ length: 3 }).map((_, i) => <SkeletonCard key={i} />)}
               </div>
             ) : testimonies.length === 0 ? (
-              <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-gray-50">
+              <div className="flex h-48 items-center justify-center rounded-2xl border border-dashed border-gray-200 bg-gray-50 px-5 text-center">
                 <p className="text-sm text-gray-400">Aucun témoignage publié pour le moment.</p>
               </div>
             ) : (
