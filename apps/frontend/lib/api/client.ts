@@ -12,6 +12,41 @@ export const api = axios.create({
   timeout: 10_000,
 })
 
+let refreshPromise: Promise<string> | null = null
+
+function redirectToLogin() {
+  setAccessToken(null)
+  setRefreshToken(null)
+  if (typeof window !== "undefined") {
+    window.location.href = getLoginUrl(window.location.pathname)
+  }
+}
+
+function refreshAccessToken(): Promise<string> {
+  if (refreshPromise) return refreshPromise
+
+  const refreshToken = getRefreshToken()
+  if (!refreshToken) {
+    return Promise.reject(new Error("Refresh token missing"))
+  }
+
+  refreshPromise = api
+    .post<{
+      accessToken: string
+      refreshToken: string
+    }>("/auth/refresh", { refreshToken })
+    .then(({ data }) => {
+      setAccessToken(data.accessToken)
+      setRefreshToken(data.refreshToken)
+      return data.accessToken
+    })
+    .finally(() => {
+      refreshPromise = null
+    })
+
+  return refreshPromise
+}
+
 // ─── Request: inject Authorization header ─────────────────────────────────────
 
 api.interceptors.request.use((config) => {
@@ -49,27 +84,16 @@ api.interceptors.response.use(
       !original.url?.includes("/auth/")
     ) {
       original._retry = true
-      const refreshToken = getRefreshToken()
-
-      if (refreshToken) {
-        try {
-          const { data } = await api.post<{
-            accessToken: string
-            refreshToken: string
-          }>("/auth/refresh", { refreshToken })
-
-          setAccessToken(data.accessToken)
-          setRefreshToken(data.refreshToken)
-          original.headers.Authorization = `Bearer ${data.accessToken}`
-          return api(original)
-        } catch {
-          // Refresh failed — clear session and redirect to login
-          setAccessToken(null)
-          setRefreshToken(null)
-          if (typeof window !== "undefined") {
-            window.location.href = getLoginUrl(window.location.pathname)
-          }
-        }
+      try {
+        // Un seul refresh est envoyé même si plusieurs requêtes expirent au
+        // même instant. Le backend fait tourner le refresh token et rejetterait
+        // les appels concurrents suivants avec 401.
+        const accessToken = await refreshAccessToken()
+        original.headers.Authorization = `Bearer ${accessToken}`
+        return api(original)
+      } catch {
+        // Refresh expiré, invalide ou absent : la session n'est plus utilisable.
+        redirectToLogin()
       }
     }
 

@@ -40,7 +40,10 @@ export const audioUploadOptions: MulterOptions = {
     fileSize: AUDIO_MAX_FILE_SIZE,
     files: 1,
     fields: 0,
-    parts: 1,
+    // Busboy compte aussi la frontière terminale : un multipart contenant un
+    // unique fichier atteint donc 2 ici. `files` et `fields` gardent le
+    // contrat strict d'un fichier sans champ additionnel.
+    parts: 2,
   },
   fileFilter: (_req, file, cb) => {
     const extOk = AUDIO_ALLOWED_EXTENSIONS.test(extname(file.originalname));
